@@ -1,6 +1,9 @@
 # CHANGELOG
 (Most recent on top.)
 
+### 2017-10-29: v0.01.11 (Newlines):
+* Added newlines in posts - temporary kludge using `\n` input by user.
+
 ### 2017-10-29: v0.01.10 (First upload, with the following features):
 * Menu-based,
 * Authorise with a single-user token saved in a plain text file - token generated at the pnut.io developer page,

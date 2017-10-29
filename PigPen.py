@@ -30,13 +30,13 @@ def menu():
 
 # Create a post
 def createpost():
-	posttext= raw_input("posttext: ")
+	inputtext()
 	post, meta = pnutpy.api.create_post(data={'text': posttext})
 
 # Reply to a post
 def replypost():
 	postnum= raw_input("postnum: ")
-	posttext= raw_input("posttext: ")
+	inputtext()
 	post, meta = pnutpy.api.create_post(data={'reply_to': postnum, 'text': posttext})
 
 # Bookmark a post
@@ -54,6 +54,18 @@ def getpost():
 	postnum= raw_input("postnum: ")
 	postcontent = pnutpy.api.get_post(postnum)
 	print postcontent
+
+# DEFINE OTHER ROUTINES
+
+# Input text, act on '\n'
+def inputtext():
+	global posttext
+	posttext = ""
+	textinput = raw_input("posttext (\\n): ")
+	splittext = textinput.split(r'\n')
+	for sentence in splittext:
+		posttext = posttext + sentence + "\n"
+	posttext = posttext.strip()
 	
 # MAIN ROUTINE
 
