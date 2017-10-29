@@ -1,10 +1,15 @@
-# PigPen, a Python app for the pnut.io social network
+# PigPen, a Python app for the pnut.io social network.
+# v0.01.12
 # @bazbt3
 
-# THE APP:
+# SETUP:
 
 # Import @thrrgilag's pnut.io library
 import pnutpy
+# Import JSON to allow server responses to be parsed
+import json
+
+# AUTHORISATION:
 
 # Authorise using secret token
 tokenfile = open("secrettoken.txt", "r")
@@ -16,15 +21,12 @@ pnutpy.api.add_authorization_token(token)
 
 # Displays menu text
 def menu():
-	print "PigPen menu:"
-	print "  p =  post"
-	print "  r =  reply"
-	print "  b =  bookmark"
-	print "  rp = repost"
-	print "  g =  get post"
-	print "  menu = redisplay menu"
-	print "  exit = Exit"
-	print " "
+	print "\nPigPen menu:"
+	print "p post         rp repost(n)"
+	print "g getpost(n)   r  reply(n)"
+	print "b bookmark(n)  f follow(n)"
+	print "m show menu"
+	print "exit Exit\n"
 
 # DEFINE INTERACTIONS
 
@@ -32,6 +34,21 @@ def menu():
 def createpost():
 	inputtext()
 	post, meta = pnutpy.api.create_post(data={'text': posttext})
+
+# Repost a post
+def repostpost():
+	postnum = raw_input("postnum: ")
+	postcontent = pnutpy.api.repost_post(postnum)
+
+# Get a post
+def getpost():
+	global postcontent, jsondata
+	postcontent = ()
+	jsondata = ()
+	postnum = raw_input("postnum: ")
+	postcontent = pnutpy.api.get_post(postnum)
+	# Print server JSON
+	print postcontent
 
 # Reply to a post
 def replypost():
@@ -41,23 +58,17 @@ def replypost():
 
 # Bookmark a post
 def bookmarkpost():
-	postnum= raw_input("postnum: ")
+	postnum = raw_input("postnum: ")
 	postcontent = pnutpy.api.bookmark_post(postnum)
 
-# Repost a post
-def repostpost():
-	postnum= raw_input("postnum: ")
-	postcontent = pnutpy.api.repost_post(postnum)
+# Follow a user
+def followuser():
+	usernum = raw_input("usernum: ")
+	postcontent = pnutpy.api.follow_user(usernum)
 
-# Get a post
-def getpost():
-	postnum= raw_input("postnum: ")
-	postcontent = pnutpy.api.get_post(postnum)
-	print postcontent
+# DEFINE OTHER ROUTINES:
 
-# DEFINE OTHER ROUTINES
-
-# Input text, act on '\n'
+# Input text, '\n'=newline
 def inputtext():
 	global posttext
 	posttext = ""
@@ -67,7 +78,7 @@ def inputtext():
 		posttext = posttext + sentence + "\n"
 	posttext = posttext.strip()
 	
-# MAIN ROUTINE
+# MAIN ROUTINE:
 
 # Display menu
 menu()
@@ -83,9 +94,11 @@ while choice != 'exit':
 		bookmarkpost()
 	elif choice == 'rp':
 		repostpost()
+	elif choice == 'f':
+		followuser()
 	elif choice == 'g':
 		getpost()
-	elif choice == 'menu':
+	elif choice == 'm':
 		menu()
 
 # The app exits here once 'exit' is typed:
