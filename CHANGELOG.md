@@ -1,6 +1,10 @@
 # CHANGELOG
 (Most recent on top.)
 
+### 2017-10-30: v0.01.13 (Prettier):
+* Updated 'Get post' to show only the poster's username, post create date and post content. An improvement over the previous raw dump.
+* Added rudimentary feedback after interactions - currently not those with displayed content.
+
 ### 2017-10-29: v0.01.12 (Follow):
 * Added the ability to Follow a user (by number.)
 * Started messing about with JSON for a later release; it's not going well.

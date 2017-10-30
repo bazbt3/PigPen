@@ -1,13 +1,16 @@
 # PigPen, a Python app for the pnut.io social network.
-# v0.01.12
+# v0.01.13
 # @bazbt3
 
 # SETUP:
 
 # Import @thrrgilag's pnut.io library
 import pnutpy
-# Import JSON to allow server responses to be parsed
-import json
+
+# Global variables
+global postcontent, jsondata
+postcontent = ()
+jsondata = ()
 
 # AUTHORISATION:
 
@@ -33,38 +36,43 @@ def menu():
 # Create a post
 def createpost():
 	inputtext()
-	post, meta = pnutpy.api.create_post(data={'text': posttext})
+	postcontent = pnutpy.api.create_post(data={'text': posttext})
+	serverresponse(postcontent)
 
 # Repost a post
 def repostpost():
 	postnum = raw_input("postnum: ")
 	postcontent = pnutpy.api.repost_post(postnum)
+	serverresponse(postcontent)
 
 # Get a post
 def getpost():
-	global postcontent, jsondata
-	postcontent = ()
-	jsondata = ()
 	postnum = raw_input("postnum: ")
 	postcontent = pnutpy.api.get_post(postnum)
 	# Print server JSON
-	print postcontent
-
+	print "@" + postcontent[0]["user"]["username"] + ":"
+	print postcontent[0]["created_at"]
+	print postcontent[0]["content"]["text"]
+	print "---------------"
+	
 # Reply to a post
 def replypost():
 	postnum= raw_input("postnum: ")
 	inputtext()
-	post, meta = pnutpy.api.create_post(data={'reply_to': postnum, 'text': posttext})
+	postcontent = pnutpy.api.create_post(data={'reply_to': postnum, 'text': posttext})
+	serverresponse(postcontent)
 
 # Bookmark a post
 def bookmarkpost():
 	postnum = raw_input("postnum: ")
 	postcontent = pnutpy.api.bookmark_post(postnum)
+	serverresponse(postcontent)
 
 # Follow a user
 def followuser():
 	usernum = raw_input("usernum: ")
 	postcontent = pnutpy.api.follow_user(usernum)
+	serverresponse(postcontent)
 
 # DEFINE OTHER ROUTINES:
 
@@ -77,6 +85,15 @@ def inputtext():
 	for sentence in splittext:
 		posttext = posttext + sentence + "\n"
 	posttext = posttext.strip()
+
+# Return server response code
+def serverresponse(postcontent):
+	status = ()
+	status = postcontent[1]["code"]
+	if status == 200:
+		print "ok"
+	else:
+		print status + " = oops!"
 	
 # MAIN ROUTINE:
 
