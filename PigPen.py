@@ -1,5 +1,5 @@
 # PigPen, a Python app for the pnut.io social network.
-# v0.01.13
+# v0.01.14
 # @bazbt3
 
 # SETUP:
@@ -93,7 +93,7 @@ def serverresponse(postcontent):
 	if status == 200:
 		print "ok"
 	else:
-		print status + " = oops!"
+		print str(status) + " = oops!"
 	
 # MAIN ROUTINE:
 

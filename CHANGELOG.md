@@ -1,6 +1,9 @@
 # CHANGELOG
 (Most recent on top.)
 
+### 2017-10-31: v0.01.14 (Incompatible):
+* Fixed the rudimentary feedback after interactions - anything other than '200' now doesn't kill the app. (I tried concatenating an integer and text, tsk!)
+
 ### 2017-10-30: v0.01.13 (Prettier):
 * Updated 'Get post' to show only the poster's username, post create date and post content. An improvement over the previous raw dump.
 * Added rudimentary feedback after interactions - currently not those with displayed content.
