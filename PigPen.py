@@ -1,16 +1,18 @@
 # PigPen, a Python app for the pnut.io social network.
-# v0.01.14
+# v0.01.18
 # @bazbt3
 
 # SETUP:
 
 # Import @thrrgilag's pnut.io library
 import pnutpy
+from pprint import pprint
 
 # Global variables
 global postcontent, jsondata
 postcontent = ()
 jsondata = ()
+
 
 # AUTHORISATION:
 
@@ -20,6 +22,7 @@ token = tokenfile.read()
 token = token.strip()
 pnutpy.api.add_authorization_token(token)
 
+
 # DEFINE SUBROUTINES:
 
 # Displays menu text
@@ -28,10 +31,12 @@ def menu():
 	print "p post         rp repost(n)"
 	print "g getpost(n)   r  reply(n)"
 	print "b bookmark(n)  f follow(n)"
-	print "m show menu"
+	print "m mentions"
+	print "menu show menu"
 	print "exit Exit\n"
 
-# DEFINE INTERACTIONS
+
+# DEFINE INTERACTIONS WITH SINGLE RESULTS:
 
 # Create a post
 def createpost():
@@ -54,7 +59,7 @@ def getpost():
 	print postcontent[0]["created_at"]
 	print postcontent[0]["content"]["text"]
 	print "---------------"
-	
+
 # Reply to a post
 def replypost():
 	postnum= raw_input("postnum: ")
@@ -73,6 +78,30 @@ def followuser():
 	usernum = raw_input("usernum: ")
 	postcontent = pnutpy.api.follow_user(usernum)
 	serverresponse(postcontent)
+
+
+# DEFINE INTERACTIONS WITH MULTIPLE RESULTS:
+
+# Get mentions
+# (Server returns last 20 by default)
+def getmentions():
+	userid = raw_input("user_id: ")
+	postcontent = pnutpy.api.users_mentioned_posts(userid)
+	global number
+	number = 0
+	print "---------------"
+	print "thread: " + postcontent[0][number]["thread_id"]
+	print "---------------"
+	while number <19:
+		print "post:   " + str(postcontent[0][number]["id"])
+		print "@" + postcontent[0][number]["user"]["username"] + ":"
+		print postcontent[0][number]["created_at"]
+		print postcontent[0][number]["content"]["text"]
+		print "---------------"
+		number += 1
+	print ""
+	print serverresponse(postcontent)
+
 
 # DEFINE OTHER ROUTINES:
 
@@ -94,7 +123,8 @@ def serverresponse(postcontent):
 		print "ok"
 	else:
 		print str(status) + " = oops!"
-	
+
+
 # MAIN ROUTINE:
 
 # Display menu
@@ -116,6 +146,8 @@ while choice != 'exit':
 	elif choice == 'g':
 		getpost()
 	elif choice == 'm':
+		getmentions()
+	elif choice == 'menu':
 		menu()
 
 # The app exits here once 'exit' is typed:

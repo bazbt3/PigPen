@@ -1,6 +1,11 @@
 # CHANGELOG
 (Most recent on top.)
 
+### 2017-11-01: v0.01.18 (Mentions):
+* Added rudimentary mentions list display: the default number of 20 most recent, *unsorted* returned from the server with no parameters requested other than `user_id`.
+* Added mentions JSON file in examples folder.
+* (Intermediate, breaking, local test versions omitted from release.)
+
 ### 2017-10-31: v0.01.14 (Incompatible):
 * Fixed the rudimentary feedback after interactions - anything other than '200' now doesn't kill the app. (I tried concatenating an integer and text, tsk!)
 
