@@ -1,14 +1,11 @@
 # PigPen, a Python app for the pnut.io social network.
-# v0.01.19
+# v0.01.20
 # @bazbt3
 
 # SETUP:
 
 # Import @thrrgilag's pnut.io library
 import pnutpy
-
-#For format investigation & debugging purposes, prettyprint JSON:
-from pprint import pprint
 
 # Global variables
 global postcontent, jsondata
@@ -33,7 +30,9 @@ def menu():
 	print "p post         rp repost(n)"
 	print "g getpost(n)   r  reply(n)"
 	print "b bookmark(n)  f follow(n)"
-	print "m mentions(u)"
+	print "m mentions(u)  h hashtag(t)"
+	print "msg create message(n)"
+	print "s subscribed   gc get channel(n)"
 	print "menu show menu"
 	print "exit Exit\n"
 
@@ -44,6 +43,20 @@ def menu():
 def createpost():
 	inputtext()
 	postcontent = pnutpy.api.create_post(data={'text': posttext})
+	serverresponse(postcontent)
+
+# Reply to a post
+def replypost():
+	postnum= raw_input("postnum: ")
+	inputtext()
+	postcontent = pnutpy.api.create_post(data={'reply_to': postnum, 'text': posttext})
+	serverresponse(postcontent)
+
+# Create a message
+def createmessage():
+	channelid = raw_input("channelid: ")
+	inputtext()
+	postcontent = pnutpy.api.create_message(channelid, data={'text': posttext})
 	serverresponse(postcontent)
 
 # Repost a post
@@ -62,13 +75,6 @@ def getpost():
 	print postcontent[0]["content"]["text"]
 	print "---------------"
 
-# Reply to a post
-def replypost():
-	postnum= raw_input("postnum: ")
-	inputtext()
-	postcontent = pnutpy.api.create_post(data={'reply_to': postnum, 'text': posttext})
-	serverresponse(postcontent)
-
 # Bookmark a post
 def bookmarkpost():
 	postnum = raw_input("postnum: ")
@@ -81,8 +87,22 @@ def followuser():
 	postcontent = pnutpy.api.follow_user(usernum)
 	serverresponse(postcontent)
 
+# Get channel details
+# Small mods to code from getsubscribed
+def getchannel():
+	number = raw_input("channelnum: ")
+	channelcontent = pnutpy.api.get_channel(number, data={'include_raw': 1})
+	print "#" + str(channelcontent[0]["id"]) + " o: " + "@" + channelcontent[0]["owner"]["username"]
+	recentmessageid = str(channelcontent[0]['recent_message_id'])
+	print "most recent: " + recentmessageid + ":"
+	channelid = channelcontent[0]["id"]
+	message = pnutpy.api.get_message(channelid, recentmessageid)
+	print message[0]["content"]["text"]
+	print "---------------"
+
 
 # DEFINE INTERACTIONS WITH MULTIPLE RESULTS:
+# *Lots* of duplication!
 
 # Get mentions
 # (Server returns last 20 by default)
@@ -99,7 +119,40 @@ def getmentions():
 		print "---------------"
 		number -= 1
 	print ""
-	print serverresponse(postcontent)
+
+# Get hashtag
+# (Server returns last 20 by default)
+def gethashtag():
+	hashtag = raw_input("hashtag: ")
+	postcontent = pnutpy.api.posts_with_hashtag(hashtag)
+	global number
+	number = 19
+	print "---------------"
+	while number >= 0:
+		print "@" + postcontent[0][number]["user"]["username"] + ":  " + "p:" + str(postcontent[0][number]["id"]) + " t:" + postcontent[0][number]["thread_id"]
+		print postcontent[0][number]["created_at"]
+		print postcontent[0][number]["content"]["text"]
+		print "---------------"
+		number -= 1
+
+# Get subscribed channels
+# (Server returns last 20 by default)
+# Duplicates code in getchannel
+def getsubscribed():
+	channelcontent = pnutpy.api.subscribed_channels()
+	global number
+	number = 19
+	print "---------------"
+	while number >= 0:
+		print "#" + str(channelcontent[0][number]["id"]) + " o: " + "@" + channelcontent[0][number]["owner"]["username"]
+		recentmessageid = str(channelcontent[0][number]['recent_message_id'])
+		print "most recent: " + recentmessageid + ":"
+		channelid = channelcontent[0][number]["id"]
+		message = pnutpy.api.get_message(channelid, recentmessageid)
+		print message[0]["content"]["text"]
+		
+		print "---------------"
+		number -= 1
 
 
 # DEFINE OTHER ROUTINES:
@@ -146,6 +199,14 @@ while choice != 'exit':
 		getpost()
 	elif choice == 'm':
 		getmentions()
+	elif choice == 'h':
+		gethashtag()
+	elif choice == 's':
+		getsubscribed()
+	elif choice == 'gc':
+		getchannel()
+	elif choice == 'msg':
+		createmessage()
 	elif choice == 'menu':
 		menu()
 
