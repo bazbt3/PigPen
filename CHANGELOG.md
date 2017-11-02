@@ -1,6 +1,11 @@
 # CHANGELOG
 (Most recent on top.)
 
+### 2017-11-02: v0.01.19 (Threadsbared):
+* Added thread id to every displayed mention.
+* Reversed mentions sort order: most recent is last, at the bottom of the list, onscreen.
+
+
 ### 2017-11-01: v0.01.18 (Mentions):
 * Added rudimentary mentions list display: the default number of 20 most recent, *unsorted* returned from the server with no parameters requested other than `user_id`.
 * Added mentions JSON file in examples folder.

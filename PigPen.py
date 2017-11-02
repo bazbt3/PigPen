@@ -1,11 +1,13 @@
 # PigPen, a Python app for the pnut.io social network.
-# v0.01.18
+# v0.01.19
 # @bazbt3
 
 # SETUP:
 
 # Import @thrrgilag's pnut.io library
 import pnutpy
+
+#For format investigation & debugging purposes, prettyprint JSON:
 from pprint import pprint
 
 # Global variables
@@ -31,7 +33,7 @@ def menu():
 	print "p post         rp repost(n)"
 	print "g getpost(n)   r  reply(n)"
 	print "b bookmark(n)  f follow(n)"
-	print "m mentions"
+	print "m mentions(u)"
 	print "menu show menu"
 	print "exit Exit\n"
 
@@ -88,17 +90,14 @@ def getmentions():
 	userid = raw_input("user_id: ")
 	postcontent = pnutpy.api.users_mentioned_posts(userid)
 	global number
-	number = 0
+	number = 19
 	print "---------------"
-	print "thread: " + postcontent[0][number]["thread_id"]
-	print "---------------"
-	while number <19:
-		print "post:   " + str(postcontent[0][number]["id"])
-		print "@" + postcontent[0][number]["user"]["username"] + ":"
+	while number >= 0:
+		print "@" + postcontent[0][number]["user"]["username"] + ":  " + "p:" + str(postcontent[0][number]["id"]) + " t:" + postcontent[0][number]["thread_id"]
 		print postcontent[0][number]["created_at"]
 		print postcontent[0][number]["content"]["text"]
 		print "---------------"
-		number += 1
+		number -= 1
 	print ""
 	print serverresponse(postcontent)
 
