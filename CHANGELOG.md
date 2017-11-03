@@ -2,7 +2,18 @@
 (Most recent on top.)
 
 ### Upcoming:
-* Usable channel list.
+* Fix for routines that fail with fewer than 20 list items.
+* Adding channel list names and descriptions.
+
+### 2017-11-03: v0.01.21 (hmmm…):
+* Added: List last 20 posts in a thread. *(No error handling: app* **will** *exit with `list index out of range` for conversations with fewer than 20 posts.)*
+* Added: List last 20 messages for a channel. *(No error handling: app* **will** *exit with `list index out of range` for channels with fewer than 20 messages.)*
+* Changed: Menu order, attempting a more intelligent grouping.
+* Changed: Code: Created displaypost() subroutine to reduce duplication in similar routines.
+* Deprecated: -
+* Removed: -
+* Fixed: If server response is not 200, PigPen now returns a purposely-ambiguous 'hmmm…' instead of 'oops!'
+* Security: -
 
 ### 2017-11-02: v0.01.20 (@jws):
 * Added: Listing of posts containing a specified hashtag (last 20.)

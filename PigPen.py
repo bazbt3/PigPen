@@ -1,10 +1,10 @@
 # PigPen, a Python app for the pnut.io social network.
-# v0.01.20
+# v0.01.21
 # @bazbt3
 
 # SETUP:
 
-# Import @thrrgilag's pnut.io library
+# Import pnut.io library
 import pnutpy
 
 # Global variables
@@ -27,14 +27,14 @@ pnutpy.api.add_authorization_token(token)
 # Displays menu text
 def menu():
 	print "\nPigPen menu:"
-	print "p post         rp repost(n)"
-	print "g getpost(n)   r  reply(n)"
-	print "b bookmark(n)  f follow(n)"
-	print "m mentions(u)  h hashtag(t)"
-	print "msg create message(n)"
-	print "s subscribed   gc get channel(n)"
-	print "menu show menu"
-	print "exit Exit\n"
+	print " p post         m mentions(user)"
+	print " r reply        g get post"
+	print " rp repost      gt get thread"
+	print " f follow"
+	print " b bookmark     h hashtag"
+	print " msg message    gm get msgs"
+	print " s subscribed   gc get channel"
+	print "menu show menu ------- Exit quit\n"
 
 
 # DEFINE INTERACTIONS WITH SINGLE RESULTS:
@@ -88,10 +88,13 @@ def followuser():
 	serverresponse(postcontent)
 
 # Get channel details
-# Small mods to code from getsubscribed
+# Small mods to getsubscribed code
 def getchannel():
-	number = raw_input("channelnum: ")
-	channelcontent = pnutpy.api.get_channel(number, data={'include_raw': 1})
+	channelnumber = raw_input("channelnum: ")
+	channelcontent = pnutpy.api.get_channel(channelnumber, data={'include_raw': 1, 'include_channel_raw': 1})
+	print "---------------"
+	print channelcontent
+	print "---------------"
 	print "#" + str(channelcontent[0]["id"]) + " o: " + "@" + channelcontent[0]["owner"]["username"]
 	recentmessageid = str(channelcontent[0]['recent_message_id'])
 	print "most recent: " + recentmessageid + ":"
@@ -102,38 +105,27 @@ def getchannel():
 
 
 # DEFINE INTERACTIONS WITH MULTIPLE RESULTS:
-# *Lots* of duplication!
 
 # Get mentions
 # (Server returns last 20 by default)
 def getmentions():
 	userid = raw_input("user_id: ")
 	postcontent = pnutpy.api.users_mentioned_posts(userid)
-	global number
-	number = 19
-	print "---------------"
-	while number >= 0:
-		print "@" + postcontent[0][number]["user"]["username"] + ":  " + "p:" + str(postcontent[0][number]["id"]) + " t:" + postcontent[0][number]["thread_id"]
-		print postcontent[0][number]["created_at"]
-		print postcontent[0][number]["content"]["text"]
-		print "---------------"
-		number -= 1
-	print ""
+	displaypost(postcontent)
+
+# Get thread
+# (Server returns last 20 by default)
+def getthread():
+	thread = raw_input("thread: ")
+	postcontent = pnutpy.api.posts_thread(thread)
+	displaypost(postcontent)
 
 # Get hashtag
 # (Server returns last 20 by default)
 def gethashtag():
 	hashtag = raw_input("hashtag: ")
 	postcontent = pnutpy.api.posts_with_hashtag(hashtag)
-	global number
-	number = 19
-	print "---------------"
-	while number >= 0:
-		print "@" + postcontent[0][number]["user"]["username"] + ":  " + "p:" + str(postcontent[0][number]["id"]) + " t:" + postcontent[0][number]["thread_id"]
-		print postcontent[0][number]["created_at"]
-		print postcontent[0][number]["content"]["text"]
-		print "---------------"
-		number -= 1
+	displaypost(postcontent)
 
 # Get subscribed channels
 # (Server returns last 20 by default)
@@ -150,9 +142,16 @@ def getsubscribed():
 		channelid = channelcontent[0][number]["id"]
 		message = pnutpy.api.get_message(channelid, recentmessageid)
 		print message[0]["content"]["text"]
-		
 		print "---------------"
 		number -= 1
+
+# Get messages
+# (Server returns last 20 by default)
+def getmessages():
+	global channelnumber
+	channelnumber = raw_input("channelnum: ")
+	postcontent = pnutpy.api.get_channel_messages(channelnumber)
+	displaypost(postcontent)
 
 
 # DEFINE OTHER ROUTINES:
@@ -167,6 +166,19 @@ def inputtext():
 		posttext = posttext + sentence + "\n"
 	posttext = posttext.strip()
 
+# Display post/message content
+def displaypost(postcontent):
+	global number
+	number = 19
+	print "---------------"
+	while number >= 0:
+		print "@" + postcontent[0][number]["user"]["username"] + ":  " + "p:" + str(postcontent[0][number]["id"]) + " t:" + postcontent[0][number]["thread_id"]
+		print postcontent[0][number]["created_at"]
+		print postcontent[0][number]["content"]["text"]
+		print "---------------"
+		number -= 1
+	print""
+
 # Return server response code
 def serverresponse(postcontent):
 	status = ()
@@ -174,7 +186,7 @@ def serverresponse(postcontent):
 	if status == 200:
 		print "ok"
 	else:
-		print str(status) + " = oops!"
+		print str(status) + " = hmmm..."
 
 
 # MAIN ROUTINE:
@@ -183,7 +195,7 @@ def serverresponse(postcontent):
 menu()
 # The menu has no input validation outside valid options:
 choice = 'Little Bobby Tables'
-while choice != 'exit':
+while choice != 'Exit':
 	choice = raw_input("Choice? ")
 	if choice == 'p':
  		createpost()
@@ -203,10 +215,14 @@ while choice != 'exit':
 		gethashtag()
 	elif choice == 's':
 		getsubscribed()
-	elif choice == 'gc':
-		getchannel()
 	elif choice == 'msg':
 		createmessage()
+	elif choice == 'gt':
+		getthread()
+	elif choice == 'gc':
+		getchannel()
+	elif choice == 'gm':
+		getmessages()
 	elif choice == 'menu':
 		menu()
 
