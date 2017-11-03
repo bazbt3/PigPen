@@ -1,7 +1,33 @@
 # What is 'PigPen'?
 A Python 2 application to interact with the [pnut.io](https://pnut.io) social network.  My work here covers the absolute basics.
 
-Document covers v0.01.11 onwards.
+This document covers v0.01.21 onwards.
+
+## A recent screenshot
+
+```
+PigPen menu:
+ p post         m mentions(user)
+ r reply        g get post
+ rp repost      gt get thread
+ f follow
+ b bookmark     h hashtag
+ msg message    gm get msgs
+ s subscribed   gc get channel
+menu show menu ------- Exit quit
+
+Choice? m
+user_id: 175
+---------------
+@dasdom:  p:213140 t:213027
+2017-10-28 19:41:31+00:00
+@bazbt3 \o/
+---------------
+@33MHz:  p:213150 t:213108
+2017-10-28 19:55:44+00:00
+@bazbt3 huh. May need to run it through 2to3. Been a while since I looked at it, though.
+---------------
+```
 
 ## What I needed to make this work
 * A [pnut.io](https://pnut.io) account; no [developer account](https://pnut.io/dev) is required for single-user apps,
