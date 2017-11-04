@@ -1,10 +1,10 @@
-# PigPen, a Python app for the pnut.io social network.
-# v0.01.21
+# PigPen, a Python app for @33MHz's pnut.io social network.
+# v0.1.22
 # @bazbt3
 
 # SETUP:
 
-# Import pnut.io library
+# Import @thrrgilag's library for interacting with pnut.io
 import pnutpy
 
 # Global variables
@@ -31,10 +31,11 @@ def menu():
 	print " r reply        g get post"
 	print " rp repost      gt get thread"
 	print " f follow"
-	print " b bookmark     h hashtag"
+	print " b bookmark     gb get bookmarks"
+	print " h hashtag"
 	print " msg message    gm get msgs"
 	print " s subscribed   gc get channel"
-	print "menu show menu ------- Exit quit\n"
+	print "menu show menu ------- exit quit\n"
 
 
 # DEFINE INTERACTIONS WITH SINGLE RESULTS:
@@ -120,6 +121,13 @@ def getthread():
 	postcontent = pnutpy.api.posts_thread(thread)
 	displaypost(postcontent)
 
+# Get bookmarks
+# (Server returns last 20 by default)
+def getbookmarks():
+	userid = raw_input("user_id: ")
+	postcontent = pnutpy.api.users_bookmarked_posts(userid)
+	displaypost(postcontent)
+
 # Get hashtag
 # (Server returns last 20 by default)
 def gethashtag():
@@ -195,7 +203,7 @@ def serverresponse(postcontent):
 menu()
 # The menu has no input validation outside valid options:
 choice = 'Little Bobby Tables'
-while choice != 'Exit':
+while choice != 'exit':
 	choice = raw_input("Choice? ")
 	if choice == 'p':
  		createpost()
@@ -223,6 +231,8 @@ while choice != 'Exit':
 		getchannel()
 	elif choice == 'gm':
 		getmessages()
+	elif choice == 'gb':
+		getbookmarks()
 	elif choice == 'menu':
 		menu()
 

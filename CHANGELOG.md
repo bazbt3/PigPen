@@ -5,6 +5,15 @@
 * Fix for routines that fail with fewer than 20 list items.
 * Adding channel list names and descriptions.
 
+### 2017-11-04: v0.1.22 (Sensible):
+**News:** Changed version numbering style from n.nn.n to n.n.n., e.g. 1.01.22 is now 1.1.22.
+* Added: Get last 20 bookmarks. *(No error handling if fewer than 20 exist.)*
+* Changed: Exiting now only requires lower case 'exit'.
+* Deprecated: -
+* Removed: -
+* Fixed: -
+* Security: -
+
 ### 2017-11-03: v0.01.21 (hmmm…):
 * Added: List last 20 posts in a thread. *(No error handling: app* **will** *exit with `list index out of range` for conversations with fewer than 20 posts.)*
 * Added: List last 20 messages for a channel. *(No error handling: app* **will** *exit with `list index out of range` for channels with fewer than 20 messages.)*
