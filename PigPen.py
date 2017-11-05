@@ -1,5 +1,5 @@
 # PigPen, a Python app for @33MHz's pnut.io social network.
-# v0.1.22
+# v0.1.23
 # @bazbt3
 
 # SETUP:
@@ -8,12 +8,13 @@
 import pnutpy
 
 # Global variables
-global postcontent, jsondata
+global postcontent, jsondata, me
 postcontent = ()
 jsondata = ()
+me = ''
 
 
-# AUTHORISATION:
+# AUTHORISATION, IDENTITY:
 
 # Authorise using secret token
 tokenfile = open("secrettoken.txt", "r")
@@ -21,20 +22,25 @@ token = tokenfile.read()
 token = token.strip()
 pnutpy.api.add_authorization_token(token)
 
+# User ID
+mefile = open("me.txt", "r")
+me = mefile.read()
+me = me.strip()
+
 
 # DEFINE SUBROUTINES:
 
 # Displays menu text
 def menu():
 	print "\nPigPen menu:"
-	print " p post         m mentions(user)"
-	print " r reply        g get post"
-	print " rp repost      gt get thread"
+	print " p post        m mentions(user)"
+	print " r reply       g get post"
+	print " rp repost     gt get thread"
 	print " f follow"
-	print " b bookmark     gb get bookmarks"
-	print " h hashtag"
-	print " msg message    gm get msgs"
-	print " s subscribed   gc get channel"
+	print " b bookmark    gb get bookmarks"
+	print " u unified tl  h hashtag"
+	print " msg message   gm get msgs"
+	print " s subscribed  gc get channel"
 	print "menu show menu ------- exit quit\n"
 
 
@@ -70,7 +76,6 @@ def repostpost():
 def getpost():
 	postnum = raw_input("postnum: ")
 	postcontent = pnutpy.api.get_post(postnum)
-	# Print server JSON
 	print "@" + postcontent[0]["user"]["username"] + ":"
 	print postcontent[0]["created_at"]
 	print postcontent[0]["content"]["text"]
@@ -107,10 +112,18 @@ def getchannel():
 
 # DEFINE INTERACTIONS WITH MULTIPLE RESULTS:
 
+# Get unified timeline
+# (Server returns last 20 by default)
+def getunified():
+	postcontent = pnutpy.api.users_post_streams_unified()
+	displaypost(postcontent)
+
 # Get mentions
 # (Server returns last 20 by default)
 def getmentions():
 	userid = raw_input("user_id: ")
+	if userid == '':
+		userid = me
 	postcontent = pnutpy.api.users_mentioned_posts(userid)
 	displaypost(postcontent)
 
@@ -125,6 +138,8 @@ def getthread():
 # (Server returns last 20 by default)
 def getbookmarks():
 	userid = raw_input("user_id: ")
+	if userid == '':
+		userid = me
 	postcontent = pnutpy.api.users_bookmarked_posts(userid)
 	displaypost(postcontent)
 
@@ -193,6 +208,8 @@ def serverresponse(postcontent):
 	status = postcontent[1]["code"]
 	if status == 200:
 		print "ok"
+	elif status == 201:
+		print "ok"
 	else:
 		print str(status) + " = hmmm..."
 
@@ -233,6 +250,8 @@ while choice != 'exit':
 		getmessages()
 	elif choice == 'gb':
 		getbookmarks()
+	elif choice == "u":
+		getunified()
 	elif choice == 'menu':
 		menu()
 

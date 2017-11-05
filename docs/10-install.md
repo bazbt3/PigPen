@@ -12,8 +12,9 @@ Incomplete, potentially misleading instructions follow.  This is very much a wor
 1. You will need a pnut.io account, and to visit your developer account page.
 1. **Create an app at the page**, which will create 2 unique codes, then authorise it which will create a token.
 1. **Create a new `PigPen` directory** in the root of your library (or whichever directory you intend to run the app from.)
-1. **Copy the `PigPen.py` and `secrettoken.txt` files from here** and save them there.
+1. **Copy the `PigPen.py`, `secrettoken.txt` and `me.txt` files from here** and save them there.
 1. **Overwrite the contents of `secrettoken.txt` with the token**, ensuring to remove any trailing linefeeds before saving it.
+1. **Overwrite the contents of `me.txt` with your user id**, ensuring to remove any trailing linefeeds before saving it.
 1. {p} **Install `StaSh`** following the instructions as it runs and from the link above.
 1. {p} I *think* `Stash` must be executed at this stage to install a script and extension folder; read the instructions.
 1. {p} **Kill then reopen Pythonista** to properly install `Stash`, if you didn't read the instructions.
