@@ -5,8 +5,16 @@
 * Fix for routines that fail with fewer than 20 list items.
 * Adding channel list names and descriptions.
 
+### 2017-11-05: v0.1.24 (Baleeted!):
+* Added: Display Global timeline (added after fix below.)
+* Changed: Get hashtag command is now `gh` (was `h`.)
+* Deprecated: -
+* Removed: -
+* Fixed: Deleted posts are skipped, app no longer exits when encountered.
+* Security: -
+
 ### 2017-11-05: v0.1.23 (Id):
-* Added: Unified timeline.
+* Added: Display Unified timeline.
 * Added: **Bug:** Deleted posts in unified timeline exit the app.
 * Changed: Bookmarks & mentions inquiries requiring a user id still default to requiring input, however pressing [return] inserts a user id saved in a user-created `me.txt` file. Temporary, perhaps.
 * Deprecated: -

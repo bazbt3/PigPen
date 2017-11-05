@@ -1,5 +1,6 @@
 # PigPen, a Python app for @33MHz's pnut.io social network.
-# v0.1.23
+# v0.1.24 - see changelog at:
+# https://github.com/bazbt3/PigPen
 # @bazbt3
 
 # SETUP:
@@ -8,10 +9,11 @@
 import pnutpy
 
 # Global variables
-global postcontent, jsondata, me
+global postcontent, jsondata, me, isdeleted
 postcontent = ()
 jsondata = ()
 me = ''
+isdeleted = ''
 
 
 # AUTHORISATION, IDENTITY:
@@ -36,9 +38,9 @@ def menu():
 	print " p post        m mentions(user)"
 	print " r reply       g get post"
 	print " rp repost     gt get thread"
-	print " f follow"
+	print " f follow      gh get hashtag"
 	print " b bookmark    gb get bookmarks"
-	print " u unified tl  h hashtag"
+	print " u unified tl  gg get global tl"
 	print " msg message   gm get msgs"
 	print " s subscribed  gc get channel"
 	print "menu show menu ------- exit quit\n"
@@ -76,9 +78,12 @@ def repostpost():
 def getpost():
 	postnum = raw_input("postnum: ")
 	postcontent = pnutpy.api.get_post(postnum)
-	print "@" + postcontent[0]["user"]["username"] + ":"
-	print postcontent[0]["created_at"]
-	print postcontent[0]["content"]["text"]
+	if not "is_deleted" in postcontent[0]:
+		print "@" + postcontent[0]["user"]["username"] + ":"
+		print postcontent[0]["created_at"]
+		print postcontent[0]["content"]["text"]
+	else:
+		print "[Post was deleted]"
 	print "---------------"
 
 # Bookmark a post
@@ -112,10 +117,16 @@ def getchannel():
 
 # DEFINE INTERACTIONS WITH MULTIPLE RESULTS:
 
-# Get unified timeline
+# Get user's unified timeline
 # (Server returns last 20 by default)
 def getunified():
 	postcontent = pnutpy.api.users_post_streams_unified()
+	displaypost(postcontent)
+
+# Get global timeline
+# (Server returns last 20 by default)
+def getglobal():
+	postcontent = pnutpy.api.posts_streams_global()
 	displaypost(postcontent)
 
 # Get mentions
@@ -195,10 +206,11 @@ def displaypost(postcontent):
 	number = 19
 	print "---------------"
 	while number >= 0:
-		print "@" + postcontent[0][number]["user"]["username"] + ":  " + "p:" + str(postcontent[0][number]["id"]) + " t:" + postcontent[0][number]["thread_id"]
-		print postcontent[0][number]["created_at"]
-		print postcontent[0][number]["content"]["text"]
-		print "---------------"
+		if not "is_deleted" in postcontent[0][number]:
+			print "@" + postcontent[0][number]["user"]["username"] + ":  " + "p:" + str(postcontent[0][number]["id"]) + " t:" + postcontent[0][number]["thread_id"]
+			print postcontent[0][number]["created_at"]
+			print postcontent[0][number]["content"]["text"]
+			print "---------------"
 		number -= 1
 	print""
 
@@ -236,7 +248,7 @@ while choice != 'exit':
 		getpost()
 	elif choice == 'm':
 		getmentions()
-	elif choice == 'h':
+	elif choice == 'gh':
 		gethashtag()
 	elif choice == 's':
 		getsubscribed()
@@ -252,6 +264,8 @@ while choice != 'exit':
 		getbookmarks()
 	elif choice == "u":
 		getunified()
+	elif choice == "gg":
+		getglobal()
 	elif choice == 'menu':
 		menu()
 
