@@ -6,27 +6,29 @@ This document covers v0.01.21 onwards.
 ## A recent screenshot
 
 ```
-PigPen menu:
- p post         m mentions(user)
- r reply        g get post
- rp repost      gt get thread
- f follow
- b bookmark     h hashtag
- msg message    gm get msgs
- s subscribed   gc get channel
-menu show menu ------- Exit quit
-
-Choice? m
-user_id: 175
----------------
-@dasdom:  p:213140 t:213027
+PigPen | menu=menu exit=exit
+ p post        m mentions(user)
+ r reply       g get post
+ rp repost     gt get thread
+ f follow      gh get hashtag
+ b bookmark    gb get bookmarks
+ u unified tl  gg get global tl
+ msg message   gm get msgs
+ s subscribed  gc get channel
+Choice? g
+postnum: 213140
+@dasdom:
 2017-10-28 19:41:31+00:00
 @bazbt3 \o/
 ---------------
-@33MHz:  p:213150 t:213108
-2017-10-28 19:55:44+00:00
-@bazbt3 huh. May need to run it through 2to3. Been a while since I looked at it, though.
+Choice? m
+user_id ([return]=me): 
 ---------------
+@schmidt_fu: [u:106+f+F]
+2017-10-31 12:01:23+00:00 []
+@33MHz @bazbt3 Posting to channels would be a nice addition to #rtpaasfp anyway. Apart from that, the current posting rate doesn't seem alarming to me, <30 posts/hour on the most days, even with the last 100 users added.
+ id:214999 rep:214637 thd:214632
+…
 ```
 
 ## What I needed to make this work

@@ -5,6 +5,23 @@
 * Fix for routines that fail with fewer than 20 list items.
 * Adding channel list names and descriptions.
 
+### 2017-11-05: v0.1.25 (Status symbol!):
+* Added: The original poster's username is added to replies automatically now. Take care to check for other people before posting.
+* Added/changed: Post and user status indicators:
+    * User id,
+    * `+f` = followed?
+    * `+F` = follower?
+    * `*` = bookmarked?
+    * `rp` = reposted?
+    * `id:` = post id,
+    * `rep:` = replying to post,
+    * `thd` = in thread.
+* Changed: Tweaked post display order.
+* Deprecated: -
+* Removed: -
+* Fixed: -
+* Security: -
+
 ### 2017-11-05: v0.1.24 (Baleeted!):
 * Added: Display Global timeline (added after fix below.)
 * Changed: Get hashtag command is now `gh` (was `h`.)

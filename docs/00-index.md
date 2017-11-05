@@ -6,10 +6,8 @@ A Python 2 application to interact with [pnut.io](https://pnut.io) social networ
 
 ## Documentation
 
-***Files haven't yet been created.*** Baz, 2017-10-29.
-
 * [Install](/docs/10-install.md)   
-  How to install the files and a first run.
+  How to install the files, and a first run.
 
 * [Usage](/docs/20-usage.md)   
   How to use this.
