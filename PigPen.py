@@ -1,5 +1,5 @@
 # PigPen, a Python app for @33MHz's pnut.io social network.
-# v0.1.25 - see changelog at:
+# v0.1.26 - see changelog at:
 # https://github.com/bazbt3/PigPen
 # @bazbt3
 
@@ -35,16 +35,13 @@ me = me.strip()
 
 # Displays menu text
 def menu():
-	print "\nPigPen | menu=menu exit=exit"
-	print " p post        m mentions(user)"
-	print " r reply       g get post"
-	print " rp repost     gt get thread"
-	print " f follow      gh get hashtag"
-	print " b bookmark    gb get bookmarks"
-	print " u unified tl  gg get global tl"
-	print " msg message   gm get msgs"
-	print " s subscribed  gc get channel"
-
+	print "\n| PigPen | menu=menu exit=exit"
+	print "p  post     rp repost   m  mentions"
+	print "r reply     g  getpost  gt getthread"
+	print "msg message gm getmsgs  s  getsubs"
+	print "t your tl   gg global   gc channel"
+	print "gh hashtag  b bookmark  gb bookmarks"
+	print "f follow    i interactions"
 
 # DEFINE INTERACTIONS WITH SINGLE RESULTS:
 
@@ -111,15 +108,14 @@ def followuser():
 # Small mods to getsubscribed code
 def getchannel():
 	channelnumber = raw_input("channelnum: ")
-	channelcontent = pnutpy.api.get_channel(channelnumber, data={'include_raw': 1, 'include_channel_raw': 1})
-#	print "---------------"
-#	print channelcontent
-#	print "---------------"
+	channelcontent = pnutpy.api.get_channel(channelnumber, data={'include_raw': '1', 'include_channel_raw': '1', 'include_user_raw': '1'})
+	print "---------------"
 	print "#" + str(channelcontent[0]["id"]) + " o: " + "@" + channelcontent[0]["owner"]["username"]
 	recentmessageid = str(channelcontent[0]['recent_message_id'])
 	print "most recent: " + recentmessageid + ":"
 	channelid = channelcontent[0]["id"]
 	message = pnutpy.api.get_message(channelid, recentmessageid)
+	print "@" + message[0]["user"]["username"] + ":"
 	print message[0]["content"]["text"]
 	print "---------------"
 
@@ -146,6 +142,17 @@ def getmentions():
 		userid = me
 	postcontent = pnutpy.api.users_mentioned_posts(userid)
 	displaypost(postcontent)
+
+# Get user interactions
+# (Server returns last 20 by default)
+def getinteractions():
+	userid = raw_input("user_id ([return]=me): ")
+	if userid == '':
+		userid = me
+	postcontent = pnutpy.api.interactions_with_user(userid)
+	print postcontent[0][0]["action"] + " by @" + postcontent[0][0]["users"][0]["username"] + ":"
+	print postcontent[0][0]["objects"][0]["content"]["text"]
+	print postcontent[0][0]["event_date"]
 
 # Get thread
 # (Server returns last 20 by default)
@@ -306,10 +313,12 @@ while choice != 'exit':
 		getmessages()
 	elif choice == 'gb':
 		getbookmarks()
-	elif choice == "u":
+	elif choice == "t":
 		getunified()
 	elif choice == "gg":
 		getglobal()
+	elif choice == "i":
+		getinteractions()
 	elif choice == 'menu':
 		menu()
 

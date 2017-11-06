@@ -5,6 +5,15 @@
 * Fix for routines that fail with fewer than 20 list items.
 * Adding channel list names and descriptions.
 
+### 2017-11-06: v0.1.26 (Interact-ish):
+* Added: Started User Interactions. Returns only last one at this stage.
+* Added: Username to 'get channel' display.
+* Changed: Updated menu yet again. Unified timeline display is now 't' (was u.)
+* Deprecated: -
+* Removed: -
+* Fixed: -
+* Security: -
+
 ### 2017-11-05: v0.1.25 (Status symbol!):
 * Added: The original poster's username is added to replies automatically now. Take care to check for other people before posting.
 * Added/changed: Post and user status indicators:
