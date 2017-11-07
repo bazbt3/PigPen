@@ -11,8 +11,7 @@
 ### The main application:
 * `PigPen.py`.
 ### Necessary before the application will run:
-* `secrettoken.txt             ` - contains the secret token,
-* `me.txt` - the user's user id.
+* `secrettoken.txt             ` - contains the secret token.
 
 ## Limitations:
 * Text commands only.

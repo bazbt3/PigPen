@@ -5,6 +5,15 @@
 * Fix for routines that fail with fewer than 20 list items.
 * Adding channel list names and descriptions.
 
+### 2017-11-07: v0.1.27 (Overload?):
+* Added: Get a user bio. ***Buggy!***
+* Changed: Increased number of Interactions from 1 to 20 (server default). Incomplete.
+* Changed: Unified post and message status indicators.
+* Deprecated: -
+* Removed: Reliance on user-entered user_id in 'me.txt' file. I read the API Resources > Users docs. *It's "me" when authenticated!*
+* Fixed: -
+* Security: -
+
 ### 2017-11-06: v0.1.26 (Interact-ish):
 * Added: Started User Interactions. Returns only last one at this stage.
 * Added: Username to 'get channel' display.
