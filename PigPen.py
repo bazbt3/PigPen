@@ -1,6 +1,6 @@
 # PigPen, a Python app for @33MHz's pnut.io social network.
-# v0.1.27
-# site: https://github.com/bazbt3/PigPen
+# v0.1.28
+# Site, changelog: https://github.com/bazbt3/PigPen
 # made by: @bazbt3
 
 
@@ -8,6 +8,7 @@
 
 # Import @thrrgilag's library for interacting with pnut.io
 import pnutpy
+import sys
 
 # Define global variables
 global postcontent, number, posttext, jsondata, me, isdeleted
@@ -180,10 +181,13 @@ def getinteractions():
 	number = 19
 	print "---------------"
 	while number >= 0:
-		print postcontent[0][number]["action"] + " by @" + postcontent[0][number]["users"][0]["username"] + " ref.:"
-		print postcontent[0][number]["event_date"]
-		print postcontent[0][number]["objects"][0]["content"]["text"]
-		print "---------------"
+		try:
+			print postcontent[0][number]["action"] + " by @" + postcontent[0][number]["users"][0]["username"] + " ref.:"
+			print postcontent[0][number]["event_date"]
+			print postcontent[0][number]["objects"][0]["content"]["text"]
+			print "---------------"
+		except:
+			sys.exc_clear()
 		number -= 1
 
 def getthread():
@@ -218,13 +222,16 @@ def getsubscribed():
 	number = 19
 	print "---------------"
 	while number >= 0:
-		print "#" + str(channelcontent[0][number]["id"]) + " o: " + "@" + channelcontent[0][number]["owner"]["username"]
-		recentmessageid = str(channelcontent[0][number]['recent_message_id'])
-		print "most recent: " + recentmessageid + ":"
-		channelid = channelcontent[0][number]["id"]
-		message = pnutpy.api.get_message(channelid, recentmessageid)
-		print message[0]["content"]["text"]
-		print "---------------"
+		try:
+			print "#" + str(channelcontent[0][number]["id"]) + " o: " + "@" + channelcontent[0][number]["owner"]["username"]
+			recentmessageid = str(channelcontent[0][number]['recent_message_id'])
+			print "most recent: " + recentmessageid + ":"
+			channelid = channelcontent[0][number]["id"]
+			message = pnutpy.api.get_message(channelid, recentmessageid)
+			print message[0]["content"]["text"]
+			print "---------------"
+		except:
+			sys.exc_clear()
 		number -= 1
 
 def getmessages():
@@ -284,27 +291,30 @@ def displaypost(postcontent):
 	number = 19
 	print "---------------"
 	while number >= 0:
-		if not "is_deleted" in postcontent[0][number]:
-			userstatus = "@" + postcontent[0][number]["user"]["username"] + ": [u:" + str(postcontent[0][number]["user"]["id"])
-			if postcontent[0][number]["user"]["you_follow"]:
-				userstatus += "+f"
-			if postcontent[0][number]["user"]["follows_you"]:
-				userstatus += "+F"
-			print userstatus + "]"
-			# Builds status indicators
-			poststatus =  str(postcontent[0][number]["created_at"]) + " ["
-			if postcontent[0][number]["you_bookmarked"]:
-				poststatus += "*"
-			if postcontent[0][number]["you_reposted"]:
-				poststatus += "rp"
-			print poststatus + "]"
-			print postcontent[0][number]["content"]["text"]
-			postrefs = " id:" + str(postcontent[0][number]["id"])
-			if "reply_to" in postcontent[0][number]:
-				postrefs += " rep:" + str(postcontent[0][number]["reply_to"])
-			postrefs += " thd:" + str(postcontent[0][number]["thread_id"])
-			print postrefs
-			print "---------------------------------"
+		try:
+			if not "is_deleted" in postcontent[0][number]:
+				userstatus = "@" + postcontent[0][number]["user"]["username"] + ": [u:" + str(postcontent[0][number]["user"]["id"])
+				if postcontent[0][number]["user"]["you_follow"]:
+					userstatus += "+f"
+				if postcontent[0][number]["user"]["follows_you"]:
+					userstatus += "+F"
+				print userstatus + "]"
+				# Builds status indicators
+				poststatus =  str(postcontent[0][number]["created_at"]) + " ["
+				if postcontent[0][number]["you_bookmarked"]:
+					poststatus += "*"
+				if postcontent[0][number]["you_reposted"]:
+					poststatus += "rp"
+				print poststatus + "]"
+				print postcontent[0][number]["content"]["text"]
+				postrefs = " id:" + str(postcontent[0][number]["id"])
+				if "reply_to" in postcontent[0][number]:
+					postrefs += " rep:" + str(postcontent[0][number]["reply_to"])
+				postrefs += " thd:" + str(postcontent[0][number]["thread_id"])
+				print postrefs
+				print "---------------------------------"
+		except:
+			sys.exc_clear()
 		number -= 1
 	print""
 
@@ -314,18 +324,21 @@ def displaymessage(postcontent):
 	global number
 	number = 19
 	print "---------------"
-	while number >= 0:
-		if not "is_deleted" in postcontent[0][number]:	
-			userstatus = "@" + postcontent[0][number]["user"]["username"] + ":" + " ["
-			if postcontent[0][number]["user"]["you_follow"]:
-				userstatus += "+f"
-			if postcontent[0][number]["user"]["follows_you"]:
-				userstatus += "+F"
-			print userstatus + "]"
-			print postcontent[0][number]["content"]["text"]
-			print "---------------------------------"
+	while number >=0:
+		try:
+			if not "is_deleted" in postcontent[0][number]:	
+				userstatus = "@" + postcontent[0][number]["user"]["username"] + ":" + " ["
+				if postcontent[0][number]["user"]["you_follow"]:
+					userstatus += "+f"
+				if postcontent[0][number]["user"]["follows_you"]:
+					userstatus += "+F"
+				print userstatus + "]"
+				print postcontent[0][number]["content"]["text"]
+				print "---------------------------------"
+		except:
+			sys.exc_clear()
 		number -= 1
-	print""
+	print ""
 
 def serverresponse(postcontent):
 # Return server response code

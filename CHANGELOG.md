@@ -5,6 +5,14 @@
 * Fix for routines that fail with fewer than 20 list items.
 * Adding channel list names and descriptions.
 
+### 2017-11-08: v0.1.28 (Exceptional!):
+* Added:
+* Changed: -
+* Deprecated: -
+* Removed: -
+* Fixed: Channels and threads now display even when there are fewer than 20 items.
+* Security: -
+
 ### 2017-11-07: v0.1.27 (Overload?):
 * Added: Get a user bio. ***Buggy!***
 * Changed: Increased number of Interactions from 1 to 20 (server default). Incomplete.
