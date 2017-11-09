@@ -2,11 +2,20 @@
 (Most recent on top.)
 
 ### Upcoming:
-* Fix for routines that fail with fewer than 20 list items.
+* Automatic additional mentions when replying to posts. I've been testing this but it's very unreliable, not fit to release.
 * Adding channel list names and descriptions.
 
+### 2017-11-09: v0.1.29 (Bloat!):
+* Added: Subscribe to a public channel (chatroom.)
+* Added: Menu now has current user's username.
+* Changed: Menu order. I'm trying and failing to make it sensible (tm).
+* Deprecated: -
+* Removed: -
+* Fixed: -
+* Security: -
+
 ### 2017-11-08: v0.1.28 (Exceptional!):
-* Added:
+* Added: -
 * Changed: -
 * Deprecated: -
 * Removed: -

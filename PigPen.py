@@ -1,5 +1,5 @@
 # PigPen, a Python app for @33MHz's pnut.io social network.
-# v0.1.28
+# v0.1.29
 # Site, changelog: https://github.com/bazbt3/PigPen
 # made by: @bazbt3
 
@@ -11,12 +11,12 @@ import pnutpy
 import sys
 
 # Define global variables
-global postcontent, number, posttext, jsondata, me, isdeleted
+global me, postcontent, number, posttext, jsondata, isdeleted
+me = ''
 postcontent = ()
 number = 0
 posttext = ''
 jsondata = ()
-me = ''
 isdeleted = ''
 
 
@@ -28,23 +28,20 @@ token = tokenfile.read()
 token = token.strip()
 pnutpy.api.add_authorization_token(token)
 
-# User ID
-#mefile = open("me.txt", "r")
-#me = mefile.read()
-#me = me.strip()
-
 
 # DEFINE SUBROUTINES:
 
 def menu():
 # Displays menu text
-	print "\n| PigPen | menu=menu exit=exit"
+	print "| PigPen | pnut u:" + str(me) + " |"
+	print "menu=menu exit=exit"
 	print "p  post     rp repost   m  mentions"
 	print "r reply     g  getpost  gt getthread"
-	print "msg message gm getmsgs  s  getsubs"
-	print "t your tl   gg global   gc channel"
+	print "s getsubs   sub subchan gc getchan"
+	print "msg message gm getmsgs"
 	print "gh hashtag  b bookmark  gb bookmarks"
 	print "f follow    gu getuser  i interact's"
+	print "t your tl   gg global"
 	
 
 # DEFINE INTERACTIONS WITH SINGLE RESULTS:
@@ -57,19 +54,21 @@ def createpost():
 
 def replypost():
 # Reply to a post
+	getme()
 	global posttext
-	posttext =''
+	posttext = ''
 	postnum= raw_input("Reply to postnum: ")
 	postcontent = pnutpy.api.get_post(postnum)
 	if not "is_deleted" in postcontent[0]:
 		print "---------------"
 		print "Replying to @" + postcontent[0]["user"]["username"] + ":"
 		print postcontent[0]["content"]["text"]
+		print "Don't forget to mention all!"
 		print "---------------"
-	inputtext()
-	posttext = "@" + postcontent[0]["user"]["username"] + " " + posttext
-	postcontent = pnutpy.api.create_post(data={'reply_to': postnum, 'text': posttext})
-	serverresponse(postcontent)
+		inputtext()
+		posttext = "@" + postcontent[0]["user"]["username"] + " " + posttext
+		pnutpy.api.create_post(data={'reply_to': postnum, 'text': posttext})
+		serverresponse(postcontent)
 
 def createmessage():
 # Create a message
@@ -88,6 +87,8 @@ def getpost():
 # Get a post
 	postnum = raw_input("postnum: ")
 	postcontent = pnutpy.api.get_post(postnum)
+	print postcontent[0]
+	print "--------------"
 	if not "is_deleted" in postcontent[0]:
 		userstatus(postcontent)
 		timestarrpstatus(postcontent)
@@ -130,6 +131,12 @@ def getuser():
 	print "following: " + str(postcontent[0]["counts"]["following"])
 	print "bookmarks: " + str(postcontent[0]["counts"]["bookmarks"])
 	print ""
+
+def subscribetochannel():
+# Subscribe to a channel
+	channelnum = raw_input("channelnum: ")
+	postcontent = pnutpy.api.subscribe_channel(channelnum)
+	serverresponse(postcontent)
 
 def getchannel():
 # Get channel details
@@ -194,7 +201,7 @@ def getthread():
 # Get thread
 # (Server returns last 20 by default)
 	thread = raw_input("thread: ")
-	postcontent = pnutpy.api.posts_thread(thread)
+	postcontent = pnutpy.api.posts_thread(thread, data={'count': '50'})
 	displaypost(postcontent)
 
 def getbookmarks():
@@ -245,6 +252,11 @@ def getmessages():
 
 # DEFINE OTHER ROUTINES:
 
+def getme():
+	global me
+	userid = pnutpy.api.get_user("me")
+	me = "@" + userid[0]["username"]
+
 def inputtext():
 # Input text, '\n'=newline
 	global posttext
@@ -288,25 +300,28 @@ def postfooter(postcontent):
 def displaypost(postcontent):
 # Display post (not message) content
 	global number
-	number = 19
+	number = 25
 	print "---------------"
 	while number >= 0:
 		try:
 			if not "is_deleted" in postcontent[0][number]:
+				# Build user status:
 				userstatus = "@" + postcontent[0][number]["user"]["username"] + ": [u:" + str(postcontent[0][number]["user"]["id"])
 				if postcontent[0][number]["user"]["you_follow"]:
 					userstatus += "+f"
 				if postcontent[0][number]["user"]["follows_you"]:
 					userstatus += "+F"
 				print userstatus + "]"
-				# Builds status indicators
+				# Build post status indicators:
 				poststatus =  str(postcontent[0][number]["created_at"]) + " ["
 				if postcontent[0][number]["you_bookmarked"]:
 					poststatus += "*"
 				if postcontent[0][number]["you_reposted"]:
 					poststatus += "rp"
 				print poststatus + "]"
+				# Display post text:
 				print postcontent[0][number]["content"]["text"]
+				# Build hierarchy links:
 				postrefs = " id:" + str(postcontent[0][number]["id"])
 				if "reply_to" in postcontent[0][number]:
 					postrefs += " rep:" + str(postcontent[0][number]["reply_to"])
@@ -354,8 +369,12 @@ def serverresponse(postcontent):
 
 # MAIN ROUTINE:
 
+# Get app user ID
+getme()
 # Display menu
 menu()
+
+#Command entry:
 # The menu has no input validation outside valid options:
 choice = 'Little Bobby Tables'
 while choice != 'exit':
@@ -396,6 +415,8 @@ while choice != 'exit':
 		getinteractions()
 	elif choice == "gu":
 		getuser()
+	elif choice == "sub":
+		subscribetochannel()
 	elif choice == 'menu':
 		menu()
 
