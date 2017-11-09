@@ -2,8 +2,15 @@
 (Most recent on top.)
 
 ### Upcoming:
-* Automatic additional mentions when replying to posts. I've been testing this but it's very unreliable, not fit to release.
 * Adding channel list names and descriptions.
+
+### 2017-11-09: v0.1.30 (Also):
+* Added: Automatic reply to all users mentioned in post (limited to 30 names.) No selection or manual edit just yet.
+* Changed: -
+* Deprecated: -
+* Removed: -
+* Fixed: -
+* Security: -
 
 ### 2017-11-09: v0.1.29 (Bloat!):
 * Added: Subscribe to a public channel (chatroom.)

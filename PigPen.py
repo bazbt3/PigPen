@@ -1,5 +1,5 @@
 # PigPen, a Python app for @33MHz's pnut.io social network.
-# v0.1.29
+# v0.1.30
 # Site, changelog: https://github.com/bazbt3/PigPen
 # made by: @bazbt3
 
@@ -33,7 +33,7 @@ pnutpy.api.add_authorization_token(token)
 
 def menu():
 # Displays menu text
-	print "| PigPen | pnut u:" + str(me) + " |"
+	print "| PigPen | pnut u:" + "@" + str(me) + " |"
 	print "menu=menu exit=exit"
 	print "p  post     rp repost   m  mentions"
 	print "r reply     g  getpost  gt getthread"
@@ -63,29 +63,41 @@ def replypost():
 		print "---------------"
 		print "Replying to @" + postcontent[0]["user"]["username"] + ":"
 		print postcontent[0]["content"]["text"]
-		print "Don't forget to mention all!"
 		print "---------------"
 		inputtext()
+		alsoname = ""
+		alsomentions = ""
+		number = 30
+		while number >= 0:
+			try:
+				alsoname = postcontent[0]["content"]["entities"]["mentions"][number]["text"]
+				if alsoname != me:
+					alsomentions += " @" + alsoname
+			except Exception:
+				sys.exc_clear()
+			number -= 1
 		posttext = "@" + postcontent[0]["user"]["username"] + " " + posttext
+		if alsomentions:
+			posttext += "\n//" + alsomentions
 		pnutpy.api.create_post(data={'reply_to': postnum, 'text': posttext})
 		serverresponse(postcontent)
 
 def createmessage():
 # Create a message
-	channelid = raw_input("channelid: ")
+	channelid = raw_input("Send message to channelid: ")
 	inputtext()
 	postcontent = pnutpy.api.create_message(channelid, data={'text': posttext})
 	serverresponse(postcontent)
 
 def repostpost():
 # Repost a post
-	postnum = raw_input("postnum: ")
+	postnum = raw_input("Repost postnum: ")
 	postcontent = pnutpy.api.repost_post(postnum)
 	serverresponse(postcontent)
 
 def getpost():
 # Get a post
-	postnum = raw_input("postnum: ")
+	postnum = raw_input("Get postnum: ")
 	postcontent = pnutpy.api.get_post(postnum)
 	print postcontent[0]
 	print "--------------"
@@ -100,19 +112,19 @@ def getpost():
 
 def bookmarkpost():
 # Bookmark a post
-	postnum = raw_input("postnum: ")
+	postnum = raw_input("Bookmark postnum: ")
 	postcontent = pnutpy.api.bookmark_post(postnum)
 	serverresponse(postcontent)
 
 def followuser():
 # Follow a user
-	usernum = raw_input("usernum: ")
+	usernum = raw_input("Follow usernum: ")
 	postcontent = pnutpy.api.follow_user(usernum)
 	serverresponse(postcontent)
 
 def getuser():
 # Get a user's data
-	usernum = raw_input("usernum: ")
+	usernum = raw_input("Get usernum data: ")
 	postcontent = pnutpy.api.get_user(usernum)
 	print ""
 	print postcontent[0]["username"] + " - " + postcontent[0]["type"]
@@ -134,14 +146,14 @@ def getuser():
 
 def subscribetochannel():
 # Subscribe to a channel
-	channelnum = raw_input("channelnum: ")
+	channelnum = raw_input("Subscribe to channelnum: ")
 	postcontent = pnutpy.api.subscribe_channel(channelnum)
 	serverresponse(postcontent)
 
 def getchannel():
 # Get channel details
 # Small mods to getsubscribed code
-	channelnumber = raw_input("channelnum: ")
+	channelnumber = raw_input("Get channelnum: ")
 	channelcontent = pnutpy.api.get_channel(channelnumber, data={'include_raw': '1', 'include_channel_raw': '1', 'include_user_raw': '1'})
 	print "---------------"
 	print "#" + str(channelcontent[0]["id"]) + " o: " + "@" + channelcontent[0]["owner"]["username"]
@@ -171,7 +183,7 @@ def getglobal():
 def getmentions():
 # Get mentions
 # (Server returns last 20 by default)
-	userid = raw_input("user_id ([return]=me): ")
+	userid = raw_input("User user_id mentions ([return]=me): ")
 	if userid == '':
 		userid = "me"
 	postcontent = pnutpy.api.users_mentioned_posts(userid)
@@ -180,7 +192,7 @@ def getmentions():
 def getinteractions():
 # Get user interactions
 # (Server returns last 20 by default)
-	userid = raw_input("user_id ([return]=me): ")
+	userid = raw_input("user_id interacts ([return]=me): ")
 	if userid == '':
 		userid = "me"
 	postcontent = pnutpy.api.interactions_with_user(userid)
@@ -200,14 +212,14 @@ def getinteractions():
 def getthread():
 # Get thread
 # (Server returns last 20 by default)
-	thread = raw_input("thread: ")
+	thread = raw_input("Get thread: ")
 	postcontent = pnutpy.api.posts_thread(thread, data={'count': '50'})
 	displaypost(postcontent)
 
 def getbookmarks():
 # Get bookmarks
 # (Server returns last 20 by default)
-	userid = raw_input("user_id ([return]=me): ")
+	userid = raw_input("user_id bookmarks ([return]=me): ")
 	if userid == '':
 		userid = "me"
 	postcontent = pnutpy.api.users_bookmarked_posts(userid)
@@ -216,7 +228,7 @@ def getbookmarks():
 def gethashtag():
 # Get hashtag
 # (Server returns last 20 by default)
-	hashtag = raw_input("hashtag: ")
+	hashtag = raw_input("Get hashtag: ")
 	postcontent = pnutpy.api.posts_with_hashtag(hashtag)
 	displaypost(postcontent)
 
@@ -245,7 +257,7 @@ def getmessages():
 # Get messages
 # (Server returns last 20 by default)
 	global channelnumber
-	channelnumber = raw_input("channelnum: ")
+	channelnumber = raw_input("Messages in channelnum: ")
 	postcontent = pnutpy.api.get_channel_messages(channelnumber)
 	displaymessage(postcontent)
 
@@ -255,7 +267,7 @@ def getmessages():
 def getme():
 	global me
 	userid = pnutpy.api.get_user("me")
-	me = "@" + userid[0]["username"]
+	me = userid[0]["username"]
 
 def inputtext():
 # Input text, '\n'=newline
