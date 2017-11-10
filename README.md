@@ -1,34 +1,56 @@
 # What is 'PigPen'?
 A Python 2 application to interact with the [pnut.io](https://pnut.io) social network.  My work here covers the absolute basics.
 
-This document covers v0.01.21 onwards.
+This document covers v0.01.31 onwards.
 
 ## A recent screenshot
 
 ```
-PigPen | menu=menu exit=exit
- p post        m mentions(user)
- r reply       g get post
- rp repost     gt get thread
- f follow      gh get hashtag
- b bookmark    gb get bookmarks
- u unified tl  gg get global tl
- msg message   gm get msgs
- s subscribed  gc get channel
-Choice? g
-postnum: 213140
-@dasdom:
-2017-10-28 19:41:31+00:00
+| PigPen | pnut u:@bazbt3 |
+menu=menu exit=exit
+p  post     rp repost   gm mentions
+r reply     gp getpost  gt getthread
+msg message gms getmsgs gs getsubs
+gc getchanl sub subscribechannel
+b bookmark  gb bookmrks gh hashtag
+f follow    gu getuser  gi interacts
+gt your tl  gg global
+Choice? gp
+Get postnum? 213140
+--------------
+@dasdom: [u:19+f+F]
+2017-10-28 19:41:31+00:00 []
 @bazbt3 \o/
+ id:213140 rep:213130 thd:213027
 ---------------
-Choice? m
-user_id ([return]=me): 
+Choice? gm
+User mentions, userid? [return]=me: 
 ---------------
+@bazbt3: [u:175+f+F]
+2017-11-09 18:49:16+00:00 []
+@schmidt_fu It can actually do ∞.2, but managing the power requirements is beyond my abilities.
+// @bazbt3
+ id:221970 rep:221906 thd:221882
+---------------------------------
+@skematica: [u:411+f+F]
+2017-11-09 18:55:56+00:00 []
+@bazbt3 😂 21.1 gigawatts! @schmidt_fu
+ id:221979 rep:221970 thd:221882
+---------------------------------
 @schmidt_fu: [u:106+f+F]
-2017-10-31 12:01:23+00:00 []
-@33MHz @bazbt3 Posting to channels would be a nice addition to #rtpaasfp anyway. Apart from that, the current posting rate doesn't seem alarming to me, <30 posts/hour on the most days, even with the last 100 users added.
- id:214999 rep:214637 thd:214632
-…
+2017-11-09 19:26:28+00:00 []
+@bazbt3 Infinite speakers around you goes without saying, but you put *2* in front??? That's nothing for the faint of heart!! ;-)
+ id:222004 rep:221970 thd:221882
+
+...
+
+@Streakmachine: [u:97+f+F]
+2017-11-10 09:26:18+00:00 []
+@bazbt3 Do it! @schmidt_fu
+ id:222545 rep:222155 thd:222027
+---------------------------------
+
+Choice? 
 ```
 
 ## What I needed to make this work

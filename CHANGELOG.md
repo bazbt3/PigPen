@@ -2,7 +2,15 @@
 (Most recent on top.)
 
 ### Upcoming:
-* Adding channel list names and descriptions.
+* Adding channel list names and descriptions. (I can't grasp how to get the PNUTpy library to expose the data.)
+
+### 2017-11-10: v0.1.31 (Clearer now? No.):
+* Added: -
+* Changed: More updates to menu, input requests made clearer.
+* Deprecated: -
+* Removed: Accidental JSON display code from the getpost routine.
+* Fixed: -
+* Security: -
 
 ### 2017-11-09: v0.1.30 (Also):
 * Added: Automatic reply to all users mentioned in post (limited to 30 names.) No selection or manual edit just yet.

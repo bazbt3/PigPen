@@ -1,8 +1,25 @@
 # Using PigPen.py
 Document needs work.
 
+## Menu:
+A messy work in progress:
+
+```
+| PigPen | pnut u:@bazbt3 |
+menu=menu exit=exit
+p  post     rp repost   gm mentions
+r reply     gp getpost  gt getthread
+msg message gm getmsgs  gs getsubs
+gc getchanl sub subscribechannel
+b bookmark  gb bookmrks gh hashtag
+f follow    gu getuser  gi interacts
+gt your tl  gg global
+Choice?
+```
+
 ## Status indicators:
 User and post status indicators:
+
 * User id,
 * `+f` = followed?
 * `+F` = follower?
@@ -15,126 +32,134 @@ User and post status indicators:
 ## At this stage in lieu of further explanation here's a simple (large) dump from the running app:
 
 ```
-
-PigPen | menu=menu exit=exit
- p post        m mentions(user)
- r reply       g get post
- rp repost     gt get thread
- f follow      gh get hashtag
- b bookmark    gb get bookmarks
- u unified tl  gg get global tl
- msg message   gm get msgs
- s subscribed  gc get channel
-Choice? m
-user_id ([return]=me): 
+| PigPen | pnut u:@bazbt3 |
+menu=menu exit=exit
+p  post     rp repost   gm mentions
+r reply     gp getpost  gt getthread
+msg message gms getmsgs gs getsubs
+gc getchanl sub subscribechannel
+b bookmark  gb bookmrks gh hashtag
+f follow    gu getuser  gi interacts
+gt your tl  gg global
+Choice? gm
+User mentions, userid? [return]=me: 
 ---------------
-@schmidt_fu: [u:106+f+F]
-2017-10-31 12:01:23+00:00 []
-@33MHz @bazbt3 Posting to channels would be a nice addition to #rtpaasfp anyway. Apart from that, the current posting rate doesn't seem alarming to me, <30 posts/hour on the most days, even with the last 100 users added.
- id:214999 rep:214637 thd:214632
+@bazbt3: [u:175+f+F]
+2017-11-09 18:49:16+00:00 []
+@schmidt_fu It can actually do ∞.2, but managing the power requirements is beyond my abilities.
+// @bazbt3
+ id:221970 rep:221906 thd:221882
 ---------------------------------
-@blumenkraft: [u:15+f+F]
-2017-10-31 12:03:08+00:00 []
-@schmidt_fu posing to channels for RtPaaS (fP) is already on the issues list. :) @33MHz @bazbt3 
- id:215000 rep:214999 thd:214632
+@skematica: [u:411+f+F]
+2017-11-09 18:55:56+00:00 []
+@bazbt3 😂 21.1 gigawatts! @schmidt_fu
+ id:221979 rep:221970 thd:221882
 ---------------------------------
 @schmidt_fu: [u:106+f+F]
-2017-10-31 12:03:50+00:00 []
-@blumenkraft Very cool! @bazbt3 @33MHz 
- id:215001 rep:215000 thd:214632
+2017-11-09 19:26:28+00:00 []
+@bazbt3 Infinite speakers around you goes without saying, but you put *2* in front??? That's nothing for the faint of heart!! ;-)
+ id:222004 rep:221970 thd:221882
 ---------------------------------
 @bazbt3: [u:175+f+F]
-2017-11-01 22:01:45+00:00 []
-Heh! Getting there @bazbt3. :)
- id:216136 rep:216133 thd:216133
+2017-11-09 19:42:34+00:00 []
+@skematica Power!!! Actually, the idea of the near-infinite subwoofer interests me; I'm wondering how to make one. Probably not cereal boxes.
+// @bazbt3 @schmidt_fu
+ id:222017 rep:221979 thd:221882
 ---------------------------------
-@33MHz: [u:1+f+F]
-2017-11-01 22:02:20+00:00 []
-@bazbt3 sweet :D
- id:216137 rep:216133 thd:216133
+@bazbt3: [u:175+f+F]
+2017-11-09 19:54:57+00:00 []
+@schmidt_fu "Infinite speakers around you goes without saying"; that's easy for *you* to say. :)
+// @bazbt3
+ id:222026 rep:222004 thd:221882
 ---------------------------------
-@jws: [u:7+f+F]
-2017-11-01 22:24:51+00:00 [* rp]
-@bazbt3 Pnut qua parser IF ;) @33MHz
- id:216149 rep:216142 thd:216133
+@bazbt3: [u:175+f+F]
+2017-11-09 19:57:12+00:00 []
+@bazbt3 It shouldnt be possible Baz.
+ id:222028 rep:222027 thd:222027
 ---------------------------------
-@jws: [u:7+f+F]
-2017-11-02 12:29:42+00:00 [*]
-@bazbt3 Suggest you check out:
-
-KeepAChangeLog.com to polish your changelog format.
-
-Multiline strings with “”” delimiters to simplify some of your text displays.
-
-f-strings to simplify interpolation.
- id:216603 rep:216429 thd:216429
+@bazbt3: [u:175+f+F]
+2017-11-09 19:58:29+00:00 []
+@bazbt3 But it does it anyway. :/
+// @bazbt3
+ id:222029 rep:222028 thd:222027
 ---------------------------------
-@jws: [u:7+f+F]
-2017-11-02 12:40:10+00:00 []
-@bazbt3 Mostly that grouping by Added, Removed, Changed, Fixed, etc sections makes it a lot easier to get the gist of a version’s changes.
- id:216621 rep:216620 thd:216429
+@bazbt3: [u:175+f+F]
+2017-11-09 20:00:59+00:00 []
+@bazbt3 It's still happening.
+ id:222033 rep:222027 thd:222027
 ---------------------------------
-@hutattedonmyarm: [u:46+f+F]
-2017-11-04 22:10:42+00:00 [*]
-Congratulations @bazbt3, you are now a member of #PnutClub 🥜 (2016+ posts)! Next: ☎️ at 2600 posts
- id:218326 rep:204782 thd:204752
+@bazbt3: [u:175+f+F]
+2017-11-09 20:01:48+00:00 []
+@bazbt3 One more try and then I'll remove it.
+// @bazbt3
+ id:222035 rep:222033 thd:222027
 ---------------------------------
-@hutattedonmyarm: [u:46+f+F]
-2017-11-04 22:11:21+00:00 []
-Congratulations @bazbt3, you are now a member of #PnutClub 🥜 (2016+ posts)! Next: ☎️ at 2600 posts
- id:218335 rep:204782 thd:204752
+@bazbt3: [u:175+f+F]
+2017-11-09 20:10:24+00:00 []
+@bazbt3 I removed it.
+ id:222042 rep:222033 thd:222027
 ---------------------------------
-@hutattedonmyarm: [u:46+f+F]
-2017-11-04 22:12:34+00:00 []
-Congratulations @bazbt3, you are now a member of #PnutClub 🥜 (2016+ posts)! Next: ☎️ at 2600 posts
- id:218357 rep:204782 thd:204752
+@skematica: [u:411+f+F]
+2017-11-09 20:20:12+00:00 []
+@bazbt3 probably not cans on a string either ☺️ @schmidt_fu
+ id:222051 rep:222017 thd:221882
 ---------------------------------
-@hutattedonmyarm: [u:46+f+F]
-2017-11-04 22:12:38+00:00 []
-Congratulations @bazbt3, you are now a member of #PnutClub 🥜 (2016+ posts)! Next: ☎️ at 2600 posts
- id:218360 rep:204782 thd:204752
----------------------------------
-@hutattedonmyarm: [u:46+f+F]
-2017-11-04 22:16:30+00:00 []
-@bazbt3 I broke the authentication. That's why it's going nuts and posting as me
- id:218380 rep:218379 thd:204752
----------------------------------
-@hutattedonmyarm: [u:46+f+F]
-2017-11-04 22:25:28+00:00 []
-@bazbt3 Glad I found the problem reasonably fast! I switched the auth to SSL, but forgot to update the redirect URI in the dev dashboard, so shit went haywire when trying to re-authenticate (which I had to do for upcoming features)
- id:218392 rep:218387 thd:204752
----------------------------------
-@jws: [u:7+f+F]
-2017-11-05 00:01:28+00:00 []
-@bazbt3 Guy Fawkes night? I forget that’s so near Halloween. No-one celebrates it here.
- id:218431 rep:218323 thd:218323
+@skematica: [u:411+f+F]
+2017-11-09 20:20:54+00:00 []
+@bazbt3 different kinds of pie 🥧 (mine will be sweet potato or pumpkin) 
+ id:222053 rep:222045 thd:222045
 ---------------------------------
 @schmidt_fu: [u:106+f+F]
-2017-11-05 06:29:03+00:00 []
-@bazbt3 I need to catch up on this. You're writing an pnut app for private tokens in Python?
- id:218588 rep:218456 thd:218456
+2017-11-09 20:24:28+00:00 []
+@bazbt3 Ok, I'll settle for #GreenMonday because we have 25,000 visitors in the city of #Bonn for the freakin' climate conference!
+
+#COP23
+ id:222055 rep:222045 thd:222045
 ---------------------------------
 @schmidt_fu: [u:106+f+F]
-2017-11-05 12:01:31+00:00 []
-@bazbt3 Oh, great! I understand it's targeted at an app platform on iOS - but have you run it somewhere else? Is there anything specific to Pythonista?
- id:218746 rep:218737 thd:218456
+2017-11-09 20:25:34+00:00 [rp]
+@bazbt3 Always be yourself! Except when you can be Batman: Then, be Batman!
+ id:222057 rep:222028 thd:222027
 ---------------------------------
-@jws: [u:7+f+F]
-2017-11-05 12:09:00+00:00 [*]
-@schmidt_fu Pythonista’s default set of libraries includes some nice-to-haves that aren’t in the stdlib but are readily available with pip. There are Pythonista-specific libs for UI and integrating with iOS system features, but I doubt @bazbt3 is using any
- id:218749 rep:218746 thd:218456
+@ukhaiku: [u:251+f+F]
+2017-11-09 20:42:25+00:00 []
+@bazbt3 She’s 18months old now. I don’t know where the time has gone!
+ id:222087 rep:221825 thd:219056
 ---------------------------------
-@dasdom: [u:19+f+F]
-2017-11-05 14:27:25+00:00 []
-@bazbt3 I’m in the example! \o/
- id:218835 rep:218827 thd:218456
+@Streakmachine: [u:97+f+F]
+2017-11-09 21:00:06+00:00 []
+@schmidt_fu Words to live by! @bazbt3
+ id:222108 rep:222057 thd:222027
 ---------------------------------
-@blumenkraft: [u:15+f+F]
-2017-11-05 16:10:45+00:00 []
-@bazbt3 it came to mind looking at the wiki. ;)
- id:218934 rep:218851 thd:218840
+@skematica: [u:411+f+F]
+2017-11-09 22:56:32+00:00 []
+@bazbt3 yes you may! Be my guest ☺️
+ id:222173 rep:222119 thd:222045
+---------------------------------
+@skematica: [u:411+f+F]
+2017-11-09 22:56:45+00:00 []
+@bazbt3 will dooooo 
+ id:222174 rep:222064 thd:222045
+---------------------------------
+@skematica: [u:411+f+F]
+2017-11-09 23:02:28+00:00 []
+@bazbt3 sounds good 👌🏼
+ id:222182 rep:222180 thd:222045
+---------------------------------
+@Streakmachine: [u:97+f+F]
+2017-11-10 09:26:18+00:00 []
+@bazbt3 Do it! @schmidt_fu
+ id:222545 rep:222155 thd:222027
 ---------------------------------
 
+Choice? r
+Reply to postnum? 222545
+---------------
+Replying to @Streakmachine:
+@bazbt3 Do it! @schmidt_fu
+---------------
+Write now (\n): Later this afternoon, it's an odd day today.
+ok
 Choice? 
 ```
 
