@@ -4,56 +4,39 @@
 ### Upcoming:
 * Adding channel list names and descriptions. (I can't grasp how to get the PNUTpy library to expose the data.)
 
-### 2017-11-10: v0.1.31 (Clearer now? No.):
-* Added: -
-* Changed: More updates to menu, input requests made clearer.
+### 2017-11-10: v0.1.32 (Oops!):
+* Added: Test for post length, only in 'createpost' routine at this stage.
+* Changed: Tweaked the menu layout yet again.
 * Deprecated: -
-* Removed: Accidental JSON display code from the getpost routine.
-* Fixed: -
+* Removed: -
+* Fixed: Accidental duplication of `gt` menu option for both get timeline and get thread.
 * Security: -
+
+### 2017-11-10: v0.1.31 (Clearer now? No.):
+* Changed: More updates to menu, input requests made clearer.
+* Removed: Accidental JSON display code from the getpost routine.
 
 ### 2017-11-09: v0.1.30 (Also):
 * Added: Automatic reply to all users mentioned in post (limited to 30 names.) No selection or manual edit just yet.
-* Changed: -
-* Deprecated: -
-* Removed: -
-* Fixed: -
-* Security: -
 
 ### 2017-11-09: v0.1.29 (Bloat!):
 * Added: Subscribe to a public channel (chatroom.)
 * Added: Menu now has current user's username.
 * Changed: Menu order. I'm trying and failing to make it sensible (tm).
-* Deprecated: -
-* Removed: -
-* Fixed: -
-* Security: -
 
 ### 2017-11-08: v0.1.28 (Exceptional!):
-* Added: -
-* Changed: -
-* Deprecated: -
-* Removed: -
 * Fixed: Channels and threads now display even when there are fewer than 20 items.
-* Security: -
 
 ### 2017-11-07: v0.1.27 (Overload?):
 * Added: Get a user bio. ***Buggy!***
 * Changed: Increased number of Interactions from 1 to 20 (server default). Incomplete.
 * Changed: Unified post and message status indicators.
-* Deprecated: -
 * Removed: Reliance on user-entered user_id in 'me.txt' file. I read the API Resources > Users docs. *It's "me" when authenticated!*
-* Fixed: -
-* Security: -
 
 ### 2017-11-06: v0.1.26 (Interact-ish):
 * Added: Started User Interactions. Returns only last one at this stage.
 * Added: Username to 'get channel' display.
 * Changed: Updated menu yet again. Unified timeline display is now 't' (was u.)
-* Deprecated: -
-* Removed: -
-* Fixed: -
-* Security: -
 
 ### 2017-11-05: v0.1.25 (Status symbol!):
 * Added: The original poster's username is added to replies automatically now. Take care to check for other people before posting.
@@ -67,46 +50,29 @@
     * `rep:` = replying to post,
     * `thd` = in thread.
 * Changed: Tweaked post display order.
-* Deprecated: -
-* Removed: -
-* Fixed: -
-* Security: -
 
 ### 2017-11-05: v0.1.24 (Baleeted!):
 * Added: Display Global timeline (added after fix below.)
 * Changed: Get hashtag command is now `gh` (was `h`.)
-* Deprecated: -
-* Removed: -
 * Fixed: Deleted posts are skipped, app no longer exits when encountered.
-* Security: -
 
 ### 2017-11-05: v0.1.23 (Id):
 * Added: Display Unified timeline.
 * Added: **Bug:** Deleted posts in unified timeline exit the app.
 * Changed: Bookmarks & mentions inquiries requiring a user id still default to requiring input, however pressing [return] inserts a user id saved in a user-created `me.txt` file. Temporary, perhaps.
-* Deprecated: -
-* Removed: -
 * Fixed: If server response is 201, PigPen now returns 'ok'.
-* Security: -
 
 ### 2017-11-04: v0.1.22 (Sensible):
 **News:** Changed version numbering style from n.nn.n to n.n.n., e.g. 1.01.22 is now 1.1.22.
 * Added: Get last 20 bookmarks. *(No error handling if fewer than 20 exist.)*
 * Changed: Exiting now only requires lower case 'exit'.
-* Deprecated: -
-* Removed: -
-* Fixed: -
-* Security: -
 
 ### 2017-11-03: v0.01.21 (hmmm…):
 * Added: List last 20 posts in a thread. *(No error handling: app* **will** *exit with `list index out of range` for conversations with fewer than 20 posts.)*
 * Added: List last 20 messages for a channel. *(No error handling: app* **will** *exit with `list index out of range` for channels with fewer than 20 messages.)*
 * Changed: Menu order, attempting a more intelligent grouping.
 * Changed: Code: Created displaypost() subroutine to reduce duplication in similar routines.
-* Deprecated: -
-* Removed: -
 * Fixed: If server response is not 200, PigPen now returns a purposely-ambiguous 'hmmm…' instead of 'oops!'
-* Security: -
 
 ### 2017-11-02: v0.01.20 (@jws):
 * Added: Listing of posts containing a specified hashtag (last 20.)
@@ -114,10 +80,7 @@
 * Added: Subscribed channel listing. Returns *only* channel number, owner/creator and the most recent message with its id. See also next item.
 * Added: Get a channel. Returns content for one post using code modified from above. Potentially useful as a subroutine?
 * Changed: Code: Reordered routines: post, reply and message pushed together.
-* Deprecated: -
 * Removed: pprint module import: I decided to examine JSON outside Pythonista.
-* Fixed: -
-* Security: -
 
 ### 2017-11-02: v0.01.19 (Threadsbared):
 * Added thread id to every displayed mention.

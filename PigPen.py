@@ -1,5 +1,5 @@
 # PigPen, a Python app for @33MHz's pnut.io social network.
-# v0.1.31
+# v0.1.32
 # Site, changelog: https://github.com/bazbt3/PigPen
 # made by: @bazbt3
 
@@ -11,13 +11,14 @@ import pnutpy
 import sys
 
 # Define global variables
-global me, postcontent, number, posttext, jsondata, isdeleted
-me = ''
-postcontent = ()
-number = 0
-posttext = ''
-jsondata = ()
+global isdeleted, jsondata, maxpostlen, me, number, postcontent, posttext
 isdeleted = ''
+jsondata = ()
+maxpostlen = 256
+me = ''
+number = 0
+postcontent = ()
+posttext = ''
 
 
 # AUTHORISATION:
@@ -33,22 +34,29 @@ pnutpy.api.add_authorization_token(token)
 
 def menu():
 	# Displays menu text
-	print "| PigPen | pnut u:" + "@" + str(me) + " |"
-	print "menu=menu exit=exit"
+	print "| PigPen | pnut u:" + "@" + str(me)
+	print "| menu=menu exit=exit"
+	print "gg global   gtl get your timeline"
 	print "p  post     rp repost   gm mentions"
-	print "r reply     gp getpost  gt getthread"
+	print "r reply     gp getpost  gt getthrd"
+	print "b bookmark  gb bookmrks gh 'hashtag'"
+	print "f follow    gu getuser  gi interacts"
 	print "msg message gms getmsgs gs getsubs"
 	print "gc getchanl sub subscribechannel"
-	print "b bookmark  gb bookmrks gh hashtag"
-	print "f follow    gu getuser  gi interacts"
-	print "gt your tl  gg global"
 	
 
 # DEFINE INTERACTIONS WITH SINGLE RESULTS:
 
 def createpost():
-	# Create a post
-	inputtext()
+	# Create a post, < maxpostlen
+	postlimit = True
+	while postlimit: 
+		inputtext()
+		if len(posttext) > maxpostlen:
+			print ""
+			print "*** Too big (" + str(len(posttext)) + " chars.) Redo:"
+		else:
+			postlimit = False
 	postcontent = pnutpy.api.create_post(data={'text': posttext})
 	serverresponse(postcontent)
 
@@ -275,10 +283,10 @@ def inputtext():
 	# Input text, '\n'=newline
 	global posttext
 	posttext = ''
-	textinput = raw_input("Write now (\\n): ")
+	textinput = raw_input("Write here (\\n=newline): ")
 	# Silly things:
 	if textinput.startswith("/me"):
-		textinput = "+bazbt3" + textinput[3:]
+		textinput = "+" + me + textinput[3:]
 	# Back to sensible
 	splittext = textinput.split(r'\n')
 	for sentence in splittext:
@@ -353,9 +361,9 @@ def displaymessage(postcontent):
 	global number
 	number = 19
 	print "---------------"
-	while number >=0:
+	while number >= 0:
 		try:
-			if not "is_deleted" in postcontent[0][number]:	
+			if not "is_deleted" in postcontent[0][number]:
 				userstatus = "@" + postcontent[0][number]["user"]["username"] + ":" + " ["
 				if postcontent[0][number]["user"]["you_follow"]:
 					userstatus += "+f"
@@ -370,7 +378,7 @@ def displaymessage(postcontent):
 	print ""
 
 def serverresponse(postcontent):
-# Return server response code
+	# Return server response code
 	status = ()
 	status = postcontent[1]["code"]
 	if status == 200:
@@ -383,12 +391,12 @@ def serverresponse(postcontent):
 
 # MAIN ROUTINE:
 
-# Get app user ID
+# Get pnut.io username
 getme()
 # Display menu
 menu()
 
-#Command entry:
+# Command entry:
 # The menu has no input validation outside valid options:
 choice = 'Little Bobby Tables'
 while choice != 'exit':
@@ -421,7 +429,7 @@ while choice != 'exit':
 		getmessages()
 	elif choice == 'gb':
 		getbookmarks()
-	elif choice == "gt":
+	elif choice == "gtl":
 		getunified()
 	elif choice == "gg":
 		getglobal()

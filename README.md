@@ -71,3 +71,8 @@ If you want to know more, the most important things to look at here are:
 
 ## Why did I do this?
 Good question.
+
+## Why 'PigPen'?
+App names are chosen throughout the pnut.io developer community to reflect the pnut (peanut) name. After a *lot* of thought I decided to choose PigPen from the Peanuts show character Pig-Pen; he's a scruffy boy without a name.
+
+Incidentally, it took longer choosing the app name than it did to get to the first release to GitHub!
