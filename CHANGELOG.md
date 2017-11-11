@@ -4,13 +4,20 @@
 ### Upcoming:
 * Adding channel list names and descriptions. (I can't grasp how to get the PNUTpy library to expose the data.)
 
+### 2017-11-11: v0.2.0 (Spaghetti!):
+#### v0.2.0 is here!
+* Added: *Starting to add* actions in-line with the post listing in global, timeline, mentions, thread and bookmarks. First up: reply to, repost and bookmark a post. It's a bit rough. And ugly. And buggy. The remainder of the actions are placeholders. (And still only 20 posts per listing.)
+* Changed: -
+* Deprecated: -
+* Removed: Repeat display of post to be replied to, during preparation for inline interactions. (It was intended to allow the user to be certain of replying to the correct post). 
+* Removed: Superfluous jsondata variable.
+* Fixed: -
+* Security: -
+
 ### 2017-11-10: v0.1.32 (Oops!):
 * Added: Test for post length, only in 'createpost' routine at this stage.
 * Changed: Tweaked the menu layout yet again.
-* Deprecated: -
-* Removed: -
 * Fixed: Accidental duplication of `gt` menu option for both get timeline and get thread.
-* Security: -
 
 ### 2017-11-10: v0.1.31 (Clearer now? No.):
 * Changed: More updates to menu, input requests made clearer.
@@ -83,17 +90,17 @@
 * Removed: pprint module import: I decided to examine JSON outside Pythonista.
 
 ### 2017-11-02: v0.01.19 (Threadsbared):
-* Added thread id to every displayed mention.
-* Reversed mentions sort order: most recent is last, at the bottom of the list, onscreen.
+* Added: Thread id to every displayed mention.
+* Changed: Reversed mentions sort order: most recent is last, at the bottom of the list, onscreen.
 
 
 ### 2017-11-01: v0.01.18 (Mentions):
-* Added rudimentary mentions list display: the default number of 20 most recent, *unsorted* returned from the server with no parameters requested other than `user_id`.
+* Added: Rudimentary mentions list display: the default number of 20 most recent, *unsorted* returned from the server with no parameters requested other than `user_id`.
 * Added mentions JSON file in examples folder.
 * (Intermediate, breaking, local test versions omitted from release.)
 
 ### 2017-10-31: v0.01.14 (Incompatible):
-* Fixed the rudimentary feedback after interactions - anything other than '200' now doesn't kill the app. (I tried concatenating an integer and text, tsk!)
+* Fixed: Rudimentary feedback after interactions - anything other than '200' now doesn't kill the app. (I tried concatenating an integer and text, tsk!)
 
 ### 2017-10-30: v0.01.13 (Prettier):
 * Updated 'Get post' to show only the poster's username, post create date and post content. An improvement over the previous raw dump.

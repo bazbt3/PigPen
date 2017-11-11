@@ -1,5 +1,5 @@
 # PigPen, a Python app for @33MHz's pnut.io social network.
-# v0.1.32
+# v0.2.0
 # Site, changelog: https://github.com/bazbt3/PigPen
 # made by: @bazbt3
 
@@ -8,16 +8,18 @@
 
 # Import @thrrgilag's library for interacting with pnut.io
 import pnutpy
+# Import system library
 import sys
 
 # Define global variables
-global isdeleted, jsondata, maxpostlen, me, number, postcontent, posttext
+global action, isdeleted, maxpostlen, me, number, postcontent, postid, posttext
+action = ''
 isdeleted = ''
-jsondata = ()
 maxpostlen = 256
 me = ''
 number = 0
 postcontent = ()
+postid = 0
 posttext = ''
 
 
@@ -54,24 +56,21 @@ def createpost():
 		inputtext()
 		if len(posttext) > maxpostlen:
 			print ""
-			print "*** Too big (" + str(len(posttext)) + " chars.) Redo:"
+			print "*** Too big, " + str(len(posttext)) + " chars.) Redo:"
 		else:
 			postlimit = False
 	postcontent = pnutpy.api.create_post(data={'text': posttext})
 	serverresponse(postcontent)
 
-def replypost():
+def replypost(postnum):
 	# Reply to a post
 	getme()
 	global posttext
 	posttext = ''
-	postnum = raw_input("Reply to postnum? ")
+	if postnum == 0:
+		postnum = raw_input("Reply to postnum? ")
 	postcontent = pnutpy.api.get_post(postnum)
 	if not "is_deleted" in postcontent[0]:
-		print "---------------"
-		print "Replying to @" + postcontent[0]["user"]["username"] + ":"
-		print postcontent[0]["content"]["text"]
-		print "---------------"
 		# Create body text:
 		inputtext()
 		# Test for users also mentioned then add all in reply, but excluding self:
@@ -100,10 +99,24 @@ def createmessage():
 	postcontent = pnutpy.api.create_message(channelid, data={'text': posttext})
 	serverresponse(postcontent)
 
-def repostpost():
+def repostpost(postnum):
 	# Repost a post
-	postnum = raw_input("Repost postnum? ")
+	if postnum == 0:
+		postnum = raw_input("Repost postnum? ")
 	postcontent = pnutpy.api.repost_post(postnum)
+	serverresponse(postcontent)
+
+def bookmarkpost(postnum):
+	# Bookmark a post
+	if postnum == 0:
+		postnum = raw_input("Bookmark postnum? ")
+	postcontent = pnutpy.api.bookmark_post(postnum)
+	serverresponse(postcontent)
+
+def followuser():
+	# Follow a user
+	usernum = raw_input("Follow usernum? ")
+	postcontent = pnutpy.api.follow_user(usernum)
 	serverresponse(postcontent)
 
 def getpost():
@@ -119,18 +132,6 @@ def getpost():
 	else:
 		print "[Post was deleted]"
 	print "---------------"
-
-def bookmarkpost():
-	# Bookmark a post
-	postnum = raw_input("Bookmark postnum? ")
-	postcontent = pnutpy.api.bookmark_post(postnum)
-	serverresponse(postcontent)
-
-def followuser():
-	# Follow a user
-	usernum = raw_input("Follow usernum? ")
-	postcontent = pnutpy.api.follow_user(usernum)
-	serverresponse(postcontent)
 
 def getuser():
 	# Get a user's data
@@ -280,7 +281,7 @@ def getme():
 	me = userid[0]["username"]
 
 def inputtext():
-	# Input text, '\n'=newline
+	# Input text, '\n'=newline:
 	global posttext
 	posttext = ''
 	textinput = raw_input("Write here (\\n=newline): ")
@@ -292,6 +293,95 @@ def inputtext():
 	for sentence in splittext:
 		posttext = posttext + sentence + "\n"
 	posttext = posttext.strip()
+
+def displaypost(postcontent):
+	# Display post (not message) content:
+	global number
+	number = 20
+	print "---------------"
+	while number >= 0:
+		try:
+			if not "is_deleted" in postcontent[0][number]:
+				# Build user status:
+				postid = str(postcontent[0][number]["id"])
+				postuserid = str(postcontent[0][number]["user"]["id"])
+				userstatus = "@" + postcontent[0][number]["user"]["username"] + ": [u:" + postuserid
+				if postcontent[0][number]["user"]["you_follow"]:
+					userstatus += "+f"
+				if postcontent[0][number]["user"]["follows_you"]:
+					userstatus += "+F"
+				print userstatus + "]"
+				# Build post status indicators:
+				poststatus = str(postcontent[0][number]["created_at"]) + " ["
+				if postcontent[0][number]["you_bookmarked"]:
+					poststatus += "*"
+				if postcontent[0][number]["you_reposted"]:
+					poststatus += "rp"
+				print poststatus + "]"
+				# Display post text:
+				print postcontent[0][number]["content"]["text"]
+				# Build hierarchy links:
+				postrefs = " id:" + postid
+				if "reply_to" in postcontent[0][number]:
+					postrefs += " rep:" + str(postcontent[0][number]["reply_to"])
+				postrefs += " thd:" + str(postcontent[0][number]["thread_id"])
+				print postrefs
+				# print "---------------------------------"
+				inlinepostinteraction(postid, postuserid)
+				if action == "x":
+					number = 0
+		except:
+			sys.exc_clear()
+		number -= 1
+	print""
+
+def inlinepostinteraction(postid, postuserid):
+	global action
+	validaction = False
+	while not validaction:
+		action = raw_input("______[enter] r rp b gt _____e[x]it")
+		if action == "":
+			validaction = True
+		if action == "r":
+			replypost(postid)
+			postid = 0
+			validaction = True
+		if action == "rp":
+			repostpost(postid)
+			postid = 0
+			validaction = True
+		if action == "b":
+			bookmarkpost(postid)
+			postid = 0
+			validaction = True
+		if action == "gt":
+			print "gt not implemented"
+			validaction = True
+		if action == "x":
+			validaction = True
+			return
+
+def displaymessage(postcontent):
+	# Display message (not post) content
+	# Same base as displaypost() but with interaction status indicators removed
+	global number
+	number = 19
+	print "---------------"
+	while number >= 0:
+		try:
+			if not "is_deleted" in postcontent[0][number]:
+				userstatus = "@" + postcontent[0][number]["user"]["username"] + ":" + " ["
+				if postcontent[0][number]["user"]["you_follow"]:
+					userstatus += "+f"
+				if postcontent[0][number]["user"]["follows_you"]:
+					userstatus += "+F"
+				print userstatus + "]"
+				print postcontent[0][number]["content"]["text"]
+				print "---------------------------------"
+		except:
+			sys.exc_clear()
+		number -= 1
+	print ""
 
 def userstatus(postcontent):
 	# Display poster status
@@ -318,64 +408,6 @@ def postfooter(postcontent):
 		postrefs += " rep:" + str(postcontent[0]["reply_to"])
 	postrefs += " thd:" + str(postcontent[0]["thread_id"])
 	print postrefs
-
-def displaypost(postcontent):
-	# Display post (not message) content
-	global number
-	number = 25
-	print "---------------"
-	while number >= 0:
-		try:
-			if not "is_deleted" in postcontent[0][number]:
-				# Build user status:
-				userstatus = "@" + postcontent[0][number]["user"]["username"] + ": [u:" + str(postcontent[0][number]["user"]["id"])
-				if postcontent[0][number]["user"]["you_follow"]:
-					userstatus += "+f"
-				if postcontent[0][number]["user"]["follows_you"]:
-					userstatus += "+F"
-				print userstatus + "]"
-				# Build post status indicators:
-				poststatus = str(postcontent[0][number]["created_at"]) + " ["
-				if postcontent[0][number]["you_bookmarked"]:
-					poststatus += "*"
-				if postcontent[0][number]["you_reposted"]:
-					poststatus += "rp"
-				print poststatus + "]"
-				# Display post text:
-				print postcontent[0][number]["content"]["text"]
-				# Build hierarchy links:
-				postrefs = " id:" + str(postcontent[0][number]["id"])
-				if "reply_to" in postcontent[0][number]:
-					postrefs += " rep:" + str(postcontent[0][number]["reply_to"])
-				postrefs += " thd:" + str(postcontent[0][number]["thread_id"])
-				print postrefs
-				print "---------------------------------"
-		except:
-			sys.exc_clear()
-		number -= 1
-	print""
-
-def displaymessage(postcontent):
-	# Display message (not post) content
-	# Same base as displaypost() but with interaction status indicators removed
-	global number
-	number = 19
-	print "---------------"
-	while number >= 0:
-		try:
-			if not "is_deleted" in postcontent[0][number]:
-				userstatus = "@" + postcontent[0][number]["user"]["username"] + ":" + " ["
-				if postcontent[0][number]["user"]["you_follow"]:
-					userstatus += "+f"
-				if postcontent[0][number]["user"]["follows_you"]:
-					userstatus += "+F"
-				print userstatus + "]"
-				print postcontent[0][number]["content"]["text"]
-				print "---------------------------------"
-		except:
-			sys.exc_clear()
-		number -= 1
-	print ""
 
 def serverresponse(postcontent):
 	# Return server response code
