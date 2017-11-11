@@ -1,5 +1,5 @@
 # PigPen, a Python app for @33MHz's pnut.io social network.
-# v0.2.0
+# v0.2.1
 # Site, changelog: https://github.com/bazbt3/PigPen
 # made by: @bazbt3
 
@@ -339,7 +339,7 @@ def inlinepostinteraction(postid, postuserid):
 	global action
 	validaction = False
 	while not validaction:
-		action = raw_input("______[enter] r rp b gt _____e[x]it")
+		action = raw_input("_____ [enter] r rp b gt _____ e[x]it")
 		if action == "":
 			validaction = True
 		if action == "r":
@@ -436,11 +436,11 @@ while choice != 'exit':
 	if choice == 'p':
 		createpost()
 	elif choice == 'r':
-		replypost()
+		replypost(0)
 	elif choice == 'b':
-		bookmarkpost()
+		bookmarkpost(0)
 	elif choice == 'rp':
-		repostpost()
+		repostpost(0)
 	elif choice == 'f':
 		followuser()
 	elif choice == 'gp':

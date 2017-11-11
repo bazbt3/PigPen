@@ -4,15 +4,22 @@
 ### Upcoming:
 * Adding channel list names and descriptions. (I can't grasp how to get the PNUTpy library to expose the data.)
 
+### 2017-11-11: v0.2.1 (Remember!):
+Er… v0.2.1 is here, yes! Sorry.
+* Added: -
+* Changed: -
+* Deprecated: -
+* Removed: -
+* Removed: -
+* Fixed: Main routine now calls the reply, bookmark and repost subroutines instead of exiting.
+* Fixed: *Partial fix:* Inline menu character input now starts on next line *on my phone*. (Pythonista, iPhone 6, Menlo 14pt.)
+* Security: -
+
 ### 2017-11-11: v0.2.0 (Spaghetti!):
 #### v0.2.0 is here!
 * Added: *Starting to add* actions in-line with the post listing in global, timeline, mentions, thread and bookmarks. First up: reply to, repost and bookmark a post. It's a bit rough. And ugly. And buggy. The remainder of the actions are placeholders. (And still only 20 posts per listing.)
-* Changed: -
-* Deprecated: -
 * Removed: Repeat display of post to be replied to, during preparation for inline interactions. (It was intended to allow the user to be certain of replying to the correct post). 
 * Removed: Superfluous jsondata variable.
-* Fixed: -
-* Security: -
 
 ### 2017-11-10: v0.1.32 (Oops!):
 * Added: Test for post length, only in 'createpost' routine at this stage.
