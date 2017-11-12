@@ -1,5 +1,13 @@
-# PigPen, a Python app for @33MHz's pnut.io social network.
-# v0.2.1
+#     ___          ___
+#    / _ |__ ___  / _ | ___  __ 
+#   / ////_// _ \/ //// // |/  \
+#  / __// // //// __// ___ / /\|
+# /_/  /_/ |_ //_/   |___//_//_/
+#         /__/   
+# PigPen, a Python app for @33MHz's pnut.io social network
+
+# v0.2.2
+
 # Site, changelog: https://github.com/bazbt3/PigPen
 # made by: @bazbt3
 
@@ -36,15 +44,16 @@ pnutpy.api.add_authorization_token(token)
 
 def menu():
 	# Displays menu text
-	print "| PigPen | pnut u:" + "@" + str(me)
-	print "| menu=menu exit=exit"
-	print "gg global   gtl get your timeline"
-	print "p  post     rp repost   gm mentions"
-	print "r reply     gp getpost  gt getthrd"
-	print "b bookmark  gb bookmrks gh 'hashtag'"
-	print "f follow    gu getuser  gi interacts"
-	print "msg message gms getmsgs gs getsubs"
-	print "gc getchanl sub subscribechannel"
+	print """
+| PigPen | pnut u:@{0}
+help=menu exit=exit
+gg global   gtl get your timeline
+p  post     rp repost   gm mentions
+r reply     gp getpost  gt getthrd
+b bookmark  gb bookmrks gh 'hashtag'
+f follow    gu getuser  gi interacts
+msg message gms getmsgs gs getsubs
+gc getchanl sub subscribechannel""".format(str(me))
 	
 
 # DEFINE INTERACTIONS WITH SINGLE RESULTS:
@@ -249,16 +258,21 @@ def getsubscribed():
 	# Duplicates code in getchannel
 	channelcontent = pnutpy.api.subscribed_channels()
 	global number
-	number = 19
+	number = 20
 	print "---------------"
 	while number >= 0:
 		try:
-			print "#" + str(channelcontent[0][number]["id"]) + " o: " + "@" + channelcontent[0][number]["owner"]["username"]
+			if channelcontent[0][number]["has_unread"]:
+				channelunread = "[u]"
+			else:
+				channelunread = ""
+			print "#" + str(channelcontent[0][number]["id"]) + channelunread + " o:" + "@" + channelcontent[0][number]["owner"]["username"]
 			recentmessageid = str(channelcontent[0][number]['recent_message_id'])
 			print "most recent: " + recentmessageid + ":"
 			channelid = channelcontent[0][number]["id"]
+			# Build last message in channel:
 			message = pnutpy.api.get_message(channelid, recentmessageid)
-			print message[0]["content"]["text"]
+			print "@" + message[0]["user"]["username"] + ": " + message[0]["content"]["text"]
 			print "---------------"
 		except:
 			sys.exc_clear()
@@ -297,7 +311,7 @@ def inputtext():
 def displaypost(postcontent):
 	# Display post (not message) content:
 	global number
-	number = 20
+	number = 19
 	print "---------------"
 	while number >= 0:
 		try:
@@ -326,7 +340,6 @@ def displaypost(postcontent):
 					postrefs += " rep:" + str(postcontent[0][number]["reply_to"])
 				postrefs += " thd:" + str(postcontent[0][number]["thread_id"])
 				print postrefs
-				# print "---------------------------------"
 				inlinepostinteraction(postid, postuserid)
 				if action == "x":
 					number = 0
@@ -338,8 +351,13 @@ def displaypost(postcontent):
 def inlinepostinteraction(postid, postuserid):
 	global action
 	validaction = False
+	separatormenu = " ------------------------------- "
+	menuseparator = "  Inline interactions menu:\n  [enter]=next r=reply rp=repost\n  b=bookmark gt=get thread\n  x=exit"
+	divider = separatormenu
 	while not validaction:
-		action = raw_input("_____ [enter] r rp b gt _____ e[x]it")
+		action = raw_input(divider)
+		if action == "help":
+			print menuseparator
 		if action == "":
 			validaction = True
 		if action == "r":
@@ -355,9 +373,10 @@ def inlinepostinteraction(postid, postuserid):
 			postid = 0
 			validaction = True
 		if action == "gt":
-			print "gt not implemented"
+			print "gt not implemented\n------------------"
 			validaction = True
 		if action == "x":
+			print "(back to main menu)"
 			validaction = True
 			return
 
@@ -471,7 +490,7 @@ while choice != 'exit':
 		getuser()
 	elif choice == "sub":
 		subscribetochannel()
-	elif choice == 'menu':
+	elif choice == 'help':
 		menu()
 
 # The app exits here once 'exit' is typed:

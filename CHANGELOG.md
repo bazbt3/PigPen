@@ -2,18 +2,21 @@
 (Most recent on top.)
 
 ### Upcoming:
-* Adding channel list names and descriptions. (I can't grasp how to get the PNUTpy library to expose the data.)
+* Adding channel list names and descriptions. *(I can't grasp how to get the PNUTpy library to expose the data.)*
 
-### 2017-11-11: v0.2.1 (Remember!):
-Er… v0.2.1 is here, yes! Sorry.
-* Added: -
-* Changed: -
+### 2017-11-12: v0.2.2 (Help!):
+* Added: Inline help: type `help` during post listings. Much tidier. See also changes for main menu update.
+Added: Subscribed channel list now has a `[u]` unread status indicator and displays the username of the most recent message poster.
+* Added: Because the application is feature-complete and bug-free I added an ASCII art logo in the code.
+* Changed: To redisplay the menu in the main routine type `help` instead of `menu`. Changed to be consistent with inline interactions.
 * Deprecated: -
 * Removed: -
-* Removed: -
+* Fixed: -
+* Security: -
+
+### 2017-11-11: v0.2.1 (Remember!):
 * Fixed: Main routine now calls the reply, bookmark and repost subroutines instead of exiting.
 * Fixed: *Partial fix:* Inline menu character input now starts on next line *on my phone*. (Pythonista, iPhone 6, Menlo 14pt.)
-* Security: -
 
 ### 2017-11-11: v0.2.0 (Spaghetti!):
 #### v0.2.0 is here!
