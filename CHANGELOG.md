@@ -2,17 +2,25 @@
 (Most recent on top.)
 
 ### Upcoming:
+* Change avatar (a precursor to other file operations for v0.3.)
 * Adding channel list names and descriptions. *(I can't grasp how to get the PNUTpy library to expose the data.)*
+* Pushed goal of display of longer timeline back from v0.3 to v0.4.
+
+### 2017-11-13: v0.2.3 (@hutattedonmyarm):
+* Added: Inline display of thread when listing timeline. **Bug:** Exits current listing.
+* Added: Check total length, including mentions, of post being replied to and force amendment if over-long. (Wastefully copies code from createpost routine.)
+* Added: Channel type indicator, `chat` or `pm`.
+* Changed: Menu items: `gt` now gets timeline, `gth` gets thread.
+* Deprecated: -
+* Removed: -
+* Fixed: -
+* Security: -
 
 ### 2017-11-12: v0.2.2 (Help!):
 * Added: Inline help: type `help` during post listings. Much tidier. See also changes for main menu update.
 Added: Subscribed channel list now has a `[u]` unread status indicator and displays the username of the most recent message poster.
 * Added: Because the application is feature-complete and bug-free I added an ASCII art logo in the code.
 * Changed: To redisplay the menu in the main routine type `help` instead of `menu`. Changed to be consistent with inline interactions.
-* Deprecated: -
-* Removed: -
-* Fixed: -
-* Security: -
 
 ### 2017-11-11: v0.2.1 (Remember!):
 * Fixed: Main routine now calls the reply, bookmark and repost subroutines instead of exiting.
@@ -25,7 +33,7 @@ Added: Subscribed channel list now has a `[u]` unread status indicator and displ
 * Removed: Superfluous jsondata variable.
 
 ### 2017-11-10: v0.1.32 (Oops!):
-* Added: Test for post length, only in 'createpost' routine at this stage.
+* Added: Test for too-long post, only in 'createpost' routine at this stage.
 * Changed: Tweaked the menu layout yet again.
 * Fixed: Accidental duplication of `gt` menu option for both get timeline and get thread.
 

@@ -6,7 +6,7 @@
 #         /__/   
 # PigPen, a Python app for @33MHz's pnut.io social network
 
-# v0.2.2
+# v0.2.3
 
 # Site, changelog: https://github.com/bazbt3/PigPen
 # made by: @bazbt3
@@ -20,7 +20,7 @@ import pnutpy
 import sys
 
 # Define global variables
-global action, isdeleted, maxpostlen, me, number, postcontent, postid, posttext
+global action, isdeleted, maxpostlen, me, number, postcontent, postid, posttext, postthreadid
 action = ''
 isdeleted = ''
 maxpostlen = 256
@@ -28,6 +28,7 @@ me = ''
 number = 0
 postcontent = ()
 postid = 0
+postthreadid = 0
 posttext = ''
 
 
@@ -44,16 +45,15 @@ pnutpy.api.add_authorization_token(token)
 
 def menu():
 	# Displays menu text
-	print """
-| PigPen | pnut u:@{0}
-help=menu exit=exit
-gg global   gtl get your timeline
+	print """| PigPen | pnut u:@{0}
+gg global timeline  gt your timeline
 p  post     rp repost   gm mentions
-r reply     gp getpost  gt getthrd
+r reply     gth getthrd gp getpost
 b bookmark  gb bookmrks gh 'hashtag'
 f follow    gu getuser  gi interacts
 msg message gms getmsgs gs getsubs
-gc getchanl sub subscribechannel""".format(str(me))
+gc getchanl sub subscribechannel
+| help=menu exit=exit""".format(str(me))
 	
 
 # DEFINE INTERACTIONS WITH SINGLE RESULTS:
@@ -80,24 +80,32 @@ def replypost(postnum):
 		postnum = raw_input("Reply to postnum? ")
 	postcontent = pnutpy.api.get_post(postnum)
 	if not "is_deleted" in postcontent[0]:
-		# Create body text:
-		inputtext()
-		# Test for users also mentioned then add all in reply, but excluding self:
-		alsoname = ""
-		alsomentions = ""
-		number = 30
-		while number >= 0:
-			try:
-				alsoname = postcontent[0]["content"]["entities"]["mentions"][number]["text"]
-				# Strip self:
-				if alsoname != me:
-					alsomentions += " @" + alsoname
-			except Exception:
-				sys.exc_clear()
-			number -= 1
-		posttext = "@" + postcontent[0]["user"]["username"] + " " + posttext
-		if alsomentions:
-			posttext += "\n//" + alsomentions
+		postlimit = True
+		while postlimit:
+			# Create body text:
+			inputtext()
+			# Test for users also mentioned then add all in reply, but excluding self:
+			alsoname = ""
+			alsomentions = ""
+			number = 30
+			while number >= 0:
+				try:
+					alsoname = postcontent[0]["content"]["entities"]["mentions"][number]["text"]
+					# Strip self:
+					if alsoname != me:
+						alsomentions += " @" + alsoname
+				except Exception:
+					sys.exc_clear()
+				number -= 1
+			posttext = "@" + postcontent[0]["user"]["username"] + " " + posttext
+			if alsomentions:
+				posttext += "\n//" + alsomentions
+			# Ensure post is not over-long:
+			if len(posttext) > maxpostlen:
+				print ""
+				print "*** Too big, " + str(len(posttext)) + " chars.) Redo:"
+			else:
+				postlimit = False
 		pnutpy.api.create_post(data={'reply_to': postnum, 'text': posttext})
 		serverresponse(postcontent)
 
@@ -229,11 +237,12 @@ def getinteractions():
 			sys.exc_clear()
 		number -= 1
 
-def getthread():
+def getthread(postnum):
 	# Get thread
 	# (Server returns last 20 by default)
-	thread = raw_input("Get threadid? ")
-	postcontent = pnutpy.api.posts_thread(thread, data={'count': '50'})
+	if postnum == 0:
+		postnum = raw_input("Get threadid? ")
+	postcontent = pnutpy.api.posts_thread(postnum, data={'count': '50'})
 	displaypost(postcontent)
 
 def getbookmarks():
@@ -266,7 +275,7 @@ def getsubscribed():
 				channelunread = "[u]"
 			else:
 				channelunread = ""
-			print "#" + str(channelcontent[0][number]["id"]) + channelunread + " o:" + "@" + channelcontent[0][number]["owner"]["username"]
+			print channelunread + "#" + str(channelcontent[0][number]["id"]) + " " + str(channelcontent[0][number]["type"])[13:] + ":" + "@" + channelcontent[0][number]["owner"]["username"]
 			recentmessageid = str(channelcontent[0][number]['recent_message_id'])
 			print "most recent: " + recentmessageid + ":"
 			channelid = channelcontent[0][number]["id"]
@@ -319,6 +328,7 @@ def displaypost(postcontent):
 				# Build user status:
 				postid = str(postcontent[0][number]["id"])
 				postuserid = str(postcontent[0][number]["user"]["id"])
+				postthreadid = str(postcontent[0][number]["thread_id"])
 				userstatus = "@" + postcontent[0][number]["user"]["username"] + ": [u:" + postuserid
 				if postcontent[0][number]["user"]["you_follow"]:
 					userstatus += "+f"
@@ -338,9 +348,9 @@ def displaypost(postcontent):
 				postrefs = " id:" + postid
 				if "reply_to" in postcontent[0][number]:
 					postrefs += " rep:" + str(postcontent[0][number]["reply_to"])
-				postrefs += " thd:" + str(postcontent[0][number]["thread_id"])
+				postrefs += " thd:" + postthreadid
 				print postrefs
-				inlinepostinteraction(postid, postuserid)
+				inlinepostinteraction(postid, postthreadid)
 				if action == "x":
 					number = 0
 		except:
@@ -348,11 +358,11 @@ def displaypost(postcontent):
 		number -= 1
 	print""
 
-def inlinepostinteraction(postid, postuserid):
+def inlinepostinteraction(postid, postthreadid):
 	global action
 	validaction = False
 	separatormenu = " ------------------------------- "
-	menuseparator = "  Inline interactions menu:\n  [enter]=next r=reply rp=repost\n  b=bookmark gt=get thread\n  x=exit"
+	menuseparator = "  Inline interactions menu:\n  [enter]=next r=reply rp=repost\n  b=bookmark gth=get thread\n  x=exit"
 	divider = separatormenu
 	while not validaction:
 		action = raw_input(divider)
@@ -372,11 +382,13 @@ def inlinepostinteraction(postid, postuserid):
 			bookmarkpost(postid)
 			postid = 0
 			validaction = True
-		if action == "gt":
-			print "gt not implemented\n------------------"
+		if action == "gth":
+			getthread(postthreadid)
+			postid = 0
 			validaction = True
+			print "-back to list-"
 		if action == "x":
-			print "(back to main menu)"
+			print "-back to main menu-"
 			validaction = True
 			return
 
@@ -472,15 +484,15 @@ while choice != 'exit':
 		getsubscribed()
 	elif choice == 'msg':
 		createmessage()
-	elif choice == 'gt':
-		getthread()
+	elif choice == 'gth':
+		getthread(0)
 	elif choice == 'gc':
 		getchannel()
 	elif choice == 'gms':
 		getmessages()
 	elif choice == 'gb':
 		getbookmarks()
-	elif choice == "gtl":
+	elif choice == "gt":
 		getunified()
 	elif choice == "gg":
 		getglobal()
