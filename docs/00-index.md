@@ -2,7 +2,7 @@
 
 ## What this is:
 
-A Python 2 application to interact with [pnut.io](https://pnut.io) social network.
+A Python application to interact with [pnut.io](https://pnut.io) social network.
 
 ## Documentation
 

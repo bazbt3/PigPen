@@ -2,26 +2,30 @@
 (Most recent on top.)
 
 ### Upcoming:
-* Change avatar (a precursor to other file operations for v0.3.)
-* Pushed goal of display of longer timeline back from v0.3 to v0.4.
+* Change avatar (a precursor to other file operations in v0.3.)
+* Pushed goal of display of longer timelines back from v0.3 to v0.4.
+
+### 2017-11-15: v0.3.0 (Embiggened!):
+#### News:
+**The application is now Python 3.5-only.** My 2.7 app was created due to ignorance when it initially failed. Adding `import sys` fixed the fault in my noob catch-all-then-reset exception handlers. Note: the sys calls I made simply aren't necessary in Python 3.5.
+#### Version numbering:
+Python 3.5 application starts at v0.3.0 simply to differentiate from Python 2. 
+* Added: Moar spaghetti code.
+* Changed: Increased listings from server-default 20 posts to a hardcoded 30. Not friendly yet, being displayed from earliest to latest and with no persistence, hence no version increase.
+* Deprecated: Er… does all the Python 2.7 stuff count?
+* Removed: -
+* Fixed: -
+* Security: -
 
 ### 2017-11-15: v0.2.4 (Now @hutattedonmyarm):
 * Added: Chat channel names now appear in the Subscribed Channels listing, a major barrier passed thanks to @hutattedonmyarm's help! **Bug:** May break in the Get Channel routine.
-* Changed: -
-* Deprecated: -
-* Removed: -
 * Fixed: Attributions: PNUTpy author: @33MHz, maintainer: @thrrgilag.
-* Security: -
 
 ### 2017-11-13: v0.2.3 (pre-@hutattedonmyarm):
 * Added: Inline display of thread when listing timeline. **Bug:** Exits current listing.
 * Added: Check total length, including mentions, of post being replied to and force amendment if over-long. (Wastefully copies code from createpost routine.)
 * Added: Channel type indicator, `chat` or `pm`.
 * Changed: Menu items: `gt` now gets timeline, `gth` gets thread.
-* Deprecated: -
-* Removed: -
-* Fixed: -
-* Security: -
 
 ### 2017-11-12: v0.2.2 (Help!):
 * Added: Inline help: type `help` during post listings. Much tidier. See also changes for main menu update.

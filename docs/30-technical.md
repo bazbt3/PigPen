@@ -1,7 +1,7 @@
 # Technical
 
 ## Things to note:
-* This application `PigPen.py` is being developed on a iPhone within the Pythonista app IDE, using **Python 2.7**.  Due to my misunderstanding of its requirements after an early failure to run the imported PNUTpy routines I started off with Python 2.7. It's unnecessary, I intend to convert this to Python 3.5, eventually.
+* This application `PigPen.py` is being developed on a iPhone within the Pythonista app IDE, using **Python 3.5** from v0.2.5 onwards.  Due to my misunderstanding of its requirements after an early failure to run the imported PNUTpy routines I started off with Python 2.7. It's unnecessary, I'm converting this to Python 3.5.
 * There's a way to go before this is as 'modular' as I'd like.
 * What there is, it works - provided a valid secret token is used.
 * What there is, it's a noob's *second* attempt at proper Python interacting with an API.  Please tread carefully.
