@@ -6,7 +6,7 @@
 #         /__/   
 # PigPen, a Python app for @33MHz's pnut.io social network
 
-# v0.2.3
+# v0.2.4
 
 # Site, changelog: https://github.com/bazbt3/PigPen
 # made by: @bazbt3
@@ -14,7 +14,7 @@
 
 # SETUP:
 
-# Import @thrrgilag's library for interacting with pnut.io
+# Import @33MHz and @thrrgilag's library for interacting with pnut.io
 import pnutpy
 # Import system library
 import sys
@@ -180,11 +180,11 @@ def subscribetochannel():
 
 def getchannel():
 	# Get channel details
-	# Small mods to getsubscribed code
 	channelnumber = raw_input("Get data, channelnum? ")
-	channelcontent = pnutpy.api.get_channel(channelnumber, data={'include_raw': '1', 'include_channel_raw': '1', 'include_user_raw': '1'})
+	channelcontent = pnutpy.api.get_channel(channelnumber, include_raw=True)
+	channelname = channelcontent[0]["raw"][0]["value"]["name"]
 	print "---------------"
-	print "#" + str(channelcontent[0]["id"]) + " o: " + "@" + channelcontent[0]["owner"]["username"]
+	print "#" + str(channelcontent[0]["id"]) + " " + channelname + " o:" + "@" + channelcontent[0]["owner"]["username"]
 	recentmessageid = str(channelcontent[0]['recent_message_id'])
 	print "most recent: " + recentmessageid + ":"
 	channelid = channelcontent[0]["id"]
@@ -271,13 +271,24 @@ def getsubscribed():
 	print "---------------"
 	while number >= 0:
 		try:
+			channelnumber = channelcontent[0][number]["id"]
+			# Differentiate netween Chat and PM channels:
+			channeltype = str(channelcontent[0][number]["type"])[13:]
+			# Get chat channel name:
+			# Thanks @hutattedonmyarm!
+			if channeltype == "chat":
+				channelnumraw = pnutpy.api.get_channel(channelnumber, include_raw=True)
+				channelname = channelnumraw[0]["raw"][0]["value"]["name"]
+				print channelname + ":"
+			# Check for unread:
 			if channelcontent[0][number]["has_unread"]:
 				channelunread = "[u]"
 			else:
 				channelunread = ""
-			print channelunread + "#" + str(channelcontent[0][number]["id"]) + " " + str(channelcontent[0][number]["type"])[13:] + ":" + "@" + channelcontent[0][number]["owner"]["username"]
+			# Build and display listing:
+			print channelunread + "#" + str(channelcontent[0][number]["id"]) + " " + channeltype + " c:@" + channelcontent[0][number]["owner"]["username"]
 			recentmessageid = str(channelcontent[0][number]['recent_message_id'])
-			print "most recent: " + recentmessageid + ":"
+			print "last: " + recentmessageid + ":"
 			channelid = channelcontent[0][number]["id"]
 			# Build last message in channel:
 			message = pnutpy.api.get_message(channelid, recentmessageid)

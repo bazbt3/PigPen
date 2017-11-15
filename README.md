@@ -1,5 +1,5 @@
 # What is 'PigPen'?
-A Python 2 application to interact with the [pnut.io](https://pnut.io) social network.  My work here covers the absolute basics.
+A Python application to allow interactions with the [pnut.io](https://pnut.io) social network.  My work here covers the absolute basics.
 
 This document covers v0.01.31 onwards.
 
@@ -55,9 +55,9 @@ Choice?
 
 ## What I needed to make this work
 * A [pnut.io](https://pnut.io) account; no [developer account](https://pnut.io/dev) is required for single-user apps,
-* Python 2, via the iOS [Pythonista app](http://omz-software.com/pythonista/)
+* Python 2, via the iOS [Pythonista app](http://omz-software.com/pythonista/). Note: I intend to convert to Python 3 (see the documentation.)
 * [`StaSh`](https://gist.github.com/CodyKochmann/4d6b40e77ba862e634185a038d2c3f13), a bash-like shell for Pythonista, to give `pip`, which allows installation of… 
-* @thrrgilag's [`PNUTpy` library](https://github.com/pnut-api/PNUTpy),
+* @33MHz & @thrrgilag's [`PNUTpy`](https://github.com/pnut-api/PNUTpy) library,
 * Access to the good people of pnut.io, for when comprehension failed,
 * Half a brain.
 

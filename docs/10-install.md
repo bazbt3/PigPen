@@ -3,9 +3,9 @@ Incomplete, potentially misleading instructions follow.  This is very much a wor
 
 ## Prerequisites:
 * A [pnut.io](https://pnut.io) account; no [developer account](https://pnut.io/dev) is required for single-user apps,
-* Python 2, I made this using the iOS [Pythonista app](http://omz-software.com/pythonista/),
-* [`StaSh`](https://gist.github.com/CodyKochmann/4d6b40e77ba862e634185a038d2c3f13), a bash-like shell for Pythonista, to give `pip`, which allows installation of…
-* @thrrgilag's [`PNUTpy`](https://github.com/pnut-api/PNUTpy) library. (FYI: It's Python 2, I'm wondering about forking it and converting to Python 3.)
+* Python. I made this using the iOS [Pythonista app](http://omz-software.com/pythonista/),
+* [`StaSh`](https://gist.github.com/CodyKochmann/4d6b40e77ba862e634185a038d2c3f13), a bash-like shell for Pythonista, to give access to `pip`, which allows installation of…
+* @33MHz & @thrrgilag's [`PNUTpy`](https://github.com/pnut-api/PNUTpy) library. (FYI: It's compatible with Python 2 and 3.)
 
 ## First steps:
 (Assuming you're running Pythonista, {p} = a Pythonista-specific instruction.)

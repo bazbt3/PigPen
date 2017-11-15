@@ -3,10 +3,17 @@
 
 ### Upcoming:
 * Change avatar (a precursor to other file operations for v0.3.)
-* Adding channel list names and descriptions. *(I can't grasp how to get the PNUTpy library to expose the data.)*
 * Pushed goal of display of longer timeline back from v0.3 to v0.4.
 
-### 2017-11-13: v0.2.3 (@hutattedonmyarm):
+### 2017-11-15: v0.2.4 (Now @hutattedonmyarm):
+* Added: Chat channel names now appear in the Subscribed Channels listing, a major barrier passed thanks to @hutattedonmyarm's help! **Bug:** May break in the Get Channel routine.
+* Changed: -
+* Deprecated: -
+* Removed: -
+* Fixed: Attributions: PNUTpy author: @33MHz, maintainer: @thrrgilag.
+* Security: -
+
+### 2017-11-13: v0.2.3 (pre-@hutattedonmyarm):
 * Added: Inline display of thread when listing timeline. **Bug:** Exits current listing.
 * Added: Check total length, including mentions, of post being replied to and force amendment if over-long. (Wastefully copies code from createpost routine.)
 * Added: Channel type indicator, `chat` or `pm`.
