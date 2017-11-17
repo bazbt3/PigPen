@@ -5,14 +5,19 @@
 * Change avatar (a precursor to other file operations in v0.3.)
 * Pushed goal of display of longer timelines back from v0.3 to v0.4.
 
+### 2017-11-17: v0.3.2 (A bit too raw.):
+* Added: -
+* Changed: -
+* Deprecated: -
+* Removed: -
+* Fixed: Get interactions broke with a request for raw data; request removed.
+* Security: -
+
 ### 2017-11-17: v0.3.1 (Nearly images!):
 * Added: Display one embedded image's *indicator, URL and thumbnail URL*, i.e. the app will not yet show an inline image; one must click the link. Probably buggy. (Tested initially using post 227199.)
 * Changed: `createpost` does not allow an empty post to be sent. Perhaps a bit strict, thus not implemented elsewhere.
 * Changed: For replies: Reduced slashes to 1 for mentions other than the original poster. Confirms more closely to the pnut standard.
-* Deprecated: -
-* Removed: -
 * Fixed: Better error handling: Started to target exceptions for cases where data doesn't exist, e.g. `KeyError` for accounts missing usernames and/or bio text. (Tested with accounts 175 and, a random choice of 171.)
-* Security: -
 
 ### 2017-11-15: v0.3.0 (Embiggened!):
 #### News:

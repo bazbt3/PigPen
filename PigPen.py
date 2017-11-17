@@ -4,7 +4,7 @@
 #  / __// // //// __// ___ / /\|
 # /_/  /_/ |_ //_/   |___//_//_/
 #         /__/   
-# v0.3.1 for Python 3.5
+# v0.3.2 for Python 3.5
 
 # PigPen, a Python app for @33MHz's pnut.io social network
 
@@ -238,7 +238,7 @@ def getinteractions():
 	userid = input("Interacts, userid? [return]=me: ")
 	if userid == '':
 		userid = "me"
-	postcontent = pnutpy.api.interactions_with_user(userid, count = retrievecount, include_raw = True)
+	postcontent = pnutpy.api.interactions_with_user(userid, count = retrievecount)
 	global number
 	number = retrievecount
 	print("---------------")
