@@ -5,17 +5,23 @@
 * Change avatar (a precursor to other file operations in v0.3.)
 * Pushed goal of display of longer timelines back from v0.3 to v0.4.
 
+### 2017-11-17: v0.3.1 (Nearly images!):
+* Added: Display one embedded image's *indicator, URL and thumbnail URL*, i.e. the app will not yet show an inline image; one must click the link. Probably buggy. (Tested initially using post 227199.)
+* Changed: `createpost` does not allow an empty post to be sent. Perhaps a bit strict, thus not implemented elsewhere.
+* Changed: For replies: Reduced slashes to 1 for mentions other than the original poster. Confirms more closely to the pnut standard.
+* Deprecated: -
+* Removed: -
+* Fixed: Better error handling: Started to target exceptions for cases where data doesn't exist, e.g. `KeyError` for accounts missing usernames and/or bio text. (Tested with accounts 175 and, a random choice of 171.)
+* Security: -
+
 ### 2017-11-15: v0.3.0 (Embiggened!):
 #### News:
-**The application is now Python 3.5-only.** My 2.7 app was created due to ignorance when it initially failed. Adding `import sys` fixed the fault in my noob catch-all-then-reset exception handlers. Note: the sys calls I made simply aren't necessary in Python 3.5.
+**The application is now Python 3.5-only.** The 2.7 app was created due to ignorance when it initially failed. Adding `import sys` fixed the fault in the noob catch-all-then-reset exception handlers. Note: the sys calls made simply aren't necessary in Python 3.5.
 #### Version numbering:
 Python 3.5 application starts at v0.3.0 simply to differentiate from Python 2. 
 * Added: Moar spaghetti code.
 * Changed: Increased listings from server-default 20 posts to a hardcoded 30. Not friendly yet, being displayed from earliest to latest and with no persistence, hence no version increase.
 * Deprecated: Er… does all the Python 2.7 stuff count?
-* Removed: -
-* Fixed: -
-* Security: -
 
 ### 2017-11-15: v0.2.4 (Now @hutattedonmyarm):
 * Added: Chat channel names now appear in the Subscribed Channels listing, a major barrier passed thanks to @hutattedonmyarm's help! **Bug:** May break in the Get Channel routine.

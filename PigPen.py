@@ -4,7 +4,7 @@
 #  / __// // //// __// ___ / /\|
 # /_/  /_/ |_ //_/   |___//_//_/
 #         /__/   
-# v0.3.0 for Python 3.5
+# v0.3.1 for Python 3.5
 
 # PigPen, a Python app for @33MHz's pnut.io social network
 
@@ -16,7 +16,8 @@
 
 # Import @33MHz and @thrrgilag's library for interacting with pnut.io
 import pnutpy
-# Import system library
+# Import other libraries:
+# May not need this (was used for early Python 2.7 exception handling):
 import sys
 
 # Define global variables
@@ -101,7 +102,7 @@ def replypost(postnum):
 				number -= 1
 			posttext = "@" + postcontent[0]["user"]["username"] + " " + posttext
 			if alsomentions:
-				posttext += "\n//" + alsomentions
+				posttext += "\n/" + alsomentions
 			# Ensure post is not over-long:
 			if len(posttext) > maxpostlen:
 				print("")
@@ -141,12 +142,18 @@ def followuser():
 def getpost():
 	# Get a post
 	postnum = input("Get postnum? ")
-	postcontent = pnutpy.api.get_post(postnum)
+	postcontent = pnutpy.api.get_post(postnum, include_raw = True)
 	print("--------------")
 	if not "is_deleted" in postcontent[0]:
 		userstatus(postcontent)
 		timestarrpstatus(postcontent)
 		print(postcontent[0]["content"]["text"])
+		# Check for oembed file:
+		try:
+			raw = postcontent[0]['raw'][0]
+			checkoembed(postcontent, raw)
+		except:
+			dummyvalue = 0
 		postfooter(postcontent)
 	else:
 		print("[Post was deleted]")
@@ -157,16 +164,22 @@ def getuser():
 	usernum = input("Get data, usernum? ")
 	postcontent = pnutpy.api.get_user(usernum)
 	print("")
-	print(postcontent[0]["username"] + " - " + postcontent[0]["type"])
+	print("@" + postcontent[0]["username"] + " - " + postcontent[0]["type"])
 	if postcontent[0]["type"] == 'human':
-		if postcontent[0]["name"]:
-			print(postcontent[0]["name"])
+		try:
+			username = postcontent[0]["name"]
+		except (KeyError):
+			username = ""
+		print(username)
 		if postcontent[0]["locale"]:
 			print(postcontent[0]["locale"])
 		if postcontent[0]["timezone"]:
 			print(postcontent[0]["timezone"])
-		if postcontent[0]["content"]["text"]:
-			print(postcontent[0]["content"]["text"])
+		try:
+			thing = postcontent[0]["content"]["text"]
+		except (KeyError):
+			dunmyvalue = 0
+		print(thing)
 	print("")
 	print("posts: " + str(postcontent[0]["counts"]["posts"]))
 	print("followers: " + str(postcontent[0]["counts"]["followers"]))
@@ -201,22 +214,22 @@ def getchannel():
 def getunified():
 	# Get unified timeline
 	# (Server returns last 20 by default)
-	postcontent = pnutpy.api.users_post_streams_unified(count = retrievecount)
+	postcontent = pnutpy.api.users_post_streams_unified(count = retrievecount, include_raw = True)
 	displaypost(postcontent)
 
-def getglobal(count = retrievecount):
+def getglobal():
 	# Get global timeline
 	# (Server returns last 20 by default)
-	postcontent = pnutpy.api.posts_streams_global()
+	postcontent = pnutpy.api.posts_streams_global(count = retrievecount, include_raw = True)
 	displaypost(postcontent)
 
-def getmentions(count = 49):
+def getmentions():
 	# Get mentions
 	# (Server returns last 20 by default)
 	userid = input("User mentions, userid? [return]=me: ")
 	if userid == '':
 		userid = "me"
-	postcontent = pnutpy.api.users_mentioned_posts(userid, count = retrievecount)
+	postcontent = pnutpy.api.users_mentioned_posts(userid, count = retrievecount, include_raw = True)
 	displaypost(postcontent)
 
 def getinteractions():
@@ -225,7 +238,7 @@ def getinteractions():
 	userid = input("Interacts, userid? [return]=me: ")
 	if userid == '':
 		userid = "me"
-	postcontent = pnutpy.api.interactions_with_user(userid, count = retrievecount)
+	postcontent = pnutpy.api.interactions_with_user(userid, count = retrievecount, include_raw = True)
 	global number
 	number = retrievecount
 	print("---------------")
@@ -245,7 +258,7 @@ def getthread(postnum):
 	# (Server returns last 20 by default)
 	if postnum == 0:
 		postnum = input("Get threadid? ")
-	postcontent = pnutpy.api.posts_thread(postnum, count = retrievecount)
+	postcontent = pnutpy.api.posts_thread(postnum, count = retrievecount, include_raw = True)
 	displaypost(postcontent)
 
 def getbookmarks():
@@ -254,14 +267,14 @@ def getbookmarks():
 	userid = input("Bookmarks, userid? [return]=me: ")
 	if userid == '':
 		userid = "me"
-	postcontent = pnutpy.api.users_bookmarked_posts(userid, count = 49)
+	postcontent = pnutpy.api.users_bookmarked_posts(userid, count = retrievecount, include_raw = True)
 	displaypost(postcontent)
 
 def gethashtag():
 	# Get hashtag
 	# (Server returns last 20 by default)
 	hashtag = input("Get hashtag? ")
-	postcontent = pnutpy.api.posts_with_hashtag(hashtag, count = retrievecount)
+	postcontent = pnutpy.api.posts_with_hashtag(hashtag, count = retrievecount, include_raw = True)
 	displaypost(postcontent)
 
 def getsubscribed():
@@ -322,7 +335,11 @@ def inputtext():
 	# Input text, '\n'=newline:
 	global posttext
 	posttext = ''
-	textinput = input("Write here (\\n=newline): ")
+	textinput = ""
+	while not textinput:
+		textinput = input("Write here (\\n=newline): ")
+		if not textinput:
+			print ("-Empty post, retry-")
 	# Silly things:
 	if textinput.startswith("/me"):
 		textinput = "+" + me + textinput[3:]
@@ -359,6 +376,13 @@ def displaypost(postcontent):
 				print(poststatus + "]")
 				# Display post text:
 				print(postcontent[0][number]["content"]["text"])
+				# Check for oembed file:
+				try:
+					raw = postcontent[0][number]['raw'][0]
+					checkoembed(postcontent[0][number], raw)
+				except:
+					dummyvalue = 0				
+#				checkoembed(postcontent, "")
 				# Build hierarchy links:
 				postrefs = " id:" + postid
 				if "reply_to" in postcontent[0][number]:
@@ -449,6 +473,20 @@ def timestarrpstatus(postcontent):
 		poststatus += "rp"
 	print(poststatus + "]")
 
+def checkoembed(postcontent, raw):
+	try:
+		if raw["type"] == "io.pnut.core.oembed":
+			# Get image page URL:
+			oembedimgurl = raw["value"]["url"]
+			print("[url:]")
+			print(oembedimgurl)
+			# Get thumbnail URL:
+			oembedimgthumb = raw["value"]["thumbnail_url"]
+			print("[thumb:]")
+			print(oembedimgthumb)
+	except (KeyError):
+		dummyvalue = 0
+
 def postfooter(postcontent):
 	# Display post data
 	postrefs = " id:" + str(postcontent[0]["id"])
@@ -481,46 +519,47 @@ menu()
 choice = 'Little Bobby Tables'
 while choice != 'exit':
 	choice = input("Choice? ")
-	if choice == 'p':
+	# Add in alphabetic order to easily scan through
+	if choice == 'b':
+		bookmarkpost(0)
+	elif choice == 'f':
+		followuser()
+	elif choice == 'gb':
+		getbookmarks()
+	elif choice == 'gc':
+		getchannel()
+	elif choice == "gg":
+		getglobal()
+	elif choice == 'gh':
+		gethashtag()
+	elif choice == "gi":
+		getinteractions()
+	elif choice == 'gm':
+		getmentions()
+	elif choice == 'gms':
+		getmessages()
+	elif choice == 'gp':
+		getpost()
+	elif choice == 'gs':
+		getsubscribed()
+	elif choice == "gt":
+		getunified()
+	elif choice == 'gth':
+		getthread(0)
+	elif choice == "gu":
+		getuser()
+	elif choice == 'help':
+		menu()
+	elif choice == 'msg':
+		createmessage()
+	elif choice == 'p':
 		createpost()
 	elif choice == 'r':
 		replypost(0)
-	elif choice == 'b':
-		bookmarkpost(0)
 	elif choice == 'rp':
 		repostpost(0)
-	elif choice == 'f':
-		followuser()
-	elif choice == 'gp':
-		getpost()
-	elif choice == 'gm':
-		getmentions()
-	elif choice == 'gh':
-		gethashtag()
-	elif choice == 'gs':
-		getsubscribed()
-	elif choice == 'msg':
-		createmessage()
-	elif choice == 'gth':
-		getthread(0)
-	elif choice == 'gc':
-		getchannel()
-	elif choice == 'gms':
-		getmessages()
-	elif choice == 'gb':
-		getbookmarks()
-	elif choice == "gt":
-		getunified()
-	elif choice == "gg":
-		getglobal()
-	elif choice == "gi":
-		getinteractions()
-	elif choice == "gu":
-		getuser()
 	elif choice == "sub":
 		subscribetochannel()
-	elif choice == 'help':
-		menu()
 
 # The app exits here once 'exit' is typed:
 print(" ")
