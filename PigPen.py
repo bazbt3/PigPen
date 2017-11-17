@@ -4,7 +4,7 @@
 #  / __// // //// __// ___ / /\|
 # /_/  /_/ |_ //_/   |___//_//_/
 #         /__/   
-# v0.3.2 for Python 3.5
+# v0.3.3 for Python 3.5
 
 # PigPen, a Python app for @33MHz's pnut.io social network
 
@@ -16,13 +16,20 @@
 
 # Import @33MHz and @thrrgilag's library for interacting with pnut.io
 import pnutpy
+
 # Import other libraries:
-# May not need this (was used for early Python 2.7 exception handling):
+	
+# Used to display images:
+from PIL import Image
+import requests
+from io import BytesIO
+# May not need sys (was used for early Python 2.7 exception handling):
 import sys
 
 # Define global variables
-global action, isdeleted, maxpostlen, me, number, postcontent, postid, posttext, postthreadid, retrievecount
+global action, channelid, isdeleted, maxpostlen, me, number, postcontent, postid, posttext, postthreadid, retrievecount
 action = ''
+channelid = 0
 isdeleted = ''
 maxpostlen = 256
 me = ''
@@ -47,24 +54,26 @@ pnutpy.api.add_authorization_token(token)
 
 def menu():
 	# Displays menu text
-	print("""| PigPen | pnut u:@{0}
+	print("""
+| PigPen | pnut u:@{0}
 gg global timeline  gt your timeline
 p  post     rp repost   gm mentions
 r reply     gth getthrd gp getpost
 b bookmark  gb bookmrks gh 'hashtag'
 f follow    gu getuser  gi interacts
 msg message gms getmsgs gs getsubs
-gc getchanl sub subscribechannel
+xp x-post   gc getchanl sub subchanl
 | help=menu exit=exit""".format(str(me)))
 	
 
 # DEFINE INTERACTIONS WITH SINGLE RESULTS:
 
-def createpost():
-	# Create a post, < maxpostlen
+def createpost(inputflag):
+	# Create a post < maxpostlen
 	postlimit = True
 	while postlimit: 
-		inputtext()
+		if inputflag == True:
+			inputtext()
 		if len(posttext) > maxpostlen:
 			print("")
 			print("*** Too big, " + str(len(posttext)) + " chars.) Redo:")
@@ -72,6 +81,29 @@ def createpost():
 			postlimit = False
 	postcontent = pnutpy.api.create_post(data={'text': posttext})
 	serverresponse(postcontent)
+
+def createmessage(inputflag):
+	# Create a message
+	global channelid
+	if inputflag == True:
+		channelid = input("Message to channelid? ")
+		inputtext()
+	postcontent = pnutpy.api.create_message(channelid, data={'text': posttext})
+	serverresponse(postcontent)
+
+def xpost():
+	# Create a message then copy the content as a post. (True = input text, False = use global variable contents):
+	global channelid, posttext
+	createmessage(True)
+	# Get channel name:
+	channelcontent = pnutpy.api.get_channel(channelid, include_raw=True)
+	channelname = channelcontent[0]["raw"][0]["value"]["name"]
+	# Add an x-post footer then create the post without user input:
+	posttext += "\n\nx-post: " + channelname + " "
+	channelurl = "https://patter.chat/room/" + str(channelid)
+	channelurlmd = "[<=>](" + channelurl + ")"
+	posttext += channelurlmd
+	createpost(False)
 
 def replypost(postnum):
 	# Reply to a post
@@ -111,13 +143,6 @@ def replypost(postnum):
 				postlimit = False
 		pnutpy.api.create_post(data={'reply_to': postnum, 'text': posttext})
 		serverresponse(postcontent)
-
-def createmessage():
-	# Create a message
-	channelid = input("Message to channelid? ")
-	inputtext()
-	postcontent = pnutpy.api.create_message(channelid, data={'text': posttext})
-	serverresponse(postcontent)
 
 def repostpost(postnum):
 	# Repost a post
@@ -195,7 +220,7 @@ def subscribetochannel():
 
 def getchannel():
 	# Get channel details
-	channelnumber = input("Get data, channelnum? ")
+	channelnumber = input("Get data, channelid? ")
 	channelcontent = pnutpy.api.get_channel(channelnumber, include_raw=True)
 	channelname = channelcontent[0]["raw"][0]["value"]["name"]
 	print("---------------")
@@ -481,9 +506,12 @@ def checkoembed(postcontent, raw):
 			print("[url:]")
 			print(oembedimgurl)
 			# Get thumbnail URL:
-			oembedimgthumb = raw["value"]["thumbnail_url"]
-			print("[thumb:]")
-			print(oembedimgthumb)
+			oembedthumburl = raw["value"]["thumbnail_url"]
+			# Open 'thumbnail' image from URL:
+			response = requests.get(oembedthumburl)
+			# Display image:
+			img = Image.open(BytesIO(response.content))
+			img.show()
 	except (KeyError):
 		dummyvalue = 0
 
@@ -551,15 +579,17 @@ while choice != 'exit':
 	elif choice == 'help':
 		menu()
 	elif choice == 'msg':
-		createmessage()
+		createmessage(True)
 	elif choice == 'p':
-		createpost()
+		createpost(True)
 	elif choice == 'r':
 		replypost(0)
 	elif choice == 'rp':
 		repostpost(0)
 	elif choice == "sub":
 		subscribetochannel()
+	elif choice == "xp":
+		xpost()
 
 # The app exits here once 'exit' is typed:
 print(" ")

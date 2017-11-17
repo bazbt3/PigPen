@@ -5,13 +5,17 @@
 * Change avatar (a precursor to other file operations in v0.3.)
 * Pushed goal of display of longer timelines back from v0.3 to v0.4.
 
-### 2017-11-17: v0.3.2 (A bit too raw.):
-* Added: -
+### 2017-11-17: v0.3.3 (A bit spammy?):
+* Added: Display embedded images in posts. It's a bit slow and there is of course no caching.
+* Added: `xp x-post` crosspost a new message created in a Patter chatroom as a post.
 * Changed: -
 * Deprecated: -
 * Removed: -
-* Fixed: Get interactions broke with a request for raw data; request removed.
+* Fixed: -
 * Security: -
+
+### 2017-11-17: v0.3.2 (A bit too raw.):
+* Fixed: 'Get interactions' broke with a request for raw data; request removed.
 
 ### 2017-11-17: v0.3.1 (Nearly images!):
 * Added: Display one embedded image's *indicator, URL and thumbnail URL*, i.e. the app will not yet show an inline image; one must click the link. Probably buggy. (Tested initially using post 227199.)
