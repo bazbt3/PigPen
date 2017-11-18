@@ -1,3 +1,9 @@
+---
+layout: page
+title: 'CHANGELOG'
+permalink: /CHANGELOG/
+---
+
 # CHANGELOG
 (Most recent on top.)
 
