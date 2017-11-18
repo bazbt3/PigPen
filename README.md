@@ -89,8 +89,8 @@ As you can see, there are layout bugs aplenty. And ordinary bugs too.
 ### Repo structure:
 If you want to know more, the most important things to look at here are:
 
-* The **[Documentation.](../../wiki)**
-* The [CHANGELOG.](../../wiki/CHANGELOG.md)
+* The **[Documentation.](/docs/00-index.md)**
+* The [CHANGELOG.](CHANGELOG.md)
 * The **PigPen.py** app, obviously.  The code comments will likely always be more useful than the documentation,
 * This README file.
 
