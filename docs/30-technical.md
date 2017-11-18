@@ -28,4 +28,4 @@
 * No, I haven't.  I currently copy individual files between the Pythonista IDE and Working Copy git apps.
 
 ## Next steps:
-See the **[Roadmap](../../docs/90-roadmap)** for plans for future development.
+See the **[Roadmap](../docs/90-roadmap)** for plans for future development.
