@@ -26,4 +26,4 @@ Run the `PigPen.py script`; it's as simple as that!
 (I have not included instructions for making the file executable by file permissions of shebangs, it's beyond the remit of this page; Pythonista doesn't require it.)
 
 ## Next steps:
-To find out how to start posting, reading, starring, etc., and read about some current limitations, please read the **[Usage document.](https://bazbt3.github.io/PigPen/docs/20-usage.html)**
+To find out how to start posting, reading, starring, etc., and read about some current limitations, please read the **[Usage document.](20-usage.md)**
