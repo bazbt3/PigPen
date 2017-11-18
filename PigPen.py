@@ -4,7 +4,7 @@
 #  / __// // //// __// ___ / /\|
 # /_/  /_/ |_ //_/   |___//_//_/
 #         /__/   
-# v0.3.3 for Python 3.5
+# v0.3.4 for Python 3.5
 
 # PigPen, a Python app for @33MHz's pnut.io social network
 
@@ -23,8 +23,9 @@ import pnutpy
 from PIL import Image
 import requests
 from io import BytesIO
-# May not need sys (was used for early Python 2.7 exception handling):
-import sys
+
+# For future expansion, and testing:
+import time
 
 # Define global variables
 global action, channelid, isdeleted, maxpostlen, me, number, postcontent, postid, posttext, postthreadid, retrievecount
@@ -38,7 +39,7 @@ postcontent = ()
 postid = 0
 postthreadid = 0
 posttext = ''
-retrievecount = 30
+retrievecount = 50
 
 
 # AUTHORISATION:
@@ -466,12 +467,16 @@ def displaymessage(postcontent):
 	while number >= 0:
 		try:
 			if not "is_deleted" in postcontent[0][number]:
+				# Build post status indicators:
 				userstatus = "@" + postcontent[0][number]["user"]["username"] + ":" + " ["
 				if postcontent[0][number]["user"]["you_follow"]:
 					userstatus += "+f"
 				if postcontent[0][number]["user"]["follows_you"]:
 					userstatus += "+F"
 				print(userstatus + "]")
+				# Add date & time:
+				print(str(postcontent[0][number]["created_at"]))
+				# Add post content/
 				print(postcontent[0][number]["content"]["text"])
 				print("---------------------------------")
 		except:
