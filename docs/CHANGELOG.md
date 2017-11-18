@@ -1,9 +1,3 @@
----
-layout: page
-title: '00. CHANGELOG'
-permalink: /PigPen/CHANGELOG/
----
-
 # CHANGELOG
 (Most recent on top.)
 

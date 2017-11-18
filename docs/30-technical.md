@@ -1,9 +1,3 @@
----
-layout: page
-title: '3. Technical'
-permalink: /PigPen/Technical/
----
-
 # Technical
 
 ## Things to note:

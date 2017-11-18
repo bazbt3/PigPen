@@ -1,9 +1,3 @@
----
-layout: page
-title: '2. Using PigPen.py'
-permalink: /PigPen/Usage/
----
-
 # Using PigPen.py
 Document needs work.
 

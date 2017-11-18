@@ -1,9 +1,3 @@
----
-layout: page
-title: '0. Index'
-permalink: /PigPen/Index/
----
-
 # The PigPen.py Documentation
 
 ## What this is:
