@@ -1,15 +1,10 @@
-theme:
-  jekyll-theme-midnight
-
 plugins:
   - jekyll-feed
 
-title:
-  'PigPen'
+title: 'PigPen'
   
-description:
-  'A messy Python 3.5 app for the pnut.io social network'
+description: 'A messy Python 3.5 app for the pnut.io social network'
 
-author:
-  '@bazbt3'
+author: '@bazbt3'
+
 theme: jekyll-theme-slate
