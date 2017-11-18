@@ -11,7 +11,7 @@ description:      'A messy Python 3.5 app for the pnut.io social network'
 
 name:             '@bazbt3'
 url:               https://bazbt3.github.io/PigPen/
-baseurl:          https://bazbt3.github.io/PigPen/
+baseurl:          https://bazbt3.github.io/PigPen/docs/
 
 author:
   name:           'Barrie Turner'
