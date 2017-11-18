@@ -89,8 +89,8 @@ As you can see, there are layout bugs aplenty. And ordinary bugs too.
 ### Repo structure:
 If you want to know more, the most important things to look at here are:
 
-* The **[Documentation.](/docs/index.md)**  A work in progress,
-* The [CHANGELOG,](/docs/CHANGELOG.md)
+* The **[Documentation.](https://bazbt3.github.io/PigPen/)**
+* The [CHANGELOG,](https://bazbt3.github.io/PigPen/CHANGELOG.html)
 * The **PigPen.py** app, obviously.  The code comments will likely always be more useful than the documentation,
 * This README file.
 
