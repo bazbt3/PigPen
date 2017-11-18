@@ -1,5 +1,4 @@
 ---
-layout: page
 title: 'CHANGELOG'
 permalink: /CHANGELOG/
 ---
