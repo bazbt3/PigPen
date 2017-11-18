@@ -106,4 +106,4 @@ You chose 'exit': Goodbye!
 ```
 
 ## Next steps:
-Go to the [Technical](https://bazbt3.github.io/PigPen/docs/30-technical.md) primer to see what's going on behind the scenes.
+Go to the [Technical](https://bazbt3.github.io/PigPen/docs/30-technical.html) primer to see what's going on behind the scenes.

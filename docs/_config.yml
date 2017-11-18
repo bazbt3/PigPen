@@ -1,19 +1,4 @@
 theme: jekyll-theme-midnight
 
-# Setup
-title:            '@bazbt3'
-tagline:          'A Python app for pnut.io'
-description:      'A Python app for pnut.io'
-
-name:             '@bazbt3'
-url:               http://bazbt3.github.io/PigPen/
-baseurl:          https://bazbt3.github.io/PigPen/
-
-author:
-  name:           'Barrie Turner'
-  url:            http://bazbt3.10centuries.org
-
 plugins:
   - jekyll-feed
-
-# Mess about with *this* line to force updates. This one! Yes!
