@@ -1,19 +1,19 @@
 # Dependencies
-highlighter:      rouge
+highlighter:  rouge
 
 # Permalinks
-permalink:        pretty
+permalink:    pretty
 
 # Setup
-title:            '@PigPen'
-tagline:          'A messy Python 3.5 app for the pnut.io social network'
-description:      'A messy Python 3.5 app for the pnut.io social network'
+name:         '@PigPen'
+tagline:      'A messy Python 3.5 app for the pnut.io social network'
+description:  'A messy Python 3.5 app for the pnut.io social network'
 
 url:     https://bazbt3.github.io/PigPen/
-baseurl: https://bazbt3.github.io/PigPen/docs/
+baseurl: https://bazbt3.github.io/PigPen/
 
 author:
-  name:           'Barrie Turner'
+  name:           '@bazbt3'
 
 paginate:         5
 
