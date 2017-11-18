@@ -5,14 +5,18 @@
 * Change avatar (a precursor to other file operations in v0.3.)
 * Pushed goal of display of longer timelines back from v0.3 to v0.4.
 
-### 2017-11-17: v0.3.3 (A bit spammy?):
-* Added: Display embedded images in posts. It's a bit slow and there is of course no caching.
-* Added: `xp x-post` crosspost a new message created in a Patter chatroom as a post.
+### 2017-11-18: v0.3.4 (a bit Saturday-ish):
+**News:** The documentation is moving to GitHub Pages so might break.
+* Added: -
 * Changed: -
 * Deprecated: -
-* Removed: -
+* Removed: `import sys` - only used in my Python 2.7 catch-all exception handling.
 * Fixed: -
 * Security: -
+
+### 2017-11-17: v0.3.3 (Spammy images!~~A bit spammy?~~):
+* Added: Display embedded images in posts. It's a bit slow and there is of course no caching.
+* Added: `xp x-post` crosspost a new message created in a Patter chatroom as a post.
 
 ### 2017-11-17: v0.3.2 (A bit too raw.):
 * Fixed: 'Get interactions' broke with a request for raw data; request removed.
