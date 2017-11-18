@@ -1,3 +1,9 @@
+---
+layout: page
+title: '1. Install PigPen.py'
+permalink: /Install/
+---
+
 # Installing PigPen.py
 Incomplete, potentially misleading instructions follow.  This is very much a work in progress.
 

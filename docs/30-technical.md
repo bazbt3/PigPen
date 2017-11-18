@@ -1,3 +1,9 @@
+---
+layout: page
+title: '3. Technical'
+permalink: /Technical/
+---
+
 # Technical
 
 ## Things to note:
