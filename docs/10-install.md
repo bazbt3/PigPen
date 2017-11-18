@@ -1,7 +1,7 @@
 ---
 layout: page
 title: '1. Install PigPen.py'
-permalink: /Install/
+permalink: /PigPen/Install/
 ---
 
 # Installing PigPen.py

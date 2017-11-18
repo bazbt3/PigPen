@@ -1,7 +1,7 @@
 ---
 layout: page
 title: '2. Using PigPen.py'
-permalink: /Usage/
+permalink: /PigPen/Usage/
 ---
 
 # Using PigPen.py

@@ -1,7 +1,7 @@
 ---
 layout: page
 title: '3. Technical'
-permalink: /Technical/
+permalink: /PigPen/Technical/
 ---
 
 # Technical
