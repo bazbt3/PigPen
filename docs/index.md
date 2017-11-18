@@ -4,14 +4,14 @@
 A Python application to interact with the [pnut.io](https://pnut.io) social network.
 
 ## Changelog:
-[CHANGELOG](CHANGELOG.md) - a chronological list of the changes to the app and its supporting files.
+[CHANGELOG](https://bazbt3.github.io/PigPen/CHANGELOG.md) - a chronological list of the changes to the app and its supporting files.
 
 ## Documentation
-* [Install](../docs/10-install.md)   
+* [Install](https://bazbt3.github.io/PigPen/docs/10-install.md)   
   How to install the files, and a first run.
-* [Usage](../docs/20-usage.md)   
+* [Usage](https://bazbt3.github.io/PigPen/docs/20-usage.md)   
   How to use this.
-* [Technical](../docs/30-technical.md)   
+* [Technical](https://bazbt3.github.io/PigPen/docs/30-technical.md)   
   A brief primer, because you might appreciate knowing what's going on behind the scenes.
-* [Roadmap](../docs/90-roadmap.md)   
+* [Roadmap](https://bazbt3.github.io/PigPen/docs/90-roadmap.md)   
   What's done, what's next?
