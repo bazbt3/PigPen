@@ -1,8 +1,27 @@
-plugins:
-  - jekyll-feed
+# Dependencies
+highlighter:      rouge
 
-title: 'PigPen'
-  
-description: 'A messy Python 3.5 app for the pnut.io social network'
+# Permalinks
+permalink:        pretty
 
-author: '@bazbt3'
+# Setup
+title:            '@PigPen'
+tagline:          'A messy Python 3.5 app for the pnut.io social network'
+description:      'A messy Python 3.5 app for the pnut.io social network'
+
+name:             '@bazbt3'
+url:               https://bazbt3.github.io/PigPen/
+baseurl:          https://bazbt3.github.io/PigPen/
+
+author:
+  name:           'Barrie Turner'
+  url:            http://bazbt3.10centuries.org
+
+paginate:         5
+
+# Use the following plug-ins:
+gems:
+  - jekyll-paginate # The official Jekyll paginator.
+  - jekyll-feed # Create an Atom feed using the official Jekyll feed gem.
+
+# Mess about with *this* line to force updates. This one! Yes!
