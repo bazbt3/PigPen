@@ -5,6 +5,14 @@
 * Change avatar (a precursor to other file operations in v0.3.)
 * Pushed goal of display of longer timelines back from v0.3 to v0.4.
 
+### 2017-11-19: v0.3.5 (Docstrings):
+* Added: Code: Docstrings created in every module. Probably of little consequence.
+* Changed: Code: Order of functions, change in progress; maybe more logical?
+* Deprecated: -
+* Removed: -
+* Fixed: `getchannel` now works correctly, doesn't exit the app.
+* Security: -
+
 ### 2017-11-18: v0.3.4 (a bit Saturday-ish):
 **News:** The documentation is moving to GitHub Pages so ~~might break~~is of course temporarily borked.
 * Added: -

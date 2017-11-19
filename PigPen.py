@@ -4,30 +4,29 @@
 #  / __// // //// __// ___ / /\|
 # /_/  /_/ |_ //_/   |___//_//_/
 #         /__/   
-# v0.3.4 for Python 3.5
+# v0.3.5 for Python 3.5
 
-# PigPen, a Python app for @33MHz's pnut.io social network
+# PigPen, a Python app for @33MHz's pnut.io social network.
 
 # Site, changelog: https://github.com/bazbt3/PigPen
-# made by: @bazbt3
+
+# Made by: @bazbt3
 
 
 # SETUP:
 
-# Import @33MHz and @thrrgilag's library for interacting with pnut.io
+# Import @33MHz and @thrrgilag's library for interacting with pnut.io:
 import pnutpy
-
-# Import other libraries:
 	
 # Used to display images:
 from PIL import Image
 import requests
 from io import BytesIO
 
-# For future expansion, and testing:
+# For future expansion and dor testing:
 import time
 
-# Define global variables
+# Define probably way too many global variables:
 global action, channelid, isdeleted, maxpostlen, me, number, postcontent, postid, posttext, postthreadid, retrievecount
 action = ''
 channelid = 0
@@ -39,22 +38,49 @@ postcontent = ()
 postid = 0
 postthreadid = 0
 posttext = ''
-retrievecount = 50
+retrievecount = 30
 
 
-# AUTHORISATION:
+# DEFINE FUNCTIONS:
 
-# Authorise using secret token
-tokenfile = open("secrettoken.txt", "r")
-token = tokenfile.read()
-token = token.strip()
-pnutpy.api.add_authorization_token(token)
+def authorise():
+	"""
+	Authorise user with secret token.
+	
+	Arguments:
+		none
+	User input:
+		none
+	Dependencies:
+		File "secrettoken.txt" must already exist in the same folder as rhe application. It must contain only the token ontained from pnut.io. See the GitHub repo's docs for more.
+	"""
+	tokenfile = open("secrettoken.txt", "r")
+	token = tokenfile.read()
+	token = token.strip()
+	pnutpy.api.add_authorization_token(token)
 
-
-# DEFINE SUBROUTINES:
+def getme():
+	"""
+	Get the current user id and username from the server.
+	
+	Arguments:
+		none
+	User input:
+		none
+	"""
+	global me
+	userid = pnutpy.api.get_user("me")
+	me = userid[0]["username"]
 
 def menu():
-	# Displays menu text
+	"""
+	Displays main menu text and user's username.
+	
+	Arguments:
+		none
+	User input:
+		none
+	"""
 	print("""
 | PigPen | pnut u:@{0}
 gg global timeline  gt your timeline
@@ -65,14 +91,93 @@ f follow    gu getuser  gi interacts
 msg message gms getmsgs gs getsubs
 xp x-post   gc getchanl sub subchanl
 | help=menu exit=exit""".format(str(me)))
-	
 
-# DEFINE INTERACTIONS WITH SINGLE RESULTS:
+def commandentry():
+	"""
+	Main menu user command input.
+	
+	Arguments:
+		none
+	User input:
+		Command to execute.
+	Discrepancies (I might have had a reason for this):
+		1. Mostly:
+			if a function call passes 0:
+				ask for user input
+			else:
+				the routine uses the global variable passed from the routine calling it
+		2. createpost and createmessage are currently different:
+			if the function call passes True:
+				ask for user input
+			else:
+				the routine uses the global variable passed from the routine calling it
+	"""
+	choice = 'Little Bobby Tables'
+	while choice != 'exit':
+		choice = input("Choice? ")
+		# Add in alphabetic order to easily scan through
+		if choice == 'b':
+			bookmarkpost(0)
+		elif choice == 'f':
+			followuser()
+		elif choice == 'gb':
+			getbookmarks()
+		elif choice == 'gc':
+			getchannel()
+		elif choice == "gg":
+			getglobal()
+		elif choice == 'gh':
+			gethashtag()
+		elif choice == "gi":
+			getinteractions()
+		elif choice == 'gm':
+			getmentions()
+		elif choice == 'gms':
+			getmessages()
+		elif choice == 'gp':
+			getpost()
+		elif choice == 'gs':
+			getsubscribed()
+		elif choice == "gt":
+			getunified()
+		elif choice == 'gth':
+			getthread(0)
+		elif choice == "gu":
+			getuser()
+		elif choice == 'help':
+			menu()
+		elif choice == 'msg':
+			createmessage(True)
+		elif choice == 'p':
+			createpost(True)
+		elif choice == 'r':
+			replypost(0)
+		elif choice == 'rp':
+			repostpost(0)
+		elif choice == "sub":
+			subscribetochannel()
+		elif choice == "xp":
+			xpost()
+	# The app exits here once 'exit' is typed:
+	print(" ")
+	print("You chose 'exit': Goodbye!")
+
+
+# DEFINE FUNCTIONS WITH SINGLE RESULTS FOR THE USER:
 
 def createpost(inputflag):
-	# Create a post < maxpostlen
+	"""
+	Create a post.
+	
+	Arguments:
+		inputflag:
+			if True: ask for input,
+			if False: use global posttext
+	User input:
+		Post text.
+	"""
 	postlimit = True
-	while postlimit: 
+	while postlimit:
 		if inputflag == True:
 			inputtext()
 		if len(posttext) > maxpostlen:
@@ -84,7 +189,16 @@ def createpost(inputflag):
 	serverresponse(postcontent)
 
 def createmessage(inputflag):
-	# Create a message
+	"""
+	Create a message for a channel.
+	
+	Arguments:
+		inputflag:
+			if True: ask for input,
+			if False: use global posttext
+	User input:
+		Channel number and/or message text.
+	"""
 	global channelid
 	if inputflag == True:
 		channelid = input("Message to channelid? ")
@@ -93,7 +207,14 @@ def createmessage(inputflag):
 	serverresponse(postcontent)
 
 def xpost():
-	# Create a message then copy the content as a post. (True = input text, False = use global variable contents):
+	"""
+	Create a message for a specific channel then use the same text in a post.
+	
+	Arguments:
+		none
+	User input:
+		Channel number and message.
+	"""
 	global channelid, posttext
 	createmessage(True)
 	# Get channel name:
@@ -107,7 +228,19 @@ def xpost():
 	createpost(False)
 
 def replypost(postnum):
-	# Reply to a post
+	"""
+	Reply to a post.
+	
+	Arguments:
+		postnum:
+			Post number to reply to.
+				if postnum == 0:
+					ask for post number to reply to
+				else:
+					reply to global postum
+	User input:
+		Post number and/or post text.
+	"""
 	getme()
 	global posttext
 	posttext = ''
@@ -146,29 +279,67 @@ def replypost(postnum):
 		serverresponse(postcontent)
 
 def repostpost(postnum):
-	# Repost a post
+	"""
+	Repost a post.
+	
+	Arguments:
+		postnum:
+			Post number to repost.
+				if postnum == 0:
+					ask for post number to repost
+				else:
+					repost global postnum
+	User input:
+		Post number.
+	"""
 	if postnum == 0:
 		postnum = input("Repost postnum? ")
 	postcontent = pnutpy.api.repost_post(postnum)
 	serverresponse(postcontent)
 
 def bookmarkpost(postnum):
-	# Bookmark a post
+	"""
+	Bookmark a post.
+	
+	Arguments:
+		postnum:
+			Post number to bookmark.
+				if postnum == 0:
+					ask for post number to bookmark
+				else:
+					bookmark global postnum
+	User input:
+		Post number.
+	"""
 	if postnum == 0:
 		postnum = input("Bookmark postnum? ")
 	postcontent = pnutpy.api.bookmark_post(postnum)
 	serverresponse(postcontent)
 
 def followuser():
-	# Follow a user
+	"""
+	Follow a user.
+	
+	Arguments:
+		none
+	User input:
+		User number.
+	"""
 	usernum = input("Follow usernum? ")
 	postcontent = pnutpy.api.follow_user(usernum)
 	serverresponse(postcontent)
 
 def getpost():
-	# Get a post
+	"""
+	Get a post, provided it has not been deleted.
+	
+	Arguments:
+		none
+	User input:
+		Post number.
+	"""
 	postnum = input("Get postnum? ")
-	postcontent = pnutpy.api.get_post(postnum, include_raw = True)
+	postcontent = pnutpy.api.get_post(postnum, include_raw= True)
 	print("--------------")
 	if not "is_deleted" in postcontent[0]:
 		userstatus(postcontent)
@@ -186,6 +357,15 @@ def getpost():
 	print("---------------")
 
 def getuser():
+	"""
+	Get a user's details: username & name, account type, locale, bio, interactions.
+	
+	Arguments:
+		none
+	User input:
+		User number.
+	"""
+	
 	# Get a user's data
 	usernum = input("Get data, usernum? ")
 	postcontent = pnutpy.api.get_user(usernum)
@@ -202,10 +382,10 @@ def getuser():
 		if postcontent[0]["timezone"]:
 			print(postcontent[0]["timezone"])
 		try:
-			thing = postcontent[0]["content"]["text"]
+			pnutbio = postcontent[0]["content"]["text"]
 		except (KeyError):
-			dunmyvalue = 0
-		print(thing)
+			dummyvalue = 0
+		print(pnutbio)
 	print("")
 	print("posts: " + str(postcontent[0]["counts"]["posts"]))
 	print("followers: " + str(postcontent[0]["counts"]["followers"]))
@@ -214,16 +394,33 @@ def getuser():
 	print("")
 
 def subscribetochannel():
-	# Subscribe to a channel
+	"""
+	Subscribe to a public (chat) channel.
+	
+	Arguments:
+		none
+	User input:
+		Channel number.
+	"""
 	channelnum = input("Subscribe to channelnum? ")
 	postcontent = pnutpy.api.subscribe_channel(channelnum)
 	serverresponse(postcontent)
 
 def getchannel():
-	# Get channel details
+	"""
+	Get a public (chat) channel's details and most recent message.
+	
+	Arguments:
+		none
+	User input:
+		Channel number.
+	"""
 	channelnumber = input("Get data, channelid? ")
 	channelcontent = pnutpy.api.get_channel(channelnumber, include_raw=True)
-	channelname = channelcontent[0]["raw"][0]["value"]["name"]
+	try:
+		channelname = channelcontent[0]["raw"][0]["value"]["name"]
+	except:
+		channelname = "PM"
 	print("---------------")
 	print("#" + str(channelcontent[0]["id"]) + " " + channelname + " c:" + "@" + channelcontent[0]["owner"]["username"])
 	recentmessageid = str(channelcontent[0]['recent_message_id'])
@@ -238,33 +435,57 @@ def getchannel():
 # DEFINE INTERACTIONS WITH MULTIPLE RESULTS:
 
 def getunified():
-	# Get unified timeline
-	# (Server returns last 20 by default)
-	postcontent = pnutpy.api.users_post_streams_unified(count = retrievecount, include_raw = True)
+	"""
+	Get the application user's own 'Unified' post stream.
+	
+	Arguments:
+		none
+	User input:
+		none
+	"""
+	postcontent = pnutpy.api.users_post_streams_unified(count = retrievecount, include_raw=True)
 	displaypost(postcontent)
 
 def getglobal():
-	# Get global timeline
-	# (Server returns last 20 by default)
-	postcontent = pnutpy.api.posts_streams_global(count = retrievecount, include_raw = True)
+	"""
+	Get the Global post stream.
+	
+	Arguments:
+		none
+	User input:
+		none
+	"""
+	postcontent = pnutpy.api.posts_streams_global(count = retrievecount, include_raw=True)
 	displaypost(postcontent)
 
 def getmentions():
-	# Get mentions
-	# (Server returns last 20 by default)
+	"""
+	Get the application user's mentions.
+	
+	Arguments:
+		none
+	User input:
+		User number.
+	"""
 	userid = input("User mentions, userid? [return]=me: ")
 	if userid == '':
 		userid = "me"
-	postcontent = pnutpy.api.users_mentioned_posts(userid, count = retrievecount, include_raw = True)
+	postcontent = pnutpy.api.users_mentioned_posts(userid, count=retrievecount, include_raw=True)
 	displaypost(postcontent)
 
 def getinteractions():
-	# Get user interactions
-	# (Server returns last 20 by default)
+	"""
+	Get the application user's interactions.
+	
+	Arguments:
+		none
+	User input:
+		User number.
+	"""
 	userid = input("Interacts, userid? [return]=me: ")
 	if userid == '':
 		userid = "me"
-	postcontent = pnutpy.api.interactions_with_user(userid, count = retrievecount)
+	postcontent = pnutpy.api.interactions_with_user(userid, count=retrievecount)
 	global number
 	number = retrievecount
 	print("---------------")
@@ -280,34 +501,63 @@ def getinteractions():
 		number -= 1
 
 def getthread(postnum):
-	# Get thread
-	# (Server returns last 20 by default)
+	"""
+	Get a thread.
+	
+	Arguments:
+		postnum:
+			Post number to thread.
+				if postnum == 0:
+					ask for post number to thread
+				else:
+					thread from post
+	User input:
+		Post number, threads are displayed beginning with postnum.
+	"""
 	if postnum == 0:
 		postnum = input("Get threadid? ")
-	postcontent = pnutpy.api.posts_thread(postnum, count = retrievecount, include_raw = True)
+	postcontent = pnutpy.api.posts_thread(postnum, count=retrievecount, include_raw=True)
 	displaypost(postcontent)
 
 def getbookmarks():
-	# Get bookmarks
-	# (Server returns last 20 by default)
+	"""
+	Get the application user's bookmarks.
+	
+	Arguments:
+		none
+	User input:
+		User number.
+	"""
 	userid = input("Bookmarks, userid? [return]=me: ")
 	if userid == '':
 		userid = "me"
-	postcontent = pnutpy.api.users_bookmarked_posts(userid, count = retrievecount, include_raw = True)
+	postcontent = pnutpy.api.users_bookmarked_posts(userid, count=retrievecount, include_raw=True)
 	displaypost(postcontent)
 
 def gethashtag():
-	# Get hashtag
-	# (Server returns last 20 by default)
+	"""
+	Get a list of posts containing the required hashtag.
+	
+	Arguments:
+		none
+	User input:
+		Hashtag text.
+	"""
 	hashtag = input("Get hashtag? ")
-	postcontent = pnutpy.api.posts_with_hashtag(hashtag, count = retrievecount, include_raw = True)
+	postcontent = pnutpy.api.posts_with_hashtag(hashtag, count = retrievecount, include_raw=True)
 	displaypost(postcontent)
 
 def getsubscribed():
-	# Get subscribed channels
-	# (Server returns last 20 by default)
+	"""
+	Get a list of the application user's subscribed channels.
+	
+	Arguments:
+		none
+	User input:
+		none
+	"""
 	# Duplicates code in getchannel
-	channelcontent = pnutpy.api.subscribed_channels(count = retrievecount)
+	channelcontent = pnutpy.api.subscribed_channels(count=retrievecount)
 	global number
 	number = retrievecount
 	print("---------------")
@@ -342,8 +592,14 @@ def getsubscribed():
 		number -= 1
 
 def getmessages():
-	# Get messages
-	# (Server returns last 20 by default)
+	"""
+	Get a list of messages in a public channel, or a private channel the user has authorisation for.
+	
+	Arguments:
+		none
+	User input:
+		Channel number.
+	"""
 	global channelnumber
 	channelnumber = input("Messages in channelnum? ")
 	postcontent = pnutpy.api.get_channel_messages(channelnumber, count = retrievecount)
@@ -352,20 +608,25 @@ def getmessages():
 
 # DEFINE OTHER ROUTINES:
 
-def getme():
-	global me
-	userid = pnutpy.api.get_user("me")
-	me = userid[0]["username"]
-
 def inputtext():
-	# Input text, '\n'=newline:
+	"""
+	Takes user input, passes it back to the calling function.
+	
+	Arguments:
+		none
+	User input:
+		Text.
+	Special:
+		if textinput.startswith "/me":
+			create a post reminiscent of an iOS Mutter IRC app "/me" post.
+	"""
 	global posttext
 	posttext = ''
 	textinput = ""
 	while not textinput:
 		textinput = input("Write here (\\n=newline): ")
 		if not textinput:
-			print ("-Empty post, retry-")
+			print("-Empty post, retry-")
 	# Silly things:
 	if textinput.startswith("/me"):
 		textinput = "+" + me + textinput[3:]
@@ -376,7 +637,15 @@ def inputtext():
 	posttext = posttext.strip()
 
 def displaypost(postcontent):
-	# Display post (not message) content:
+	"""
+	Displays a list of posts (not a messages), provided they have not been deleted.
+	
+	Arguments:
+		postcontent:
+			The posts' content.
+	User input:
+		none
+	"""
 	global number
 	number = retrievecount
 	print("---------------")
@@ -407,8 +676,7 @@ def displaypost(postcontent):
 					raw = postcontent[0][number]['raw'][0]
 					checkoembed(postcontent[0][number], raw)
 				except:
-					dummyvalue = 0				
-#				checkoembed(postcontent, "")
+					dummyvalue = 0
 				# Build hierarchy links:
 				postrefs = " id:" + postid
 				if "reply_to" in postcontent[0][number]:
@@ -425,6 +693,17 @@ def displaypost(postcontent):
 	print("")
 
 def inlinepostinteraction(postid, postthreadid):
+	"""
+	Displays an inline post interaction menu and accepts commands from it.
+	
+	Arguments:
+		postid:
+			The post id currently in focus.
+		postthreadid:
+			The thread in which the post exists.
+	User input:
+		Command to execute.
+	"""
 	global action
 	validaction = False
 	separatormenu = " ------------------------------- "
@@ -459,8 +738,15 @@ def inlinepostinteraction(postid, postthreadid):
 			return
 
 def displaymessage(postcontent):
-	# Display message (not post) content
-	# Same base as displaypost() but with interaction status indicators removed
+	"""
+	Displays a list of messages (not posts.)
+	
+	Arguments:
+		postcontent:
+			The messages' content.
+	User input:
+		none
+	"""
 	global number
 	number = retrievecount
 	print("---------------")
@@ -486,7 +772,15 @@ def displaymessage(postcontent):
 	print("")
 
 def userstatus(postcontent):
-	# Display poster status
+	"""
+	Extracts the username, id, following and follower status from a post's content.
+	
+	Arguments:
+		postcontent:
+			The contents of a single post.
+	User input:
+		none
+	"""
 	userstatus = "@" + postcontent[0]["user"]["username"] + ": [u:" + str(postcontent[0]["user"]["id"])
 	if postcontent[0]["user"]["you_follow"]:
 		userstatus += "+f"
@@ -495,7 +789,15 @@ def userstatus(postcontent):
 	print(userstatus + "]")
 
 def timestarrpstatus(postcontent):
-	# Display my interactions
+	"""
+	Extracts the created at, bookmarked and repost status from a post's content.
+	
+	Arguments:
+		postcontent:
+			The contents of a single post.
+	User input:
+		none
+	"""
 	poststatus = str(postcontent[0]["created_at"]) + " ["
 	if postcontent[0]["you_bookmarked"]:
 		poststatus += "*"
@@ -504,6 +806,17 @@ def timestarrpstatus(postcontent):
 	print(poststatus + "]")
 
 def checkoembed(postcontent, raw):
+	"""
+	Extracts any oembed-ed image and link from a post's content.
+	
+	Arguments:
+		postcontent:
+			The contents of a single post.
+		raw:
+			The 'raw' content attached to a post.
+	User input:
+		none
+	"""
 	try:
 		if raw["type"] == "io.pnut.core.oembed":
 			# Get image page URL:
@@ -521,6 +834,15 @@ def checkoembed(postcontent, raw):
 		dummyvalue = 0
 
 def postfooter(postcontent):
+	"""
+	Extracts a post id, post replying to and thread from a single post.
+	
+	Arguments:
+		postcontent:
+			The contents of a single post.
+	User input:
+		none
+	"""
 	# Display post data
 	postrefs = " id:" + str(postcontent[0]["id"])
 	if "reply_to" in postcontent[0]:
@@ -529,7 +851,15 @@ def postfooter(postcontent):
 	print(postrefs)
 
 def serverresponse(postcontent):
-	# Return server response code
+	"""
+	Displays status returned from the server after posts, messages, etc.
+	
+	Arguments:
+		postcontent:
+			The server's JSON response.
+	User input:
+		none
+	"""
 	status = ()
 	status = postcontent[1]["code"]
 	if status == 200:
@@ -539,64 +869,25 @@ def serverresponse(postcontent):
 	else:
 		print(str(status) + " = hmmm...")
 
-
 # MAIN ROUTINE:
 
-# Get pnut.io username
-getme()
-# Display menu
-menu()
+def main():
+	"""
+	Sets up the application, displays the menu and waits for commands.
+	
+	Arguments:
+		none
+	User input:
+		Commands from the menus.
+	"""
+	# Get authorisation token from file:
+	authorise()
+	# Get pnut.io username:
+	getme()
+	# Display menu:
+	menu()
+	# Begin command entry, exit on 'exit':
+	commandentry()
 
-# Command entry:
-# The menu has no input validation outside valid options:
-choice = 'Little Bobby Tables'
-while choice != 'exit':
-	choice = input("Choice? ")
-	# Add in alphabetic order to easily scan through
-	if choice == 'b':
-		bookmarkpost(0)
-	elif choice == 'f':
-		followuser()
-	elif choice == 'gb':
-		getbookmarks()
-	elif choice == 'gc':
-		getchannel()
-	elif choice == "gg":
-		getglobal()
-	elif choice == 'gh':
-		gethashtag()
-	elif choice == "gi":
-		getinteractions()
-	elif choice == 'gm':
-		getmentions()
-	elif choice == 'gms':
-		getmessages()
-	elif choice == 'gp':
-		getpost()
-	elif choice == 'gs':
-		getsubscribed()
-	elif choice == "gt":
-		getunified()
-	elif choice == 'gth':
-		getthread(0)
-	elif choice == "gu":
-		getuser()
-	elif choice == 'help':
-		menu()
-	elif choice == 'msg':
-		createmessage(True)
-	elif choice == 'p':
-		createpost(True)
-	elif choice == 'r':
-		replypost(0)
-	elif choice == 'rp':
-		repostpost(0)
-	elif choice == "sub":
-		subscribetochannel()
-	elif choice == "xp":
-		xpost()
-
-# The app exits here once 'exit' is typed:
-print(" ")
-print("You chose 'exit': Goodbye!")
-
+# STOP FIDDLING WITH STUFF, DO IT!
+main()
