@@ -4,7 +4,7 @@
 #  / __// // //// __// ___ / /\|
 # /_/  /_/ |_ //_/   |___//_//_/
 #         /__/   
-# v0.3.5 for Python 3.5
+# v0.3.6dev for Python 3.5
 
 # PigPen, a Python app for @33MHz's pnut.io social network.
 
@@ -17,13 +17,15 @@
 
 # Import @33MHz and @thrrgilag's library for interacting with pnut.io:
 import pnutpy
-	
+
 # Used to display images:
 from PIL import Image
 import requests
 from io import BytesIO
 
-# For future expansion and dor testing:
+from itertools import chain
+
+# For future expansion and or testing:
 import time
 
 # Define probably way too many global variables:
@@ -38,7 +40,7 @@ postcontent = ()
 postid = 0
 postthreadid = 0
 posttext = ''
-retrievecount = 30
+retrievecount = 5
 
 
 # DEFINE FUNCTIONS:
@@ -52,7 +54,7 @@ def authorise():
 	User input:
 		none
 	Dependencies:
-		File "secrettoken.txt" must already exist in the same folder as rhe application. It must contain only the token ontained from pnut.io. See the GitHub repo's docs for more.
+		File "secrettoken.txt" must already exist in the same folder as the application. It must contain only the token ontained from pnut.io. See the GitHub repo's docs for more.
 	"""
 	tokenfile = open("secrettoken.txt", "r")
 	token = tokenfile.read()
@@ -88,6 +90,7 @@ p  post     rp repost   gm mentions
 r reply     gth getthrd gp getpost
 b bookmark  gb bookmrks gh 'hashtag'
 f follow    gu getuser  gi interacts
+*gpu:gtpairedusrs gsi:1usrinteracts*
 msg message gms getmsgs gs getsubs
 xp x-post   gc getchanl sub subchanl
 | help=menu exit=exit""".format(str(me)))
@@ -136,8 +139,14 @@ def commandentry():
 			getmessages()
 		elif choice == 'gp':
 			getpost()
+#		CHALLENGE ACCEPTED:
+		elif choice == 'gpu':
+			getpairedusermentions()
 		elif choice == 'gs':
 			getsubscribed()
+#		CHALLENGE ACCEPTED:
+		elif choice == 'gsi':
+			getsingleuserinteractions()
 		elif choice == "gt":
 			getunified()
 		elif choice == 'gth':
@@ -473,6 +482,53 @@ def getmentions():
 	postcontent = pnutpy.api.users_mentioned_posts(userid, count=retrievecount, include_raw=True)
 	displaypost(postcontent)
 
+def getpairedusermentions():
+	"""
+	Get the application user's and a nominated user's mentions, save to file and, er… do some processing stuff.
+	
+	Arguments:
+		none
+	User input:
+		The nominated user's id.
+	Files created:
+		pcone.txt & pctwo.txt:
+			Both user mentions data.
+		pcsum.txt:
+			Both sets of mentions merged together.
+	"""
+	#############################
+	# Emphatically NOT Pythonic #
+	#############################
+	# yet
+	user1id = "me"
+	user2id = input("User mentions, userid? ")
+	global retrievecount
+	retrievecount = retrievecount * 2
+	# Save the app user (user 1) mentions:
+	postcontent1 = pnutpy.api.users_mentioned_posts(user1id, count=retrievecount, include_raw=True)
+	postcontent1 = postcontent1[:-1]
+	f = open("pcone.txt", "w", encoding='utf8')
+	for t in postcontent1:
+		f.write(" ".join(str(s) for s in t) + '\n')
+	f.close()
+	# Save user 2 mentions:
+	postcontent2= pnutpy.api.users_mentioned_posts(user2id, count=retrievecount, include_raw=True)
+	postcontent2 = postcontent2[:-1]
+	f = open("pctwo.txt", "w", encoding='utf8')
+	for t in postcontent2:
+		f.write(" ".join(str(s) for s in t) + '\n')
+	f.close()
+	print("-" * 15)
+	# Merge the 2 tuples and save to file:
+#	postcontent0 = postcontent1 + postcontent2
+	
+	postcontent0 = tuple(zip(chain(*postcontent1), chain(*postcontent2)))
+	f = open("pcsum.txt", "w", encoding='utf8')
+	for t in postcontent0:
+		f.write(" ".join(str(s) for s in t) + '\n')
+	f.close()
+	displaymergedpost(postcontent0)
+
 def getinteractions():
 	"""
 	Get the application user's interactions.
@@ -480,12 +536,9 @@ def getinteractions():
 	Arguments:
 		none
 	User input:
-		User number.
+		none
 	"""
-	userid = input("Interacts, userid? [return]=me: ")
-	if userid == '':
-		userid = "me"
-	postcontent = pnutpy.api.interactions_with_user(userid, count=retrievecount)
+	postcontent = pnutpy.api.interactions_with_user(count=retrievecount)
 	global number
 	number = retrievecount
 	print("---------------")
@@ -495,6 +548,36 @@ def getinteractions():
 			print(postcontent[0][number]["event_date"])
 			print(postcontent[0][number]["objects"][0]["content"]["text"])
 			print("---------------")
+		except:
+			dummyvalue = 0
+			# Not needed
+		number -= 1
+
+def getsingleuserinteractions():
+	"""
+	Get the application user's interactions with a specific user.
+	
+	Arguments:
+		none
+	User input:
+		usernum:
+			User number to display.
+	Note:
+		Function added in response to my request for a challenge for the December 2017 pnut.io #Hackathon; something else no other app has. Thanks for the suggestion @schmidt_fu!
+	"""
+	usernum = input("Usernum to query? ")
+	postcontent = pnutpy.api.interactions_with_user(count=retrievecount)
+	global number
+	number = retrievecount
+	print("---------------")
+	while number >= 0:
+		try:
+			useridinter = postcontent[0][number]["users"][0]["id"]
+			if (str(useridinter) == str(usernum)):
+				print(postcontent[0][number]["action"] + " by @" + postcontent[0][number]["users"][0]["username"] + " ref.:")
+				print(postcontent[0][number]["event_date"])
+				print(postcontent[0][number]["objects"][0]["content"]["text"])
+				print("---------------")
 		except:
 			dummyvalue = 0
 			# Not needed
@@ -648,6 +731,62 @@ def displaypost(postcontent):
 	"""
 	global number
 	number = retrievecount
+	print("---------------")
+	while number >= 0:
+		try:
+			if not "is_deleted" in postcontent[0][number]:
+				# Build user status:
+				postid = str(postcontent[0][number]["id"])
+				postuserid = str(postcontent[0][number]["user"]["id"])
+				postthreadid = str(postcontent[0][number]["thread_id"])
+				userstatus = "@" + postcontent[0][number]["user"]["username"] + ": [u:" + postuserid
+				if postcontent[0][number]["user"]["you_follow"]:
+					userstatus += "+f"
+				if postcontent[0][number]["user"]["follows_you"]:
+					userstatus += "+F"
+				print(userstatus + "]")
+				# Build post status indicators:
+				poststatus = str(postcontent[0][number]["created_at"]) + " ["
+				if postcontent[0][number]["you_bookmarked"]:
+					poststatus += "*"
+				if postcontent[0][number]["you_reposted"]:
+					poststatus += "rp"
+				print(poststatus + "]")
+				# Display post text:
+				print(postcontent[0][number]["content"]["text"])
+				# Check for oembed file:
+				try:
+					raw = postcontent[0][number]['raw'][0]
+					checkoembed(postcontent[0][number], raw)
+				except:
+					dummyvalue = 0
+				# Build hierarchy links:
+				postrefs = " id:" + postid
+				if "reply_to" in postcontent[0][number]:
+					postrefs += " rep:" + str(postcontent[0][number]["reply_to"])
+				postrefs += " thd:" + postthreadid
+				print(postrefs)
+				inlinepostinteraction(postid, postthreadid)
+				if action == "x":
+					number = 0
+		except:
+			dummyvalue = 0
+			# Not needed
+		number -= 1
+	print("")
+
+def displaymergedpost(postcontent):
+	"""
+	Displays a list of posts (not a messages), provided they have not been deleted.
+	
+	Arguments:
+		postcontent:
+			The posts' content.
+	User input:
+		none
+	"""
+	global number
+	number = retrievecount * 2
 	print("---------------")
 	while number >= 0:
 		try:

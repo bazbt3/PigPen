@@ -5,22 +5,22 @@
 * Change avatar (a precursor to other file operations in v0.3.)
 * Pushed goal of display of longer timelines back from v0.3 to v0.4.
 
+### 2017-11-21: v0.3.6dev (Challenge accepted!):
+* Added: Rudimentary list of interactions with a single user. Limited to mentions and system interactions. No de-duplication or sorting yet.
+* Changed: -
+* Deprecated: -
+* Removed: User input of username in `getinteractions`; PNUTpy's `interactions_with_user` doesn't take the argument.
+* Fixed: -
+* Security: -
+
 ### 2017-11-19: v0.3.5 (Docstrings):
 * Added: Code: Docstrings created in every module. Probably of little consequence.
 * Changed: Code: Order of functions, change in progress; maybe more logical?
-* Deprecated: -
-* Removed: -
 * Fixed: `getchannel` now works correctly, doesn't exit the app.
-* Security: -
 
 ### 2017-11-18: v0.3.4 (a bit Saturday-ish):
 **News:** The documentation is moving to GitHub Pages so ~~might break~~is of course temporarily borked.
-* Added: -
-* Changed: -
-* Deprecated: -
 * Removed: `import sys` - only used in my Python 2.7 catch-all exception handling.
-* Fixed: -
-* Security: -
 
 ### 2017-11-17: v0.3.3 (Spammy images!~~A bit spammy?~~):
 * Added: Display embedded images in posts. It's a bit slow and there is of course no caching.
