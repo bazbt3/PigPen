@@ -5,9 +5,10 @@
 * Change avatar (a precursor to other file operations in v0.3.)
 * Pushed goal of display of longer timelines back from v0.3 to v0.4.
 
-### 2017-11-23: v0.3.6 (Ch-ch-ch-changes):
 **Parallel project for the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
+
+### 2017-11-23: v0.3.6 (Ch-ch-ch-changes):
 
 * Added: Settings menu: The first option modifies the number of posts retrieved. Note: it's currently applied to *every* post listing, a more granular approach is *needed*.
 * Added: A Windows-like `ppconfig.ini` file to allow user settings to persist between sessions. (I'm not entirely certain this is the most 'Pythonic' way to do it.) Created by the app on first run. Dependent on `import configparser`. Currently holds only the number of posts the user wishes to be retrieved.
@@ -21,19 +22,11 @@
 
 * Added: Code: Docstrings created in every module. Probably of little consequence.
 * Changed: Code: Order of functions, change in progress; maybe more logical?
-* Deprecated: -
-* Removed: -
 * Fixed: `getchannel` now works correctly, doesn't exit the app.
-* Security: -
 
 ### 2017-11-18: v0.3.4 (a bit Saturday-ish):
 **News:** The documentation is moving to GitHub Pages so ~~might break~~is of course temporarily borked.
-* Added: -
-* Changed: -
-* Deprecated: -
 * Removed: `import sys` - only used in my Python 2.7 catch-all exception handling.
-* Fixed: -
-* Security: -
 
 ### 2017-11-17: v0.3.3 (Spammy images!~~A bit spammy?~~):
 * Added: Display embedded images in posts. It's a bit slow and there is of course no caching.
