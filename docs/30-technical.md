@@ -7,11 +7,12 @@
 * What there is, it's a noob's *second* attempt at proper Python interacting with an API.  Please tread carefully.
 
 ## A running client's file list:
-**Valid at v0.1.23 onwards.**
+**Valid at v0.3.6 onwards.**
 ### The main application:
 * `PigPen.py`.
 ### Necessary before the application will run:
 * `secrettoken.txt             ` - contains the secret token.
+* `config.ini` - a persistent settings file created by the app when first run after installation.
 
 ## Limitations:
 * Text commands only.

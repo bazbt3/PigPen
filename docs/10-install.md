@@ -7,6 +7,14 @@ Incomplete, potentially misleading instructions follow.  This is very much a wor
 * [`StaSh`](https://gist.github.com/CodyKochmann/4d6b40e77ba862e634185a038d2c3f13), a bash-like shell for Pythonista, to give access to `pip`, which allows installation of…
 * @33MHz & @thrrgilag's [`PNUTpy`](https://github.com/pnut-api/PNUTpy) library. (FYI: It's compatible with Python 2 and 3.)
 
+## Python modules:
+* **`import pnutpy`** - see below for install instructions. *Not* a part of Python's standard libraries, essential for this app (as is everything else.)
+* `import configparser`
+* `from PIL import Image`
+* `import requests`
+* `from io import BytesIO`
+* `import time` - not used as-of v0.3.6 but used for testing.
+
 ## First steps:
 (Assuming you're running Pythonista, {p} = a Pythonista-specific instruction.)
 1. You will need a pnut.io account, and to visit your developer account page.
@@ -17,11 +25,11 @@ Incomplete, potentially misleading instructions follow.  This is very much a wor
 1. {p} **Install `StaSh`** following the instructions as it runs and from the link above.
 1. {p} I *think* `Stash` must be executed at this stage to install a script and extension folder; read the instructions.
 1. {p} **Kill then reopen Pythonista** to properly install `Stash`, if you didn't read the instructions.
-1. **Follow PNUTpy's installation instructions, and `$ pip install pnutpy`**.
+1. **Follow PNUTpy's installation instructions, i.e. `$ pip install pnutpy`**.
 1. {p} For the hell of it, **kill then re-open Pythonista.**
 
 ## Run PigPen for the first time:
-Run the `PigPen.py script`; it's as simple as that!
+Run the `PigPen.py script` and follow the instructions; it's as simple as that!
 
 (I have not included instructions for making the file executable by file permissions of shebangs, it's beyond the remit of this page; Pythonista doesn't require it.)
 

@@ -3,8 +3,8 @@
 #   / ////_// _ \/ //// // |/  \
 #  / __// // //// __// ___ / /\|
 # /_/  /_/ |_ //_/   |___//_//_/
-#         /__/   
-# v0.3.5 for Python 3.5
+#         /__/
+# v0.3.6 for Python 3.5
 
 # PigPen, a Python app for @33MHz's pnut.io social network.
 
@@ -17,13 +17,16 @@
 
 # Import @33MHz and @thrrgilag's library for interacting with pnut.io:
 import pnutpy
+
+# Used to load default and user configuration data:
+import configparser
 	
 # Used to display images:
 from PIL import Image
 import requests
 from io import BytesIO
 
-# For future expansion and dor testing:
+# For future expansion and for testing:
 import time
 
 # Define probably way too many global variables:
@@ -38,21 +41,23 @@ postcontent = ()
 postid = 0
 postthreadid = 0
 posttext = ''
-retrievecount = 30
+# retrievecount = 30
+
+# Setup continues after the function definitions.
 
 
 # DEFINE FUNCTIONS:
 
 def authorise():
 	"""
-	Authorise user with secret token.
+	Authorise user using a token previously obtained from the network.
 	
 	Arguments:
 		none
 	User input:
 		none
 	Dependencies:
-		File "secrettoken.txt" must already exist in the same folder as rhe application. It must contain only the token ontained from pnut.io. See the GitHub repo's docs for more.
+		File "secrettoken.txt" must already exist in the same folder as the application. It must contain only the token ontained from pnut.io. See the GitHub repo's docs for more.
 	"""
 	tokenfile = open("secrettoken.txt", "r")
 	token = tokenfile.read()
@@ -90,7 +95,7 @@ b bookmark  gb bookmrks gh 'hashtag'
 f follow    gu getuser  gi interacts
 msg message gms getmsgs gs getsubs
 xp x-post   gc getchanl sub subchanl
-| help=menu exit=exit""".format(str(me)))
+__help=menu__set=settings__exit=exit""".format(str(me)))
 
 def commandentry():
 	"""
@@ -154,6 +159,8 @@ def commandentry():
 			replypost(0)
 		elif choice == 'rp':
 			repostpost(0)
+		elif choice == 'set':
+			changesettings()
 		elif choice == "sub":
 			subscribetochannel()
 		elif choice == "xp":
@@ -608,6 +615,39 @@ def getmessages():
 
 # DEFINE OTHER ROUTINES:
 
+def changesettings():
+	"""
+	Changes global settings.
+	
+	Arguments:
+		none
+	User input:
+		The setting to change:
+			retrievecount = the number of posts fetched from the server. No input validation.
+	"""
+	print(" " + "-" * 31 + " ")
+	choice = input("""| settings |
+rc change retrieved post count?
+[return] = exit
+""")
+	if choice == "rc":
+		global retrievecount
+		try:
+			dummyvalue = retrievecount
+		except:
+			retrievecount = 30
+		print("retrievecount =", retrievecount, "now")
+		rcount = input("Please change, to (>0)? ")
+		if int(rcount) > 0:
+			retrievecount = int(rcount)
+			print("now", retrievecount, "posts")
+			# Save to "ppconfig.ini" file:
+			config["USER"]["retrievecount"] = str(retrievecount)
+			with open ("ppconfig.ini", "w") as configfile:
+				config.write(configfile)
+	print(" " + "-" * 31 + " ")
+	print("")
+
 def inputtext():
 	"""
 	Takes user input, passes it back to the calling function.
@@ -628,6 +668,7 @@ def inputtext():
 		if not textinput:
 			print("-Empty post, retry-")
 	# Silly things:
+	# IRC-like /me:
 	if textinput.startswith("/me"):
 		textinput = "+" + me + textinput[3:]
 	# Back to sensible
@@ -873,7 +914,7 @@ def serverresponse(postcontent):
 
 def main():
 	"""
-	Sets up the application, displays the menu and waits for commands.
+	Sets up the application, displays the menu, then waits for commands.
 	
 	Arguments:
 		none
@@ -888,6 +929,23 @@ def main():
 	menu()
 	# Begin command entry, exit on 'exit':
 	commandentry()
+
+
+# Load defaults and any previous user-applied changes from "ppconfig.ini", initially only 'defaultretrievecount' and 'retrievecount':
+try:
+	config = configparser.ConfigParser()
+	config.read("ppconfig.ini")
+	retrievecount = int(config["USER"]["retrievecount"])
+except:
+	config = configparser.ConfigParser()
+	config["USER"] = {}
+	config["USER"]["retrievecount"] = "30"
+	print("""
+| PigPen | Initialisation:
+(You'll see this only once.)
+Please decide on a default number of posts to retrieve - then choose the 'rc' option on the following menu.""")
+	changesettings()
+	print("Thanks.")
 
 # STOP FIDDLING WITH STUFF, DO IT!
 main()
