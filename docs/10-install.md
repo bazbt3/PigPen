@@ -15,23 +15,41 @@ Incomplete, potentially misleading instructions follow.  This is very much a wor
 * `from io import BytesIO`
 * `import time` - not used as-of v0.3.6 but used for testing.
 
-## First steps:
+## First steps, install all the things:
 (Assuming you're running Pythonista, {p} = a Pythonista-specific instruction.)
 1. You will need a pnut.io account, and to visit your developer account page.
 1. **Create an app at the page**, which will create 2 unique codes, then authorise it which will create a token.
 1. **Create a new `PigPen` directory** wherever directory you intend to run the app from.
-1. **Copy the `PigPen.py`, `secrettoken.txt` file from here** and save it there.
+1. **Copy the `PigPen.py`, `secrettoken.txt` file from here** and save them there.
 1. **Overwrite the contents of `secrettoken.txt` with the token**, ensuring to remove any trailing linefeeds before saving it.
 1. {p} **Install `StaSh`** following the instructions as it runs and from the link above.
-1. {p} I *think* `Stash` must be executed at this stage to install a script and extension folder; read the instructions.
+1. {p} I *think* `StaSh` must be executed at this stage to install a script and extension folder; read the instructions.
 1. {p} **Kill then reopen Pythonista** to properly install `Stash`, if you didn't read the instructions.
 1. **Follow PNUTpy's installation instructions, i.e. `$ pip install pnutpy`**.
 1. {p} For the hell of it, **kill then re-open Pythonista.**
 
 ## Run PigPen for the first time:
-Run the `PigPen.py script` and follow the instructions; it's as simple as that!
+Run the `PigPen.py` script and follow the setup instructions; it's as simple as that!
+
+```
+| PigPen | setup |
+(You'll see this only once.)
+Please decide on a default number of posts to retrieve - then choose the 'pc' option on the following menu.
+ ------------------------------- 
+| settings |
+pc = change retrieved post count?
+[return] = exit
+pc
+-post count is currently 30 
+
+Please change, to (>0)? 12
+
+-post count is now 12 posts
+
+Thanks.
+```
 
 (I have not included instructions for making the file executable by file permissions of shebangs, it's beyond the remit of this page; Pythonista doesn't require it.)
 
 ## Next steps:
-To find out how to start posting, reading, starring, etc., and read about some current limitations, please read the **[Usage document.](20-usage.md)**
+To find out how to start posting, reading, messaging, etc., and read about some current limitations, please read the **[Usage document.](20-usage.md)**

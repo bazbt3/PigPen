@@ -8,15 +8,17 @@
 **Parallel project for the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
-### 2017-11-23: v0.3.6 (Ch-ch-ch-changes):
-
-* Added: Settings menu: The first option modifies the number of posts retrieved. Note: it's currently applied to *every* post listing, a more granular approach is *needed*.
-* Added: A Windows-like `ppconfig.ini` file to allow user settings to persist between sessions. (I'm not entirely certain this is the most 'Pythonic' way to do it.) Created by the app on first run. Dependent on `import configparser`. Currently holds only the number of posts the user wishes to be retrieved.
-* Changed: -
+### 2017-11-24: v0.3.7 (Tweakage):
+* Added: -
+* Changed: Subtly changed a few menus; there's a long way to go before it'll be done.
 * Deprecated: -
 * Removed: -
-* Fixed: -
+* Fixed: Chat channels with channel avatars added subsequent to the API v0.7.4 update failed to show in both `getchannel` and the `getsubscribed` listing, and broke `crosspost` (after sending the message to the channel and before creating the post.)
 * Security: -
+
+### 2017-11-23: v0.3.6 (Ch-ch-ch-changes):
+* Added: Settings menu: The first option modifies the number of posts retrieved. Note: it's currently applied to *every* post listing, a more granular approach is *needed*.
+* Added: A Windows-like `ppconfig.ini` file to allow user settings to persist between sessions. (I'm not entirely certain this is the most 'Pythonic' way to do it.) Created by the app on first run. Dependent on `import configparser`. Currently holds only the number of posts the user wishes to be retrieved.
 
 ### 2017-11-19: v0.3.5 (Docstrings):
 

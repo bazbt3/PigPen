@@ -12,7 +12,8 @@
 * `PigPen.py`.
 ### Necessary before the application will run:
 * `secrettoken.txt             ` - contains the secret token.
-* `config.ini` - a persistent settings file created by the app when first run after installation.
+### Created by the app when first run after installation:
+* `config.ini` - a persistent settings file.
 
 ## Limitations:
 * Text commands only.

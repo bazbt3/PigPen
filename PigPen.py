@@ -4,7 +4,7 @@
 #  / __// // //// __// ___ / /\|
 # /_/  /_/ |_ //_/   |___//_//_/
 #         /__/
-# v0.3.6 for Python 3.5
+# v0.3.7 for Python 3.5
 
 # PigPen, a Python app for @33MHz's pnut.io social network.
 
@@ -41,7 +41,6 @@ postcontent = ()
 postid = 0
 postthreadid = 0
 posttext = ''
-# retrievecount = 30
 
 # Setup continues after the function definitions.
 
@@ -73,9 +72,10 @@ def getme():
 	User input:
 		none
 	"""
-	global me
-	userid = pnutpy.api.get_user("me")
-	me = userid[0]["username"]
+	global me, userid
+	user = pnutpy.api.get_user("me")
+	me = user[0]["username"]
+	userid = user[0]["id"]
 
 def menu():
 	"""
@@ -87,7 +87,7 @@ def menu():
 		none
 	"""
 	print("""
-| PigPen | pnut u:@{0}
+| PigPen | u:{0} @{1}
 gg global timeline  gt your timeline
 p  post     rp repost   gm mentions
 r reply     gth getthrd gp getpost
@@ -95,7 +95,7 @@ b bookmark  gb bookmrks gh 'hashtag'
 f follow    gu getuser  gi interacts
 msg message gms getmsgs gs getsubs
 xp x-post   gc getchanl sub subchanl
-__help=menu__set=settings__exit=exit""".format(str(me)))
+| help=menu | set=settings | ex=exit""".format(str(userid), str(me)))
 
 def commandentry():
 	"""
@@ -118,7 +118,7 @@ def commandentry():
 				the routine uses the global variable passed from the routine calling it
 	"""
 	choice = 'Little Bobby Tables'
-	while choice != 'exit':
+	while choice != 'ex':
 		choice = input("Choice? ")
 		# Add in alphabetic order to easily scan through
 		if choice == 'b':
@@ -167,7 +167,7 @@ def commandentry():
 			xpost()
 	# The app exits here once 'exit' is typed:
 	print(" ")
-	print("You chose 'exit': Goodbye!")
+	print("You chose to exit: Goodbye!")
 
 
 # DEFINE FUNCTIONS WITH SINGLE RESULTS FOR THE USER:
@@ -226,7 +226,6 @@ def xpost():
 	createmessage(True)
 	# Get channel name:
 	channelcontent = pnutpy.api.get_channel(channelid, include_raw=True)
-	channelname = channelcontent[0]["raw"][0]["value"]["name"]
 	# Add an x-post footer then create the post without user input:
 	posttext += "\n\nx-post: " + channelname + " "
 	channelurl = "https://patter.chat/room/" + str(channelid)
@@ -427,6 +426,8 @@ def getchannel():
 	try:
 		channelname = channelcontent[0]["raw"][0]["value"]["name"]
 	except:
+		channelname = channelcontent[0]["raw"][1]["value"]["name"]
+	else:
 		channelname = "PM"
 	print("---------------")
 	print("#" + str(channelcontent[0]["id"]) + " " + channelname + " c:" + "@" + channelcontent[0]["owner"]["username"])
@@ -577,7 +578,10 @@ def getsubscribed():
 			# Thanks @hutattedonmyarm!
 			if channeltype == "chat":
 				channelnumraw = pnutpy.api.get_channel(channelnumber, include_raw=True)
-				channelname = channelnumraw[0]["raw"][0]["value"]["name"]
+				try:
+					channelname = channelnumraw[0]["raw"][0]["value"]["name"]
+				except:
+					channelname = channelnumraw[0]["raw"][1]["value"]["name"]
 				print(channelname + ":")
 			# Check for unread:
 			if channelcontent[0][number]["has_unread"]:
@@ -627,25 +631,24 @@ def changesettings():
 	"""
 	print(" " + "-" * 31 + " ")
 	choice = input("""| settings |
-rc change retrieved post count?
+pc = change retrieved post count?
 [return] = exit
 """)
-	if choice == "rc":
+	if choice == "pc":
 		global retrievecount
 		try:
 			dummyvalue = retrievecount
 		except:
 			retrievecount = 30
-		print("retrievecount =", retrievecount, "now")
+		print("-post count is currently", retrievecount, "\n")
 		rcount = input("Please change, to (>0)? ")
 		if int(rcount) > 0:
 			retrievecount = int(rcount)
-			print("now", retrievecount, "posts")
+			print("\n-post count is now", retrievecount, "posts")
 			# Save to "ppconfig.ini" file:
 			config["USER"]["retrievecount"] = str(retrievecount)
 			with open ("ppconfig.ini", "w") as configfile:
 				config.write(configfile)
-	print(" " + "-" * 31 + " ")
 	print("")
 
 def inputtext():
@@ -795,7 +798,7 @@ def displaymessage(postcontent):
 		try:
 			if not "is_deleted" in postcontent[0][number]:
 				# Build post status indicators:
-				userstatus = "@" + postcontent[0][number]["user"]["username"] + ":" + " ["
+				userstatus = "@" + postcontent[0][number]["user"]["username"] + ": [u:" + str(postcontent[0][number]["user"]["id"])
 				if postcontent[0][number]["user"]["you_follow"]:
 					userstatus += "+f"
 				if postcontent[0][number]["user"]["follows_you"]:
@@ -904,9 +907,9 @@ def serverresponse(postcontent):
 	status = ()
 	status = postcontent[1]["code"]
 	if status == 200:
-		print("ok")
+		print("-ok")
 	elif status == 201:
-		print("ok")
+		print("-ok")
 	else:
 		print(str(status) + " = hmmm...")
 
@@ -941,9 +944,9 @@ except:
 	config["USER"] = {}
 	config["USER"]["retrievecount"] = "30"
 	print("""
-| PigPen | Initialisation:
+| PigPen | setup |
 (You'll see this only once.)
-Please decide on a default number of posts to retrieve - then choose the 'rc' option on the following menu.""")
+Please decide on a default number of posts to retrieve - then choose the 'pc' option on the following menu.""")
 	changesettings()
 	print("Thanks.")
 

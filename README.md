@@ -1,20 +1,20 @@
 # What is 'PigPen'?
-A Python application to allow interactions with the [pnut.io](https://pnut.io) social network.  My work here covers the absolute basics.
+A Python application to allow interactions with the [pnut.io](https://pnut.io) social network.
 
-This document covers v0.3.0 onwards.
+This document covers v0.3.7 onwards.
 
 ## A recent 'screenshot':
 
 ```
-| PigPen | pnut u:@bazbt3
+| PigPen | u:175 @bazbt3
 gg global timeline  gt your timeline
 p  post     rp repost   gm mentions
 r reply     gth getthrd gp getpost
 b bookmark  gb bookmrks gh 'hashtag'
 f follow    gu getuser  gi interacts
 msg message gms getmsgs gs getsubs
-gc getchanl sub subscribechannel
-| help=menu exit=exit
+xp x-post   gc getchanl sub subchanl
+| help=menu | set=settings | ex=exit
 Choice? gp
 Get postnum? 213140
 --------------
@@ -76,7 +76,7 @@ Choice? exit
 You chose 'exit': Goodbye!
 ```
 
-As you can see, there are layout bugs aplenty. And ordinary bugs too.
+As you can see, there are layout bugs aplenty. And ordinary bugs too. And it's a bit 'squashed' too. Considering it's being developed on a iPhone that's not surprising.
 
 ## What I needed to make this work
 * A [pnut.io](https://pnut.io) account; no [developer account](https://pnut.io/dev) is required for single-user apps,
