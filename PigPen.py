@@ -4,7 +4,7 @@
 #  / __// // //// __// ___ / /\|
 # /_/  /_/ |_ //_/   |___//_//_/
 #         /__/
-# v0.3.7 for Python 3.5
+# v0.3.8 for Python 3.5
 
 # PigPen, a Python app for @33MHz's pnut.io social network.
 
@@ -30,9 +30,11 @@ from io import BytesIO
 import time
 
 # Define probably way too many global variables:
-global action, channelid, isdeleted, maxpostlen, me, number, postcontent, postid, posttext, postthreadid, retrievecount
+global action, channelid, channelnumber, channeltype, isdeleted, maxpostlen, me, number, postcontent, postid, posttext, postthreadid, retrievecount
 action = ''
 channelid = 0
+channelnumber = ""
+channeltype = ""
 isdeleted = ''
 maxpostlen = 256
 me = ''
@@ -215,7 +217,7 @@ def createmessage(inputflag):
 
 def xpost():
 	"""
-	Create a message for a specific channel then use the same text in a post.
+	Create a message for a specific channel then use the same text in a post. Does not permit crossposting messages sent to private channels.
 	
 	Arguments:
 		none
@@ -226,12 +228,20 @@ def xpost():
 	createmessage(True)
 	# Get channel name:
 	channelcontent = pnutpy.api.get_channel(channelid, include_raw=True)
-	# Add an x-post footer then create the post without user input:
-	posttext += "\n\nx-post: " + channelname + " "
-	channelurl = "https://patter.chat/room/" + str(channelid)
-	channelurlmd = "[<=>](" + channelurl + ")"
-	posttext += channelurlmd
-	createpost(False)
+	getchannelname(channelid, channelcontent)
+	# Do not crosspost messages sent to private channels:
+	if channeltype == "pm":
+		print("""
+-Right now the app does not allow crossposting messages sent to private channels.
+Sorry.
+""")
+	else:
+		# Add an x-post footer then create the post without user input:
+		posttext += "\n\nx-post: " + channelname + " "
+		channelurl = "https://patter.chat/room/" + str(channelid)
+		channelurlmd = "[<=>](" + channelurl + ")"
+		posttext += channelurlmd
+		createpost(False)
 
 def replypost(postnum):
 	"""
@@ -423,12 +433,7 @@ def getchannel():
 	"""
 	channelnumber = input("Get data, channelid? ")
 	channelcontent = pnutpy.api.get_channel(channelnumber, include_raw=True)
-	try:
-		channelname = channelcontent[0]["raw"][0]["value"]["name"]
-	except:
-		channelname = channelcontent[0]["raw"][1]["value"]["name"]
-	else:
-		channelname = "PM"
+	getchannelname(channelnumber, channelcontent)
 	print("---------------")
 	print("#" + str(channelcontent[0]["id"]) + " " + channelname + " c:" + "@" + channelcontent[0]["owner"]["username"])
 	recentmessageid = str(channelcontent[0]['recent_message_id'])
@@ -564,7 +569,6 @@ def getsubscribed():
 	User input:
 		none
 	"""
-	# Duplicates code in getchannel
 	channelcontent = pnutpy.api.subscribed_channels(count=retrievecount)
 	global number
 	number = retrievecount
@@ -721,6 +725,7 @@ def displaypost(postcontent):
 					checkoembed(postcontent[0][number], raw)
 				except:
 					dummyvalue = 0
+					# Not needed
 				# Build hierarchy links:
 				postrefs = " id:" + postid
 				if "reply_to" in postcontent[0][number]:
@@ -773,11 +778,11 @@ def inlinepostinteraction(postid, postthreadid):
 			validaction = True
 		if action == "gth":
 			getthread(postthreadid)
-			postid = 0
+			# postid = 0 was here
 			validaction = True
-			print("-back to list-")
+			print("-back to list")
 		if action == "x":
-			print("-back to main menu-")
+			print("-back to main menu")
 			validaction = True
 			return
 
@@ -814,6 +819,22 @@ def displaymessage(postcontent):
 			# Not needed
 		number -= 1
 	print("")
+
+def getchannelname(channelnumber, channelcontent):
+# Differentiate netween Chat and PM channels:
+	global channelname, channeltype
+	print(channelcontent[0])
+	channeltype = channelcontent[0]["type"][13:]
+	# Get chat channel name:
+	# Thanks @hutattedonmyarm!
+	if channeltype == "chat":
+		channelnumraw = pnutpy.api.get_channel(channelnumber, include_raw=True)
+		try:
+			channelname = channelnumraw[0]["raw"][0]["value"]["name"]
+		except:
+			channelname = channelnumraw[0]["raw"][1]["value"]["name"]
+	if channeltype == "pm":
+		channelname = "*PM"
 
 def userstatus(postcontent):
 	"""

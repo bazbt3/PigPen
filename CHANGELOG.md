@@ -8,13 +8,18 @@
 **Parallel project for the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
-### 2017-11-24: v0.3.7 (Tweakage):
+### 2017-11-24: v0.3.8 (Borked!):
 * Added: -
-* Changed: Subtly changed a few menus; there's a long way to go before it'll be done.
+* Changed: -
 * Deprecated: -
 * Removed: -
+* Fixed: Functions other than `getsubscribed` can now display either a channel name or private message status instead of exiting the app; `getchannelname` function added.
+* Fixed: Crossposting is again possible from a chat channel to a post. (See also Security below.) The fix in v0.3.7 worked on the phone but I believe I deleted something crucial before uploading to GitHub.
+* Security: Crossposting from a private message channel to a post is now prohibited. (This status is *very* loosely security-related, there's been nothing posted here so far!)
+
+### 2017-11-24: v0.3.7 (Tweakage):
+* Changed: Subtly changed a few menus; there's a long way to go before it'll be done.
 * Fixed: Chat channels with channel avatars added subsequent to the API v0.7.4 update failed to show in both `getchannel` and the `getsubscribed` listing, and broke `crosspost` (after sending the message to the channel and before creating the post.)
-* Security: -
 
 ### 2017-11-23: v0.3.6 (Ch-ch-ch-changes):
 * Added: Settings menu: The first option modifies the number of posts retrieved. Note: it's currently applied to *every* post listing, a more granular approach is *needed*.
