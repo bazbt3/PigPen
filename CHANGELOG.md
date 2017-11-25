@@ -8,11 +8,16 @@
 **Parallel project for the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
-### 2017-11-24: v0.3.8 (Borked!):
-* Added: -
-* Changed: -
+### 2017-11-25: v0.3.9 (Un- the first thing!):
+* Added: Ability to unsubscribe from a channel.
+* Changed: (HTTP) 201 server response is now "-created", with 200 remaining at "-ok".
+* Changed: Menu layout. Radical!
 * Deprecated: -
 * Removed: -
+* Fixed: After finding a post would be too long the app now correctly reports it won't work, then displays the too-long text to allow editing before posting. (Copy and paste.)
+* Security: -
+
+### 2017-11-24: v0.3.8 (Borked!):
 * Fixed: Functions other than `getsubscribed` can now display either a channel name or private message status instead of exiting the app; `getchannelname` function added.
 * Fixed: Crossposting is again possible from a chat channel to a post. (See also Security below.) The fix in v0.3.7 worked on the phone but I believe I deleted something crucial before uploading to GitHub.
 * Security: Crossposting from a private message channel to a post is now prohibited. (This status is *very* loosely security-related, there's been nothing posted here so far!)

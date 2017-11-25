@@ -4,7 +4,7 @@
 #  / __// // //// __// ___ / /\|
 # /_/  /_/ |_ //_/   |___//_//_/
 #         /__/
-# v0.3.8 for Python 3.5
+# v0.3.9 for Python 3.5
 
 # PigPen, a Python app for @33MHz's pnut.io social network.
 
@@ -31,21 +31,20 @@ import time
 
 # Define probably way too many global variables:
 global action, channelid, channelnumber, channeltype, isdeleted, maxpostlen, me, number, postcontent, postid, posttext, postthreadid, retrievecount
-action = ''
+action = ""
 channelid = 0
 channelnumber = ""
 channeltype = ""
-isdeleted = ''
+isdeleted = ""
 maxpostlen = 256
-me = ''
+me = ""
 number = 0
 postcontent = ()
 postid = 0
 postthreadid = 0
-posttext = ''
+posttext = ""
 
 # Setup continues after the function definitions.
-
 
 # DEFINE FUNCTIONS:
 
@@ -90,14 +89,15 @@ def menu():
 	"""
 	print("""
 | PigPen | u:{0} @{1}
-gg global timeline  gt your timeline
-p  post     rp repost   gm mentions
-r reply     gth getthrd gp getpost
-b bookmark  gb bookmrks gh 'hashtag'
-f follow    gu getuser  gi interacts
-msg message gms getmsgs gs getsubs
-xp x-post   gc getchanl sub subchanl
-| help=menu | set=settings | ex=exit""".format(str(userid), str(me)))
+| help=menu | set=settings | ex=exit
+p.post r.reply rp.repost xp.x-post
+ gm.mentions gt.timeline gg.globaltl
+ gi.interact gth.getthrd gp.getpost
+ gu.getuser  gb.bookmrks gh.hashtag
+ f.follow    b.bookmark
+msg.message  gs.getsubs  gms.getmsgs
+ gc.getchan  sub.subchan uns.unsubch
+""".format(str(userid), str(me)))
 
 def commandentry():
 	"""
@@ -165,14 +165,17 @@ def commandentry():
 			changesettings()
 		elif choice == "sub":
 			subscribetochannel()
+		elif choice == "usub":
+			unsubscribefromchannel()
 		elif choice == "xp":
 			xpost()
 	# The app exits here once 'exit' is typed:
 	print(" ")
 	print("You chose to exit: Goodbye!")
 
+# ------------------------------
 
-# DEFINE FUNCTIONS WITH SINGLE RESULTS FOR THE USER:
+# DEFINE FUNCTIONS FOR USER INTERACTIONS:
 
 def createpost(inputflag):
 	"""
@@ -189,11 +192,17 @@ def createpost(inputflag):
 	while postlimit:
 		if inputflag == True:
 			inputtext()
-		if len(posttext) > maxpostlen:
-			print("")
-			print("*** Too big, " + str(len(posttext)) + " chars.) Redo:")
-		else:
-			postlimit = False
+		while len(posttext) > maxpostlen:
+			postoverlength = len(posttext) - maxpostlen
+			addans = ""
+			if postoverlength > 1:
+				addans = "s"
+			print("-" * 31)
+			print(posttext)
+			print("-" * 31)
+			print("*Ah. That was too long by " + str(postoverlength) + " character" + addans + ". To post, perhaps copy & edit the text above?)\n")
+			inputtext()
+		postlimit = False
 	postcontent = pnutpy.api.create_post(data={'text': posttext})
 	serverresponse(postcontent)
 
@@ -231,10 +240,7 @@ def xpost():
 	getchannelname(channelid, channelcontent)
 	# Do not crosspost messages sent to private channels:
 	if channeltype == "pm":
-		print("""
--Right now the app does not allow crossposting messages sent to private channels.
-Sorry.
-""")
+		print("*Right now the app does not allow crossposting messages sent to private channels.\nSorry.")
 	else:
 		# Add an x-post footer then create the post without user input:
 		posttext += "\n\nx-post: " + channelname + " "
@@ -422,6 +428,19 @@ def subscribetochannel():
 	postcontent = pnutpy.api.subscribe_channel(channelnum)
 	serverresponse(postcontent)
 
+def unsubscribefromchannel():
+	"""
+	Unsubscribe from a public (chat) channel.
+	
+	Arguments:
+		none
+	User input:
+		Channel number.
+	"""
+	channelnum = input("Unsubscribe from channelnum? ")
+	postcontent = pnutpy.api.subscribe_channel(channelnum)
+	serverresponse(postcontent)
+
 def getchannel():
 	"""
 	Get a public (chat) channel's details and most recent message.
@@ -444,6 +463,8 @@ def getchannel():
 	print(message[0]["content"]["text"])
 	print("---------------")
 
+
+# ------------------------------
 
 # DEFINE INTERACTIONS WITH MULTIPLE RESULTS:
 
@@ -621,6 +642,8 @@ def getmessages():
 	displaymessage(postcontent)
 
 
+# ------------------------------
+
 # DEFINE OTHER ROUTINES:
 
 def changesettings():
@@ -756,7 +779,7 @@ def inlinepostinteraction(postid, postthreadid):
 	global action
 	validaction = False
 	separatormenu = " ------------------------------- "
-	menuseparator = "  Inline interactions menu:\n  [enter]=next r=reply rp=repost\n  b=bookmark gth=get thread\n  x=exit"
+	menuseparator = "  Inline interactions menu:\n  [enter].next r.reply rp.repost\n  b.bookmark gth.get thread\n  x.exit"
 	divider = separatormenu
 	while not validaction:
 		action = input(divider)
@@ -821,9 +844,19 @@ def displaymessage(postcontent):
 	print("")
 
 def getchannelname(channelnumber, channelcontent):
-# Differentiate netween Chat and PM channels:
-	global channelname, channeltype
-	print(channelcontent[0])
+	"""
+	Gets the desired channel mame from the server, for use in the function calling it.
+	
+	Arguments:
+		channelnumber:
+			The channel mumber to be queried.
+		postcontent:
+			The message's content, from which this function extracts the name associated with the channel number.
+	User input:
+		none
+	"""
+	# Differentiate netween Chat and PM channels:
+	global channelname, channeltypeg
 	channeltype = channelcontent[0]["type"][13:]
 	# Get chat channel name:
 	# Thanks @hutattedonmyarm!
@@ -930,9 +963,12 @@ def serverresponse(postcontent):
 	if status == 200:
 		print("-ok")
 	elif status == 201:
-		print("-ok")
+		print("-created")
 	else:
-		print(str(status) + " = hmmm...")
+		print(str(status) + "? hmmm... what's that now?")
+
+
+# ------------------------------
 
 # MAIN ROUTINE:
 
@@ -954,6 +990,8 @@ def main():
 	# Begin command entry, exit on 'exit':
 	commandentry()
 
+
+# ------------------------------
 
 # Load defaults and any previous user-applied changes from "ppconfig.ini", initially only 'defaultretrievecount' and 'retrievecount':
 try:
