@@ -1,10 +1,10 @@
 #     ___          ___
-#    / _ |__ ___  / _ | ___  __ 
-#   / ////_// _ \/ //// // |/  \
-#  / __// // //// __// ___ / /\|
+#    / _ |__ ___  / _ | ___  __
+#   / ////_// _ \/ //// // |/  |
+#  / __// // //// __// ___ / /||
 # /_/  /_/ |_ //_/   |___//_//_/
 #         /__/
-# v0.3.9 for Python 3.5
+# v0.3.10 for Python 3.5
 
 # PigPen, a Python app for @33MHz's pnut.io social network.
 
@@ -30,19 +30,24 @@ from io import BytesIO
 import time
 
 # Define probably way too many global variables:
-global action, channelid, channelnumber, channeltype, isdeleted, maxpostlen, me, number, postcontent, postid, posttext, postthreadid, retrievecount
+global action, channelcount, channelid, channelnumber, channeltype, isdeleted, maxpostlen, me, number, postcontent, postid, posttext, postthreadid, retrievecount
 action = ""
 channelid = 0
 channelnumber = ""
 channeltype = ""
 isdeleted = ""
-maxpostlen = 256
 me = ""
 number = 0
 postcontent = ()
 postid = 0
 postthreadid = 0
 posttext = ""
+
+# Define fixed count:
+maxpostlen = 256
+# Define user-variable counts:
+retrievecount = 20
+channelcount = 30
 
 # Setup continues after the function definitions.
 
@@ -94,7 +99,7 @@ p.post r.reply rp.repost xp.x-post
  gm.mentions gt.timeline gg.globaltl
  gi.interact gth.getthrd gp.getpost
  gu.getuser  gb.bookmrks gh.hashtag
- f.follow    b.bookmark
+ f.follow    b.bookmark  dp.delpost
 msg.message  gs.getsubs  gms.getmsgs
  gc.getchan  sub.subchan uns.unsubch
 """.format(str(userid), str(me)))
@@ -125,6 +130,8 @@ def commandentry():
 		# Add in alphabetic order to easily scan through
 		if choice == 'b':
 			bookmarkpost(0)
+		if choice == 'dp':
+			deletepost()
 		elif choice == 'f':
 			followuser()
 		elif choice == 'gb':
@@ -165,13 +172,13 @@ def commandentry():
 			changesettings()
 		elif choice == "sub":
 			subscribetochannel()
-		elif choice == "usub":
+		elif choice == "uns":
 			unsubscribefromchannel()
 		elif choice == "xp":
 			xpost()
 	# The app exits here once 'exit' is typed:
 	print(" ")
-	print("You chose to exit: Goodbye!")
+	print("*You chose to exit: Goodbye!")
 
 # ------------------------------
 
@@ -205,6 +212,24 @@ def createpost(inputflag):
 		postlimit = False
 	postcontent = pnutpy.api.create_post(data={'text': posttext})
 	serverresponse(postcontent)
+
+def deletepost():
+	"""
+	Delete a post.
+	
+	Arguments:
+		none
+	User input:
+		Post id.
+	"""
+	print("*No undo. (None.)")
+	deleteit = input("Delete a post: are you sure? (y/n)")
+	if deleteit == "y":
+		postid = input("*Delete post, number? ")
+		postcontent = pnutpy.api.delete_post(postid)
+		serverresponse(postcontent)
+	else:
+		print("-nothing deleted")
 
 def createmessage(inputflag):
 	"""
@@ -430,16 +455,21 @@ def subscribetochannel():
 
 def unsubscribefromchannel():
 	"""
-	Unsubscribe from a public (chat) channel.
+	Unsubscribe from a channel.
 	
 	Arguments:
 		none
 	User input:
 		Channel number.
 	"""
-	channelnum = input("Unsubscribe from channelnum? ")
-	postcontent = pnutpy.api.subscribe_channel(channelnum)
-	serverresponse(postcontent)
+	print("*No undo. (Resubscribe later.")
+	deleteit = input("Unsubscribe: are you sure? (y/n)")
+	if deleteit == "y":
+		channelnum = input("*Unsubscribe from channel number? ")
+		postcontent = pnutpy.api.subscribe_channel(channelnum)
+		serverresponse(postcontent)
+	else:
+		print("-not unsubscribed")
 
 def getchannel():
 	"""
@@ -590,9 +620,9 @@ def getsubscribed():
 	User input:
 		none
 	"""
-	channelcontent = pnutpy.api.subscribed_channels(count=retrievecount)
+	channelcontent = pnutpy.api.subscribed_channels(count=channelcount)
 	global number
-	number = retrievecount
+	number = channelcount
 	print("---------------")
 	while number >= 0:
 		try:
@@ -638,7 +668,7 @@ def getmessages():
 	"""
 	global channelnumber
 	channelnumber = input("Messages in channelnum? ")
-	postcontent = pnutpy.api.get_channel_messages(channelnumber, count = retrievecount)
+	postcontent = pnutpy.api.get_channel_messages(channelnumber, count = retrievecount, include_raw=True)
 	displaymessage(postcontent)
 
 
@@ -654,29 +684,46 @@ def changesettings():
 		none
 	User input:
 		The setting to change:
-			retrievecount = the number of posts fetched from the server. No input validation.
+			retrievecount and channelcount = the number of posts fetched from the server. No input validation.
 	"""
-	print(" " + "-" * 31 + " ")
-	choice = input("""| settings |
-pc = change retrieved post count?
+	global retrievecount, channelcount
+	choice = input(("""| settings |
+gc = change general count? ({0})
+cc = change channel count? ({1})
 [return] = exit
-""")
-	if choice == "pc":
-		global retrievecount
-		try:
-			dummyvalue = retrievecount
-		except:
-			retrievecount = 30
-		print("-post count is currently", retrievecount, "\n")
-		rcount = input("Please change, to (>0)? ")
+""").format(str(retrievecount), str(channelcount)))
+	# Set global retrieve count
+	rcount = retrievecount
+	if choice == "gc":
+		# Does retrievecount variable already exist?
+#		try:
+#			dummyvalue = retrievecount
+#		except:
+#			retrievecount = 15
+		print("-general count is currently", retrievecount)
+		rcount = input("*Please change, to (>0)? ")
 		if int(rcount) > 0:
 			retrievecount = int(rcount)
-			print("\n-post count is now", retrievecount, "posts")
-			# Save to "ppconfig.ini" file:
-			config["USER"]["retrievecount"] = str(retrievecount)
-			with open ("ppconfig.ini", "w") as configfile:
-				config.write(configfile)
-	print("")
+			print("-general count is now", retrievecount, "posts")
+	# Set channels retrieve count
+	ccount = channelcount
+	if choice == "cc":
+		# Does channelcount variable already exist?
+#		try:
+#			dummyvalue = channelcount
+#		except:
+#			channelcount = 30
+		print("-channel count is currently", channelcount)
+		ccount = input("*Please change, to (>0)? ")
+		if int(ccount) > 0:
+			channelcount = int(ccount)
+			print("-channel count is now", channelcount, "posts")
+	# Every time settings menu is used, save to "ppconfig.ini" file:
+	config["USER"]["retrievecount"] = str(retrievecount)
+	config["USER"]["channelcount"] = str(channelcount)
+	with open ("ppconfig.ini", "w") as configfile:
+		config.write(configfile)
+	print("-saved\n")
 
 def inputtext():
 	"""
@@ -836,6 +883,12 @@ def displaymessage(postcontent):
 				print(str(postcontent[0][number]["created_at"]))
 				# Add post content/
 				print(postcontent[0][number]["content"]["text"])
+				# Check for oembed file:
+				try:
+					raw = postcontent[0][number]['raw'][0]
+					checkoembed(postcontent[0][number], raw)
+				except:
+					dummyvalue = 0
 				print("---------------------------------")
 		except:
 			dummyvalue = 0
@@ -990,7 +1043,6 @@ def main():
 	# Begin command entry, exit on 'exit':
 	commandentry()
 
-
 # ------------------------------
 
 # Load defaults and any previous user-applied changes from "ppconfig.ini", initially only 'defaultretrievecount' and 'retrievecount':
@@ -998,14 +1050,16 @@ try:
 	config = configparser.ConfigParser()
 	config.read("ppconfig.ini")
 	retrievecount = int(config["USER"]["retrievecount"])
+	channelcount = int(config["USER"]["channelcount"])
 except:
 	config = configparser.ConfigParser()
 	config["USER"] = {}
-	config["USER"]["retrievecount"] = "30"
+	config["USER"]["retrievecount"] = "retrievecount"
+	config["USER"]["channelcount"] = "channelcount"
 	print("""
 | PigPen | setup |
-(You'll see this only once.)
-Please decide on a default number of posts to retrieve - then choose the 'pc' option on the following menu.""")
+*You'll see this only once.
+Please choose the number of items to display from the following menu. ([return] accepts the defaults.)\n""")
 	changesettings()
 	print("Thanks.")
 

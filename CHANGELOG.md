@@ -8,14 +8,21 @@
 **Parallel project for the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
-### 2017-11-25: v0.3.9 (Un- the first thing!):
-* Added: Ability to unsubscribe from a channel.
-* Changed: (HTTP) 201 server response is now "-created", with 200 remaining at "-ok".
-* Changed: Menu layout. Radical!
+### 2017-11-26: v0.3.10 (Numbers):
+* Added: Ability to choose number of channels to be retrieved. (Default = 30, which suits a tiny screen.)
+* Added: Display images in messages.
+* Added: Delete post.
+* Changed: The general retrieve count *default* value is now, er… not determined yet. (Somewhere between 10 and 25, to suit a tiny screen.)
 * Deprecated: -
 * Removed: -
-* Fixed: After finding a post would be too long the app now correctly reports it won't work, then displays the too-long text to allow editing before posting. (Copy and paste.)
+* Fixed: -
 * Security: -
+
+### 2017-11-25: v0.3.9 (Un- the first thing!):
+* Added: Ability to unsubscribe from a channel.
+* Changed: (HTTP) '201' server response is now "-created", with '200' remaining at "-ok".
+* Changed: Menu layout. Radical!
+* Fixed: After finding a post would be too long the app now correctly reports it won't work, then displays the too-long text to allow editing before posting. (Copy and paste.)
 
 ### 2017-11-24: v0.3.8 (Borked!):
 * Fixed: Functions other than `getsubscribed` can now display either a channel name or private message status instead of exiting the app; `getchannelname` function added.
