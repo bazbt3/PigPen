@@ -4,7 +4,7 @@
 #  / __// // //// __// ___ / /||
 # /_/  /_/ |_ //_/   |___//_//_/
 #         /__/
-# v0.3.10 for Python 3.5
+# v0.3.11 for Python 3.5
 
 # PigPen, a Python app for @33MHz's pnut.io social network.
 
@@ -98,11 +98,11 @@ def menu():
 p.post r.reply rp.repost xp.x-post
  gm.mentions gt.timeline gg.globaltl
  gi.interact gth.getthrd gp.getpost
- gu.getuser  gb.bookmrks gh.hashtag
- f.follow    b.bookmark  dp.delpost
+ gu.getuser  gup.usrpost f.follow
+ gb.bookmrks b.bookmark  gh.hashtag
 msg.message  gs.getsubs  gms.getmsgs
  gc.getchan  sub.subchan uns.unsubch
-""".format(str(userid), str(me)))
+------------ dp.delpost. zp.zpost!""".format(str(userid), str(me)))
 
 def commandentry():
 	"""
@@ -156,8 +156,10 @@ def commandentry():
 			getunified()
 		elif choice == 'gth':
 			getthread(0)
-		elif choice == "gu":
+		elif choice == 'gu':
 			getuser()
+		elif choice == 'gup':
+			getuserposts()
 		elif choice == 'help':
 			menu()
 		elif choice == 'msg':
@@ -176,6 +178,8 @@ def commandentry():
 			unsubscribefromchannel()
 		elif choice == "xp":
 			xpost()
+		elif choice == "zp":
+			zpost()
 	# The app exits here once 'exit' is typed:
 	print(" ")
 	print("*You chose to exit: Goodbye!")
@@ -238,11 +242,11 @@ def createmessage(inputflag):
 	Arguments:
 		inputflag:
 			if True: ask for input,
-			if False: use global posttext
+			if False: use global posttext and channel
 	User input:
 		Channel number and/or message text.
 	"""
-	global channelid
+	global channelid, posttext
 	if inputflag == True:
 		channelid = input("Message to channelid? ")
 		inputtext()
@@ -273,6 +277,21 @@ def xpost():
 		channelurlmd = "[<=>](" + channelurl + ")"
 		posttext += channelurlmd
 		createpost(False)
+
+def zpost():
+	"""
+	Create a post then use the same text to send a message to a specific channel. Permits crossposting messages to private channels.
+	
+	Arguments:
+		none
+	User input:
+		Channel number and post.
+	"""
+	global channelid, posttext
+	createpost(True)
+	channelid = input("\nMessage for channelid? ")
+	posttext += "\n\n[x-post from global]"
+	createmessage(False)
 
 def replypost(postnum):
 	"""
@@ -524,7 +543,7 @@ def getglobal():
 
 def getmentions():
 	"""
-	Get the application user's mentions.
+	Get an account's mentions.
 	
 	Arguments:
 		none
@@ -535,6 +554,21 @@ def getmentions():
 	if userid == '':
 		userid = "me"
 	postcontent = pnutpy.api.users_mentioned_posts(userid, count=retrievecount, include_raw=True)
+	displaypost(postcontent)
+
+def getuserposts():
+	"""
+	Get an account's posts.
+	
+	Arguments:
+		none
+	User input:
+		User number.
+	"""
+	userid = input("User posts, userid? [return]=me: ")
+	if userid == '':
+		userid = "me"
+	postcontent = pnutpy.api.users_posts(userid, count=retrievecount, include_raw=True)
 	displaypost(postcontent)
 
 def getinteractions():
@@ -690,7 +724,7 @@ def changesettings():
 	choice = input(("""| settings |
 gc = change general count? ({0})
 cc = change channel count? ({1})
-[return] = exit
+[return] = back
 """).format(str(retrievecount), str(channelcount)))
 	# Set global retrieve count
 	rcount = retrievecount
@@ -903,13 +937,13 @@ def getchannelname(channelnumber, channelcontent):
 	Arguments:
 		channelnumber:
 			The channel mumber to be queried.
-		postcontent:
+		channelcontent:
 			The message's content, from which this function extracts the name associated with the channel number.
 	User input:
 		none
 	"""
 	# Differentiate netween Chat and PM channels:
-	global channelname, channeltypeg
+	global channelname, channeltype
 	channeltype = channelcontent[0]["type"][13:]
 	# Get chat channel name:
 	# Thanks @hutattedonmyarm!

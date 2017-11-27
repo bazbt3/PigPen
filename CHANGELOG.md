@@ -8,15 +8,20 @@
 **Parallel project for the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
+### 2017-11-27: v0.3.11 (Nosy):
+* Added: Get posts by a user.
+* Added: z-posts (crap name): Use a post to create a message in a chat or private channel. Currently limited to new posts which, as x-posts already exists, is somewhat redundant. The *intent* is to change the function for replies and reposts - allowing a conversation to continue other than in 'public.'
+* Changed: -
+* Deprecated: -
+* Removed: -
+* Fixed: -
+* Security: -
+
 ### 2017-11-26: v0.3.10 (Numbers):
 * Added: Ability to choose number of channels to be retrieved. (Default = 30, which suits a tiny screen.)
 * Added: Display images in messages.
 * Added: Delete post.
 * Changed: The general retrieve count *default* value is now, er… not determined yet. (Somewhere between 10 and 25, to suit a tiny screen.)
-* Deprecated: -
-* Removed: -
-* Fixed: -
-* Security: -
 
 ### 2017-11-25: v0.3.9 (Un- the first thing!):
 * Added: Ability to unsubscribe from a channel.
