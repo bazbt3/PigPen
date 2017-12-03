@@ -13,14 +13,14 @@ Incomplete, potentially misleading instructions follow.  This is very much a wor
 * `from PIL import Image`
 * `import requests`
 * `from io import BytesIO`
-* `import time` - not used as-of v0.3.6 but used for testing.
 
 ## First steps, install all the things:
 (Assuming you're running Pythonista, {p} = a Pythonista-specific instruction.)
+1. **Create a new `PigPen` directory** wherever you intend to run the app from.
+1. **Copy the `PigPen.py`, `secrettoken.txt` file from here** and save them there.
+1. **Create a new `images` directory** within the same directory as the app.
 1. You will need a pnut.io account, and to visit your developer account page.
 1. **Create an app at the page**, which will create 2 unique codes, then authorise it which will create a token.
-1. **Create a new `PigPen` directory** wherever directory you intend to run the app from.
-1. **Copy the `PigPen.py`, `secrettoken.txt` file from here** and save them there.
 1. **Overwrite the contents of `secrettoken.txt` with the token**, ensuring to remove any trailing linefeeds before saving it.
 1. {p} **Install `StaSh`** following the instructions as it runs and from the link above.
 1. {p} I *think* `StaSh` must be executed at this stage to install a script and extension folder; read the instructions.

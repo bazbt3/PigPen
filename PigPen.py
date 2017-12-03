@@ -4,13 +4,13 @@
 #  / __// // //// __// ___ / /||
 # /_/  /_/ |_ //_/   |___//_//_/
 #         /__/
-# v0.3.11 for Python 3.5
+# v0.3.12 for Python 3.5
 
 # PigPen, a Python app for @33MHz's pnut.io social network.
 
 # Site, changelog: https://github.com/bazbt3/PigPen
 
-# Made by: @bazbt3
+# BASIC coding style by: @bazbt3
 
 
 # SETUP:
@@ -45,7 +45,7 @@ posttext = ""
 
 # Define fixed count:
 maxpostlen = 256
-# Define user-variable counts:
+# Define *default* user-variable counts:
 retrievecount = 20
 channelcount = 30
 
@@ -94,7 +94,7 @@ def menu():
 	"""
 	print("""
 | PigPen | u:{0} @{1}
-| help=menu | set=settings | ex=exit
+| help.menu | io.files | set.config
 p.post r.reply rp.repost xp.x-post
  gm.mentions gt.timeline gg.globaltl
  gi.interact gth.getthrd gp.getpost
@@ -102,7 +102,7 @@ p.post r.reply rp.repost xp.x-post
  gb.bookmrks b.bookmark  gh.hashtag
 msg.message  gs.getsubs  gms.getmsgs
  gc.getchan  sub.subchan uns.unsubch
------------- dp.delpost. zp.zpost!""".format(str(userid), str(me)))
+-dp.delpost  zp.zpost!   | ex.exit |""".format(str(userid), str(me)))
 
 def commandentry():
 	"""
@@ -151,7 +151,7 @@ def commandentry():
 		elif choice == 'gp':
 			getpost()
 		elif choice == 'gs':
-			getsubscribed()
+			getsubscribed("-v")
 		elif choice == "gt":
 			getunified()
 		elif choice == 'gth':
@@ -180,11 +180,13 @@ def commandentry():
 			xpost()
 		elif choice == "zp":
 			zpost()
+		elif choice == "io":
+			filesmenu()
 	# The app exits here once 'exit' is typed:
 	print(" ")
 	print("*You chose to exit: Goodbye!")
 
-# ------------------------------
+# --------- Single ------
 
 # DEFINE FUNCTIONS FOR USER INTERACTIONS:
 
@@ -248,7 +250,11 @@ def createmessage(inputflag):
 	"""
 	global channelid, posttext
 	if inputflag == True:
-		channelid = input("Message to channelid? ")
+		channelid = ""
+		while channelid == "":
+			channelid = input("-Message to channel #? [return]=list\n")
+			if channelid == "":
+				getsubscribed("")
 		inputtext()
 	postcontent = pnutpy.api.create_message(channelid, data={'text': posttext})
 	serverresponse(postcontent)
@@ -272,7 +278,7 @@ def xpost():
 		print("*Right now the app does not allow crossposting messages sent to private channels.\nSorry.")
 	else:
 		# Add an x-post footer then create the post without user input:
-		posttext += "\n\nx-post: " + channelname + " "
+		posttext += "\n\n" + channelname + " "
 		channelurl = "https://patter.chat/room/" + str(channelid)
 		channelurlmd = "[<=>](" + channelurl + ")"
 		posttext += channelurlmd
@@ -432,7 +438,7 @@ def getuser():
 		User number.
 	"""
 	
-	# Get a user's data
+	# Get a user's data:
 	usernum = input("Get data, usernum? ")
 	postcontent = pnutpy.api.get_user(usernum)
 	print("")
@@ -447,12 +453,15 @@ def getuser():
 			print(postcontent[0]["locale"])
 		if postcontent[0]["timezone"]:
 			print(postcontent[0]["timezone"])
-		try:
-			pnutbio = postcontent[0]["content"]["text"]
-		except (KeyError):
-			dummyvalue = 0
+	bio = False
+	try:
+		pnutbio = postcontent[0]["content"]["text"]
+		bio = True
 		print(pnutbio)
-	print("")
+	except (KeyError):
+		bio = False
+	if bio == False:
+		print("-no bio")
 	print("posts: " + str(postcontent[0]["counts"]["posts"]))
 	print("followers: " + str(postcontent[0]["counts"]["followers"]))
 	print("following: " + str(postcontent[0]["counts"]["following"]))
@@ -513,7 +522,7 @@ def getchannel():
 	print("---------------")
 
 
-# ------------------------------
+# --------- Multiple ------
 
 # DEFINE INTERACTIONS WITH MULTIPLE RESULTS:
 
@@ -645,12 +654,13 @@ def gethashtag():
 	postcontent = pnutpy.api.posts_with_hashtag(hashtag, count = retrievecount, include_raw=True)
 	displaypost(postcontent)
 
-def getsubscribed():
+def getsubscribed(output):
 	"""
 	Get a list of the application user's subscribed channels.
 	
 	Arguments:
-		none
+		output:
+			The "-v" flag indicates verbose output; anything else passed to this function gives an abbreviated listing.
 	User input:
 		none
 	"""
@@ -665,26 +675,28 @@ def getsubscribed():
 			channeltype = str(channelcontent[0][number]["type"])[13:]
 			# Get chat channel name:
 			# Thanks @hutattedonmyarm!
+			channelname = ""
 			if channeltype == "chat":
 				channelnumraw = pnutpy.api.get_channel(channelnumber, include_raw=True)
 				try:
 					channelname = channelnumraw[0]["raw"][0]["value"]["name"]
 				except:
 					channelname = channelnumraw[0]["raw"][1]["value"]["name"]
-				print(channelname + ":")
 			# Check for unread:
 			if channelcontent[0][number]["has_unread"]:
 				channelunread = "[u]"
 			else:
 				channelunread = ""
 			# Build and display listing:
-			print(channelunread + "#" + str(channelcontent[0][number]["id"]) + " " + channeltype + " c:@" + channelcontent[0][number]["owner"]["username"])
-			# Build last message in channel:
-			recentmessageid = str(channelcontent[0][number]['recent_message_id'])
-			print("last: " + recentmessageid + ":")
-			channelid = channelcontent[0][number]["id"]
-			message = pnutpy.api.get_message(channelid, recentmessageid)
-			print("@" + message[0]["user"]["username"] + ": " + message[0]["content"]["text"])
+			print(channelunread + "#" + str(channelnumber) + ": " + channelname)
+			print(channeltype + " c:@" + channelcontent[0][number]["owner"]["username"])
+			if output == "-v":
+				# Build last message in channel:
+				recentmessageid = str(channelcontent[0][number]['recent_message_id'])
+				print("last: " + recentmessageid + ":")
+				channelid = channelcontent[0][number]["id"]
+				message = pnutpy.api.get_message(channelid, recentmessageid)
+				print("@" + message[0]["user"]["username"] + ": " + message[0]["content"]["text"])
 			print("---------------")
 		except:
 			dummyvalue = 0
@@ -701,12 +713,131 @@ def getmessages():
 		Channel number.
 	"""
 	global channelnumber
-	channelnumber = input("Messages in channelnum? ")
+	channelnumber = ""
+	while channelnumber == "":
+		channelnumber = input("-Messages in channel? [return]=list\n")
+		if channelnumber == "":
+			getsubscribed("")
 	postcontent = pnutpy.api.get_channel_messages(channelnumber, count = retrievecount, include_raw=True)
 	displaymessage(postcontent)
 
 
-# ------------------------------
+# --------- Files ------
+
+def filesmenu():
+	"""
+	Files menu.
+	
+	Arguments:
+		none
+	User input:
+		The command to execute.
+	"""
+	choice = input("""
+| files |
+gmf = get my files
+upload = upload an image
+avn = set normal avatar
+avt = set ThemeMonday avatar
+[return] = quit
+""")
+	if choice == "gmf":
+		getmyfiles()
+	elif choice == "upload":
+		uploadanimage("")
+	elif choice == "avn":
+		setnormalavatar()
+#	elif choice == "avt":
+#		settmavatar()
+
+def getmyfiles():
+	"""
+	Get a list of the user's files.
+	
+	Arguments:
+		none
+	User input:
+		none.
+	"""
+	# Test with a big count to :
+	count = 25
+	number = count - 1
+	filescontent = pnutpy.api.get_my_files(count = count)
+	# Display the most recent data:
+	print(filescontent[0][0])
+	print("-" * 31)
+	# Display the most recent by count:
+	while number >= 0:
+		print("-" * 31)
+		print("id:", filescontent[0][number]["id"])
+		print(filescontent[0][number]["created_at"])
+		print(filescontent[0][number]["type"])
+		print(filescontent[0][number]["kind"])
+		print("w:", filescontent[0][number]["image_info"]["width"])
+		print("h:", filescontent[0][number]["image_info"]["height"])
+		print(filescontent[0][number]["name"])
+		print(filescontent[0][number]["source"]["name"])
+		number -= 1
+	print("-" * 31)
+	print("Listing is for analysis, not users.")
+
+def uploadanimage(file_name):
+	"""
+	Upload an image. Dependent on a file existing in the same folder as the PigPen application.
+	
+	Adapted from the official pnutpy documentation.
+	Arguments:
+		file_name:
+			Can be passed to the function.
+	User input:
+		file_name:
+			Input by user if not passed to the function.
+	Optional metadata (include it in file_data):
+		is_public = False
+		mime_type = 'text/plain'
+		sha256 = <sha256 hash> #API will reject if it doesn't match with the actual sha256 hash
+	"""
+	# If empty filename, ask for a filename: 
+	if file_name == "":
+		file_name = input("If the file is present in the images/ folder with the application, enter its full filename, or [return]=quit: ")
+	# If a filename is passed to this function or if the user enters a filename then attempt to upload it:
+	if file_name != "":
+		file_name = "images/" + file_name
+		# The file itself; the 'b' binary switch is necessary, otherwise the ascii codec attempts to decode it:
+		file = open(file_name, 'rb')
+		# Required metadata in addition to the filename to upload:
+		# Needs investigation:
+		file_type = 'io.pnut.core.image'
+		# Can be 'image' or 'other':
+		file_kind = 'image'
+		# Build the file data:
+		file_data = {'type': file_type, 'kind': file_kind, 'name': file_name, 'is_public': True}
+		# Create the file:
+		pnut_file = pnutpy.api.create_file(files={'content':file}, data=file_data)
+		# Return server response:
+		serverresponse(pnut_file)
+
+def setnormalavatar():
+	"""
+	DOES NOT WORK YET. Set the user's normal avatar image. Can either be used for its initial upload or after a #ThemeMonday event change.
+	
+	Uses the same basic code as uploadanimage hence the lack of duplicated comments.
+	Arguments:
+		none
+	User input:
+		none
+	"""
+	# The folder and filename of the 'normal' avatar image:
+	file_name = "avatar.jpg"
+	file = open(file_name, 'rb')
+	file_type = 'io.pnut.core.image'
+	file_kind = 'image'
+	file_data = {'type': file_type, 'kind': file_kind, 'name': file_name}
+	pnut_file = pnutpy.api.update_avatar(files={'content':file}, data=file_data)
+	serverresponse(pnut_file)
+
+
+# --------- Admin. misc. ------
 
 # DEFINE OTHER ROUTINES:
 
@@ -721,7 +852,8 @@ def changesettings():
 			retrievecount and channelcount = the number of posts fetched from the server. No input validation.
 	"""
 	global retrievecount, channelcount
-	choice = input(("""| settings |
+	choice = input(("""
+| settings |
 gc = change general count? ({0})
 cc = change channel count? ({1})
 [return] = back
@@ -860,7 +992,7 @@ def inlinepostinteraction(postid, postthreadid):
 	global action
 	validaction = False
 	separatormenu = " ------------------------------- "
-	menuseparator = "  Inline interactions menu:\n  [enter].next r.reply rp.repost\n  b.bookmark gth.get thread\n  x.exit"
+	menuseparator = "  Inline interactions menu:\n  [return].next r.reply rp.repost\n  b.bookmark gth.get thread\n  x.exit"
 	divider = separatormenu
 	while not validaction:
 		action = input(divider)
@@ -882,8 +1014,8 @@ def inlinepostinteraction(postid, postthreadid):
 			validaction = True
 		if action == "gth":
 			getthread(postthreadid)
-			# postid = 0 was here
 			validaction = True
+			# postid = 0 was here
 			print("-back to list")
 		if action == "x":
 			print("-back to main menu")
@@ -1055,7 +1187,7 @@ def serverresponse(postcontent):
 		print(str(status) + "? hmmm... what's that now?")
 
 
-# ------------------------------
+# --------- Main ------
 
 # MAIN ROUTINE:
 
@@ -1077,7 +1209,7 @@ def main():
 	# Begin command entry, exit on 'exit':
 	commandentry()
 
-# ------------------------------
+# --------- Set defaults ------
 
 # Load defaults and any previous user-applied changes from "ppconfig.ini", initially only 'defaultretrievecount' and 'retrievecount':
 try:

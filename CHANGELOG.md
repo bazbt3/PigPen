@@ -1,21 +1,27 @@
 # CHANGELOG
 (Most recent on top.)
 
-### Upcoming:
+### TODO:
 * Change avatar (a precursor to other file operations in v0.3.)
 * Pushed goal of display of longer timelines back from v0.3 to v0.4.
 
 **Parallel project for the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
+### 2017-12-03: v0.3.12 (Filing system):
+* Added: Files menu (but may need a better command than `io`.)
+* Added: Upload an image (from the `images/` folder within the app folder.)
+* Added: Development only: List the application user's files; a bit raw, no actual images displayed yet.
+* Added: *Started* to work on changing the user's avatar. **It doesn't work yet** but I've had @ludolphus' assistance.
+* Changed: Can now display an abbreviated subscribed channel listing before creating a message or listing the messages in a channel.
+* Deprecated: -
+* Removed: Unused `import time`.
+* Fixed: Exit when inquiring a user without a bio; app instead indicates '-no bio'.
+* Security: -
+
 ### 2017-11-27: v0.3.11 (Nosy):
 * Added: Get posts by a user.
 * Added: z-posts (crap name): Use a post to create a message in a chat or private channel. Currently limited to new posts which, as x-posts already exists, is somewhat redundant. The *intent* is to change the function for replies and reposts - allowing a conversation to continue other than in 'public.'
-* Changed: -
-* Deprecated: -
-* Removed: -
-* Fixed: -
-* Security: -
 
 ### 2017-11-26: v0.3.10 (Numbers):
 * Added: Ability to choose number of channels to be retrieved. (Default = 30, which suits a tiny screen.)
