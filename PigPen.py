@@ -1,16 +1,16 @@
-#     ___          ___
-#    / _ |__ ___  / _ | ___  __
-#   / ////_// _ \/ //// // |/  |
-#  / __// // //// __// ___ / /||
-# /_/  /_/ |_ //_/   |___//_//_/
-#         /__/
-# v0.3.12 for Python 3.5
+"""PigPen, a Python app for @33MHz's pnut.io social network.
 
-# PigPen, a Python app for @33MHz's pnut.io social network.
+     ___          ___
+    / _ |__ ___  / _ | ___  ___
+   / ////_// _ \/ //// // |/ _ |
+  / __// // //// __// ___ / // /
+ /_/  /_/ |_ //_/   |___//_//_/
+         /__/
+v0.3.13 for Python 3.5
 
-# Site, changelog: https://github.com/bazbt3/PigPen
+Site, changelog: https://github.com/bazbt3/PigPen
 
-# BASIC coding style by: @bazbt3
+BASIC coding style by: @bazbt3"""
 
 
 # SETUP:
@@ -126,62 +126,67 @@ def commandentry():
 	"""
 	choice = 'Little Bobby Tables'
 	while choice != 'ex':
-		choice = input("Choice? ")
-		# Add in alphabetic order to easily scan through
-		if choice == 'b':
+		choice = input("Command? ")
+		# Parse a 1 or 2-part command, extra text is ignored. Trailing comments: 'no'=not doing:
+		try:
+			choice, operand = choice.split()
+		except:
+			operand = ""
+		# Add commands in alphabetic order to easily scan through:
+		if choice == 'b': # no
 			bookmarkpost(0)
-		if choice == 'dp':
+		if choice == 'dp': # no
 			deletepost()
 		elif choice == 'f':
-			followuser()
+			followuser(operand)
 		elif choice == 'gb':
-			getbookmarks()
+			getbookmarks(operand)
 		elif choice == 'gc':
-			getchannel()
-		elif choice == "gg":
+			getchannel(operand)
+		elif choice == "gg": # no
 			getglobal()
 		elif choice == 'gh':
-			gethashtag()
-		elif choice == "gi":
+			gethashtag(operand)
+		elif choice == "gi": # no
 			getinteractions()
-		elif choice == 'gm':
+		elif choice == 'gm': # no
 			getmentions()
-		elif choice == 'gms':
+		elif choice == 'gms': # no
 			getmessages()
 		elif choice == 'gp':
-			getpost()
-		elif choice == 'gs':
+			getpost(operand)
+		elif choice == 'gs': # no
 			getsubscribed("-v")
-		elif choice == "gt":
+		elif choice == "gt": # no
 			getunified()
-		elif choice == 'gth':
+		elif choice == 'gth': # no
 			getthread(0)
 		elif choice == 'gu':
-			getuser()
-		elif choice == 'gup':
+			getuser(operand)
+		elif choice == 'gup': # no
 			getuserposts()
-		elif choice == 'help':
+		elif choice == 'help': # no
 			menu()
-		elif choice == 'msg':
+		elif choice == "io": # no
+			filesmenu()
+		elif choice == 'msg': # no
 			createmessage(True)
-		elif choice == 'p':
+		elif choice == 'p': # no
 			createpost(True)
-		elif choice == 'r':
+		elif choice == 'r': # no
 			replypost(0)
-		elif choice == 'rp':
+		elif choice == 'rp': # no
 			repostpost(0)
-		elif choice == 'set':
+		elif choice == 'set': # no
 			changesettings()
 		elif choice == "sub":
-			subscribetochannel()
+			subscribetochannel(operand)
 		elif choice == "uns":
-			unsubscribefromchannel()
-		elif choice == "xp":
+			unsubscribechannel() # no
+		elif choice == "xp": # no
 			xpost()
-		elif choice == "zp":
+		elif choice == "zp": # no
 			zpost()
-		elif choice == "io":
-			filesmenu()
 	# The app exits here once 'exit' is typed:
 	print(" ")
 	print("*You chose to exit: Goodbye!")
@@ -335,8 +340,7 @@ def replypost(postnum):
 					if alsoname != me:
 						alsomentions += " @" + alsoname
 				except Exception:
-					dummyvalue = 0
-					# Not needed
+					pass
 				number -= 1
 			posttext = "@" + postcontent[0]["user"]["username"] + " " + posttext
 			if alsomentions:
@@ -388,29 +392,27 @@ def bookmarkpost(postnum):
 	postcontent = pnutpy.api.bookmark_post(postnum)
 	serverresponse(postcontent)
 
-def followuser():
+def followuser(usernum):
 	"""
 	Follow a user.
 	
-	Arguments:
-		none
-	User input:
+	Arguments, user input:
 		User number.
 	"""
-	usernum = input("Follow usernum? ")
+	if str(usernum) == "":
+		usernum = input("Follow usernum? ")
 	postcontent = pnutpy.api.follow_user(usernum)
 	serverresponse(postcontent)
 
-def getpost():
+def getpost(postnum):
 	"""
 	Get a post, provided it has not been deleted.
 	
-	Arguments:
-		none
-	User input:
+	Arguments, user input:
 		Post number.
 	"""
-	postnum = input("Get postnum? ")
+	if str(postnum) == "":
+		postnum = input("Get postnum? ")
 	postcontent = pnutpy.api.get_post(postnum, include_raw= True)
 	print("--------------")
 	if not "is_deleted" in postcontent[0]:
@@ -422,24 +424,23 @@ def getpost():
 			raw = postcontent[0]['raw'][0]
 			checkoembed(postcontent, raw)
 		except:
-			dummyvalue = 0
+			pass
 		postfooter(postcontent)
 	else:
 		print("[Post was deleted]")
 	print("---------------")
 
-def getuser():
+def getuser(usernum):
 	"""
 	Get a user's details: username & name, account type, locale, bio, interactions.
 	
-	Arguments:
-		none
-	User input:
+	Arguments, user input:
 		User number.
 	"""
 	
 	# Get a user's data:
-	usernum = input("Get data, usernum? ")
+	if str(usernum) == "":
+		usernum = input("Get data, usernum? ")
 	postcontent = pnutpy.api.get_user(usernum)
 	print("")
 	print("@" + postcontent[0]["username"] + " - " + postcontent[0]["type"])
@@ -468,20 +469,19 @@ def getuser():
 	print("bookmarks: " + str(postcontent[0]["counts"]["bookmarks"]))
 	print("")
 
-def subscribetochannel():
+def subscribetochannel(channelnum):
 	"""
 	Subscribe to a public (chat) channel.
 	
-	Arguments:
-		none
-	User input:
+	Arguments, user input:
 		Channel number.
 	"""
-	channelnum = input("Subscribe to channelnum? ")
+	if str(channelnum) == "":
+		channelnum = input("Subscribe to channelnum? ")
 	postcontent = pnutpy.api.subscribe_channel(channelnum)
 	serverresponse(postcontent)
 
-def unsubscribefromchannel():
+def unsubscribechannel():
 	"""
 	Unsubscribe from a channel.
 	
@@ -499,16 +499,15 @@ def unsubscribefromchannel():
 	else:
 		print("-not unsubscribed")
 
-def getchannel():
+def getchannel(channelnumber):
 	"""
 	Get a public (chat) channel's details and most recent message.
 	
-	Arguments:
-		none
-	User input:
+	Arguments, user input:
 		Channel number.
 	"""
-	channelnumber = input("Get data, channelid? ")
+	if str(channelnumber) == "":
+		channelnumber = input("Get data, channelid? ")
 	channelcontent = pnutpy.api.get_channel(channelnumber, include_raw=True)
 	getchannelname(channelnumber, channelcontent)
 	print("---------------")
@@ -603,8 +602,7 @@ def getinteractions():
 			print(postcontent[0][number]["objects"][0]["content"]["text"])
 			print("---------------")
 		except:
-			dummyvalue = 0
-			# Not needed
+			pass
 		number -= 1
 
 def getthread(postnum):
@@ -626,31 +624,31 @@ def getthread(postnum):
 	postcontent = pnutpy.api.posts_thread(postnum, count=retrievecount, include_raw=True)
 	displaypost(postcontent)
 
-def getbookmarks():
+def getbookmarks(userid):
 	"""
-	Get the application user's bookmarks.
+	Get a user's bookmarks.
 	
 	Arguments:
 		none
 	User input:
 		User number.
 	"""
-	userid = input("Bookmarks, userid? [return]=me: ")
+	if str(userid) == "":
+		userid = input("Bookmarks, userid? [return]=me: ")
 	if userid == '':
 		userid = "me"
 	postcontent = pnutpy.api.users_bookmarked_posts(userid, count=retrievecount, include_raw=True)
 	displaypost(postcontent)
 
-def gethashtag():
+def gethashtag(hashtag):
 	"""
 	Get a list of posts containing the required hashtag.
 	
-	Arguments:
-		none
-	User input:
+	Arguments, user input:
 		Hashtag text.
 	"""
-	hashtag = input("Get hashtag? ")
+	if hashtag == "":
+		hashtag = input("Get hashtag? ")
 	postcontent = pnutpy.api.posts_with_hashtag(hashtag, count = retrievecount, include_raw=True)
 	displaypost(postcontent)
 
@@ -699,8 +697,7 @@ def getsubscribed(output):
 				print("@" + message[0]["user"]["username"] + ": " + message[0]["content"]["text"])
 			print("---------------")
 		except:
-			dummyvalue = 0
-			# Not needed
+			pass
 		number -= 1
 
 def getmessages():
@@ -960,8 +957,7 @@ def displaypost(postcontent):
 					raw = postcontent[0][number]['raw'][0]
 					checkoembed(postcontent[0][number], raw)
 				except:
-					dummyvalue = 0
-					# Not needed
+					pass
 				# Build hierarchy links:
 				postrefs = " id:" + postid
 				if "reply_to" in postcontent[0][number]:
@@ -972,8 +968,7 @@ def displaypost(postcontent):
 				if action == "x":
 					number = 0
 		except:
-			dummyvalue = 0
-			# Not needed
+			pass
 		number -= 1
 	print("")
 
@@ -1054,11 +1049,10 @@ def displaymessage(postcontent):
 					raw = postcontent[0][number]['raw'][0]
 					checkoembed(postcontent[0][number], raw)
 				except:
-					dummyvalue = 0
+					pass
 				print("---------------------------------")
 		except:
-			dummyvalue = 0
-			# Not needed
+			pass
 		number -= 1
 	print("")
 
@@ -1148,7 +1142,7 @@ def checkoembed(postcontent, raw):
 			img = Image.open(BytesIO(response.content))
 			img.show()
 	except (KeyError):
-		dummyvalue = 0
+		pass
 
 def postfooter(postcontent):
 	"""

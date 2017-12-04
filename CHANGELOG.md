@@ -8,16 +8,22 @@
 **Parallel project for the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
+### 2017-12-04: v0.3.13 (Eh?!):
+* Added: Rudimentary parsing of 1- or 2-part commands (choice-operand.) Created at the whim of the developer and for speed of implementation.
+* Changed: A few tiny code updates.
+* Deprecated: -
+* Removed: -
+* Fixed: -
+* Security: -
+
 ### 2017-12-03: v0.3.12 (Filing system):
 * Added: Files menu (but may need a better command than `io`.)
 * Added: Upload an image (from the `images/` folder within the app folder.)
 * Added: Development only: List the application user's files; a bit raw, no actual images displayed yet.
 * Added: *Started* to work on changing the user's avatar. **It doesn't work yet** but I've had @ludolphus' assistance.
 * Changed: Can now display an abbreviated subscribed channel listing before creating a message or listing the messages in a channel.
-* Deprecated: -
 * Removed: Unused `import time`.
 * Fixed: Exit when inquiring a user without a bio; app instead indicates '-no bio'.
-* Security: -
 
 ### 2017-11-27: v0.3.11 (Nosy):
 * Added: Get posts by a user.
