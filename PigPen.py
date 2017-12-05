@@ -6,7 +6,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.13 for Python 3.5
+v0.3.14 for Python 3.5
 
 Site, changelog: https://github.com/bazbt3/PigPen
 
@@ -151,8 +151,8 @@ def commandentry():
 			getinteractions()
 		elif choice == 'gm': # no
 			getmentions()
-		elif choice == 'gms': # no
-			getmessages()
+		elif choice == 'gms':
+			getmessages(operand)
 		elif choice == 'gp':
 			getpost(operand)
 		elif choice == 'gs': # no
@@ -163,15 +163,15 @@ def commandentry():
 			getthread(0)
 		elif choice == 'gu':
 			getuser(operand)
-		elif choice == 'gup': # no
-			getuserposts()
+		elif choice == 'gup':
+			getuserposts(operand)
 		elif choice == 'help': # no
 			menu()
 		elif choice == "io": # no
 			filesmenu()
 		elif choice == 'msg': # no
 			createmessage(True)
-		elif choice == 'p': # no
+		elif choice == 'p':
 			createpost(True)
 		elif choice == 'r': # no
 			replypost(0)
@@ -564,7 +564,7 @@ def getmentions():
 	postcontent = pnutpy.api.users_mentioned_posts(userid, count=retrievecount, include_raw=True)
 	displaypost(postcontent)
 
-def getuserposts():
+def getuserposts(userid):
 	"""
 	Get an account's posts.
 	
@@ -573,9 +573,10 @@ def getuserposts():
 	User input:
 		User number.
 	"""
-	userid = input("User posts, userid? [return]=me: ")
-	if userid == '':
-		userid = "me"
+	if str(userid) == "":
+		userid = input("User posts, userid? [return]=me: ")
+		if userid == "":
+			userid = "me"
 	postcontent = pnutpy.api.users_posts(userid, count=retrievecount, include_raw=True)
 	displaypost(postcontent)
 
@@ -700,7 +701,7 @@ def getsubscribed(output):
 			pass
 		number -= 1
 
-def getmessages():
+def getmessages(channelnumber):
 	"""
 	Get a list of messages in a public channel, or a private channel the user has authorisation for.
 	
@@ -709,12 +710,11 @@ def getmessages():
 	User input:
 		Channel number.
 	"""
-	global channelnumber
-	channelnumber = ""
-	while channelnumber == "":
-		channelnumber = input("-Messages in channel? [return]=list\n")
-		if channelnumber == "":
-			getsubscribed("")
+	if channelnumber == "":
+		while channelnumber == "":
+			channelnumber = input("-Messages in channel? [return]=list\n")
+			if channelnumber == "":
+				getsubscribed("")
 	postcontent = pnutpy.api.get_channel_messages(channelnumber, count = retrievecount, include_raw=True)
 	displaymessage(postcontent)
 

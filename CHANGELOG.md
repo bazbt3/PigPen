@@ -8,13 +8,17 @@
 **Parallel project for the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
-### 2017-12-04: v0.3.13 (Eh?!):
-* Added: Rudimentary parsing of 1- or 2-part commands (choice-operand.) Created at the whim of the developer and for speed of implementation.
-* Changed: A few tiny code updates.
+### 2017-12-05: v0.3.14 (mmmm… pi):
+* Added: `gm` get messages and `gup` get user posts now usable with 1 or 2-way parsing.
+* Changed: -
 * Deprecated: -
 * Removed: -
 * Fixed: -
 * Security: -
+
+### 2017-12-04: v0.3.13 (Eh?!):
+* Added: Rudimentary parsing of 1- or 2-part commands (choice-operand.) Created at the whim of the developer and for speed of implementation.
+* Changed: A few tiny code updates.
 
 ### 2017-12-03: v0.3.12 (Filing system):
 * Added: Files menu (but may need a better command than `io`.)
