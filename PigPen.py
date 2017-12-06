@@ -6,7 +6,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.15 for Python 3.5
+v0.3.16 for Python 3.5
 
 Site, changelog: https://github.com/bazbt3/PigPen
 
@@ -501,6 +501,10 @@ def getchannel(channelnumber):
 	print("@" + message[0]["user"]["username"] + ":")
 	print(message[0]["content"]["text"])
 	print("---------------")
+	subbies = input("Get a list of the channel user numbers (y/n)? ")
+	if subbies == "y":
+		getsubscribers(channelnumber)
+	print("---------------")
 
 
 # --------- Multiple ------
@@ -699,6 +703,25 @@ def getmessages(channelnumber):
 				getsubscribed("")
 	postcontent = pnutpy.api.get_channel_messages(channelnumber, count = retrievecount, include_raw=True)
 	displaymessage(postcontent)
+
+def getsubscribers(channelnumber):
+	"""
+	Get a list of subscribers to a channel. Called from getchannel.
+	
+	Arguments, user input:
+		Channel number.
+	"""
+	if str(channelnumber) == "":
+		channelnumber = input("-Messages in channel number? ")
+	postcontent = pnutpy.api.subscribed_users(channelnumber)
+	number = 50
+	print("---------------")
+	while number >= 0:
+		try:
+			print(postcontent[0][number]["id"])
+		except:
+			pass
+		number -= 1
 
 
 # --------- Files ------
