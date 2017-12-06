@@ -6,7 +6,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.14 for Python 3.5
+v0.3.15 for Python 3.5
 
 Site, changelog: https://github.com/bazbt3/PigPen
 
@@ -102,7 +102,7 @@ p.post r.reply rp.repost xp.x-post
  gb.bookmrks b.bookmark  gh.hashtag
 msg.message  gs.getsubs  gms.getmsgs
  gc.getchan  sub.subchan uns.unsubch
--dp.delpost  zp.zpost!   | ex.exit |""".format(str(userid), str(me)))
+zp.zpost | del.mute/block | x.exit |""".format(str(userid), str(me)))
 
 def commandentry():
 	"""
@@ -125,7 +125,7 @@ def commandentry():
 				the routine uses the global variable passed from the routine calling it
 	"""
 	choice = 'Little Bobby Tables'
-	while choice != 'ex':
+	while choice != 'x':
 		choice = input("Command? ")
 		# Parse a 1 or 2-part command, extra text is ignored. Trailing comments: 'no'=not doing:
 		try:
@@ -135,8 +135,8 @@ def commandentry():
 		# Add commands in alphabetic order to easily scan through:
 		if choice == 'b': # no
 			bookmarkpost(0)
-		if choice == 'dp': # no
-			deletepost()
+		if choice == 'del': # no
+			muteblockdelmenu()
 		elif choice == 'f':
 			followuser(operand)
 		elif choice == 'gb':
@@ -223,24 +223,6 @@ def createpost(inputflag):
 		postlimit = False
 	postcontent = pnutpy.api.create_post(data={'text': posttext})
 	serverresponse(postcontent)
-
-def deletepost():
-	"""
-	Delete a post.
-	
-	Arguments:
-		none
-	User input:
-		Post id.
-	"""
-	print("*No undo. (None.)")
-	deleteit = input("Delete a post: are you sure? (y/n)")
-	if deleteit == "y":
-		postid = input("*Delete post, number? ")
-		postcontent = pnutpy.api.delete_post(postid)
-		serverresponse(postcontent)
-	else:
-		print("-nothing deleted")
 
 def createmessage(inputflag):
 	"""
@@ -490,8 +472,8 @@ def unsubscribechannel():
 	User input:
 		Channel number.
 	"""
-	print("*No undo. (Resubscribe later.")
-	deleteit = input("Unsubscribe: are you sure? (y/n)")
+	print("*No undo. (Resubscribe later.)")
+	deleteit = input("Unsubscribe from a channel: are you sure? (y/n)")
 	if deleteit == "y":
 		channelnum = input("*Unsubscribe from channel number? ")
 		postcontent = pnutpy.api.subscribe_channel(channelnum)
@@ -744,8 +726,8 @@ avt = set ThemeMonday avatar
 		uploadanimage("")
 	elif choice == "avn":
 		setnormalavatar()
-#	elif choice == "avt":
-#		settmavatar()
+	elif choice == "avt":
+		settmavatar()
 
 def getmyfiles():
 	"""
@@ -832,6 +814,108 @@ def setnormalavatar():
 	file_data = {'type': file_type, 'kind': file_kind, 'name': file_name}
 	pnut_file = pnutpy.api.update_avatar(files={'content':file}, data=file_data)
 	serverresponse(pnut_file)
+
+
+# --------- Mute/block/delete ------
+
+def muteblockdelmenu():
+	"""
+	Submenu to hide away all the unpalatable things.
+	
+	Arguments:
+		none
+	User input:
+		The command to execute.
+	"""
+	choice = input("""
+| mute/block/delete |
+delp = delete a post
+muteu = mute a user
+unmuteu = unmute a user
+mutec = mute a channel
+unmutec = unmute a user
+[return] = quit
+""")
+	if choice == "delp":
+		deletepost()
+	elif choice == "mutec":
+		mutechannel()
+	elif choice == "muteu":
+		muteuser()
+	elif choice == "unmutec":
+		unmutechannel()
+	elif choice == "unmuteu":
+		unmuteuser()
+
+def deletepost():
+	"""
+	Delete a post.
+	
+	Arguments:
+		none
+	User input:
+		Post id.
+	"""
+	print("*No undo. (None.)")
+	deleteit = input("Delete a post: are you sure? (y/n)")
+	if deleteit == "y":
+		postid = input("*Delete post, number? ")
+		postcontent = pnutpy.api.delete_post(postid)
+		serverresponse(postcontent)
+	else:
+		print("-nothing deleted")
+
+def mutechannel():
+	"""
+	Mute a channel.
+	
+	Arguments:
+		none
+	User input:
+		Channel number.
+	"""
+	channelnum = input("*Mute channel number? ")
+	postcontent = pnutpy.api.mute_channel(channelnum)
+	serverresponse()
+
+def unmutechannel():
+	"""
+	Unmute a channel.
+	
+	Arguments:
+		none
+	User input:
+		Channel number.
+	"""
+	channelnum = input("*Unmute channel number? ")
+	postcontent = pnutpy.api.unmute_channel(channelnum)
+	serverresponse()
+
+def muteuser():
+	"""
+	Mute a user.
+	
+	Arguments:
+		none
+	User input:
+		Channel number.
+	"""
+	usernum = input("*Mute user number? ")
+	postcontent = pnutpy.api.mute_user(usernum)
+	serverresponse()
+
+def unmuteuser():
+	"""
+	Unmute a user.
+	
+	Arguments:
+		none
+	User input:
+		Channel number.
+	"""
+	usernum = input("*Unmute user number? ")
+	postcontent = pnutpy.api.unmute_user(usernum)
+	serverresponse()
 
 
 # --------- Admin. misc. ------
