@@ -6,7 +6,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.16 for Python 3.5
+v0.3.17 for Python 3.5
 
 Site, changelog: https://github.com/bazbt3/PigPen
 
@@ -100,8 +100,8 @@ p.post r.reply rp.repost xp.x-post
  gi.interact gth.getthrd gp.getpost
  gu.getuser  gup.usrpost f.follow
  gb.bookmrks b.bookmark  gh.hashtag
-msg.message  gs.getsubs  gms.getmsgs
- gc.getchan  sub.subchan uns.unsubch
+msg.message  gc.getchan  gcm.getmsgs
+ gs.getsubs  sub.subchan uns.unsubch
 zp.zpost | del.mute/block | x.exit |""".format(str(userid), str(me)))
 
 def commandentry():
@@ -114,7 +114,7 @@ def commandentry():
 		Command to execute.
 	Discrepancies (I might have had a reason for this):
 		1. Mostly:
-			if a function call passes 0:
+			if a function call passes 0 or "":
 				ask for user input
 			else:
 				the routine uses the global variable passed from the routine calling it
@@ -127,15 +127,15 @@ def commandentry():
 	choice = 'Little Bobby Tables'
 	while choice != 'x':
 		choice = input("Command? ")
-		# Parse a 1 or 2-part command, extra text is ignored. Trailing comments: 'no'=not doing:
+		# Parse a 1 or 2-part command, extra text is ignored. Trailing comments: 'n/a'=not applicable:
 		try:
 			choice, operand = choice.split()
 		except:
 			operand = ""
 		# Add commands in alphabetic order to easily scan through:
-		if choice == 'b': # no
-			bookmarkpost(0)
-		if choice == 'del': # no
+		if choice == 'b':
+			bookmarkpost(operand)
+		if choice == 'del': # n/a
 			muteblockdelmenu()
 		elif choice == 'f':
 			followuser(operand)
@@ -143,41 +143,41 @@ def commandentry():
 			getbookmarks(operand)
 		elif choice == 'gc':
 			getchannel(operand)
-		elif choice == "gg": # no
+		elif choice == 'gcm':
+			getmessages(operand)
+		elif choice == "gg": # n/a
 			getglobal()
 		elif choice == 'gh':
 			gethashtag(operand)
-		elif choice == "gi": # no
+		elif choice == "gi": # n/a
 			getinteractions()
 		elif choice == 'gm': # no
 			getmentions()
-		elif choice == 'gms':
-			getmessages(operand)
 		elif choice == 'gp':
 			getpost(operand)
 		elif choice == 'gs': # no
 			getsubscribed("-v")
-		elif choice == "gt": # no
+		elif choice == "gt": # n/a
 			getunified()
-		elif choice == 'gth': # no
-			getthread(0)
+		elif choice == 'gth':
+			getthread(operand)
 		elif choice == 'gu':
 			getuser(operand)
 		elif choice == 'gup':
 			getuserposts(operand)
-		elif choice == 'help': # no
+		elif choice == 'help': # n/a
 			menu()
-		elif choice == "io": # no
+		elif choice == "io": # n/a
 			filesmenu()
 		elif choice == 'msg': # no
 			createmessage(True)
 		elif choice == 'p':
 			createpost(True)
-		elif choice == 'r': # no
-			replypost(0)
-		elif choice == 'rp': # no
-			repostpost(0)
-		elif choice == 'set': # no
+		elif choice == 'r':
+			replypost(operand)
+		elif choice == 'rp':
+			repostpost(operand)
+		elif choice == 'set': # n/a
 			changesettings()
 		elif choice == "sub":
 			subscribetochannel(operand)
@@ -189,7 +189,8 @@ def commandentry():
 			zpost()
 	# The app exits here once 'exit' is typed:
 	print(" ")
-	print("*You chose to exit: Goodbye!")
+	print("*You chose to exit.")
+
 
 # --------- Single ------
 
@@ -262,7 +263,7 @@ def xpost():
 	getchannelname(channelid, channelcontent)
 	# Do not crosspost messages sent to private channels:
 	if channeltype == "pm":
-		print("*Right now the app does not allow crossposting messages sent to private channels.\nSorry.")
+		print("*The app does not allow crossposting of messages sent to private channels. The post will not be created.\nSorry.")
 	else:
 		# Add an x-post footer then create the post without user input:
 		posttext += "\n\n" + channelname + " "
@@ -293,7 +294,7 @@ def replypost(postnum):
 	Arguments:
 		postnum:
 			Post number to reply to.
-				if postnum == 0:
+				if postnum == "":
 					ask for post number to reply to
 				else:
 					reply to global postum
@@ -303,7 +304,7 @@ def replypost(postnum):
 	getme()
 	global posttext
 	posttext = ''
-	if postnum == 0:
+	if str(postnum) == "":
 		postnum = input("Reply to postnum? ")
 	postcontent = pnutpy.api.get_post(postnum)
 	if not "is_deleted" in postcontent[0]:
@@ -343,14 +344,14 @@ def repostpost(postnum):
 	Arguments:
 		postnum:
 			Post number to repost.
-				if postnum == 0:
+				if postnum == "":
 					ask for post number to repost
 				else:
 					repost global postnum
 	User input:
 		Post number.
 	"""
-	if postnum == 0:
+	if str(postnum) == "":
 		postnum = input("Repost postnum? ")
 	postcontent = pnutpy.api.repost_post(postnum)
 	serverresponse(postcontent)
@@ -362,14 +363,14 @@ def bookmarkpost(postnum):
 	Arguments:
 		postnum:
 			Post number to bookmark.
-				if postnum == 0:
+				if postnum == "":
 					ask for post number to bookmark
 				else:
 					bookmark global postnum
 	User input:
 		Post number.
 	"""
-	if postnum == 0:
+	if str(postnum) == "":
 		postnum = input("Bookmark postnum? ")
 	postcontent = pnutpy.api.bookmark_post(postnum)
 	serverresponse(postcontent)
@@ -494,14 +495,21 @@ def getchannel(channelnumber):
 	getchannelname(channelnumber, channelcontent)
 	print("---------------")
 	print("#" + str(channelcontent[0]["id"]) + " " + channelname + " c:" + "@" + channelcontent[0]["owner"]["username"])
-	recentmessageid = str(channelcontent[0]['recent_message_id'])
-	print("last: " + recentmessageid + ":")
-	channelid = channelcontent[0]["id"]
-	message = pnutpy.api.get_message(channelid, recentmessageid)
-	print("@" + message[0]["user"]["username"] + ":")
-	print(message[0]["content"]["text"])
+	# Build recent message, unless it's been deleted:
+	try:
+		recentmessageid = str(channelcontent[0]['recent_message_id'])
+		channelid = channelcontent[0]["id"]
+		message = pnutpy.api.get_message(channelid, recentmessageid)
+		# Check for deleted message content first (using an exception isn't the best way!):
+		messagecontent = message[0]["content"]["text"]
+		# Display if not deleted:
+		print("last message: " + recentmessageid + ":")
+		print("@" + message[0]["user"]["username"] + ":")
+		print(messagecontent)
+	except:
+		print("*Most recent message deleted (or had no content.)")
 	print("---------------")
-	subbies = input("Get a list of the channel user numbers (y/n)? ")
+	subbies = input("*Get a list of the channel user numbers (y/n)? ")
 	if subbies == "y":
 		getsubscribers(channelnumber)
 	print("---------------")
@@ -599,14 +607,14 @@ def getthread(postnum):
 	Arguments:
 		postnum:
 			Post number to thread.
-				if postnum == 0:
+				if postnum == "":
 					ask for post number to thread
 				else:
 					thread from post
 	User input:
 		Post number, threads are displayed beginning with postnum.
 	"""
-	if postnum == 0:
+	if str(postnum) == "":
 		postnum = input("Get threadid? ")
 	postcontent = pnutpy.api.posts_thread(postnum, count=retrievecount, include_raw=True)
 	displaypost(postcontent)
@@ -1104,20 +1112,16 @@ def inlinepostinteraction(postid, postthreadid):
 			validaction = True
 		if action == "r":
 			replypost(postid)
-			postid = 0
 			validaction = True
 		if action == "rp":
 			repostpost(postid)
-			postid = 0
 			validaction = True
 		if action == "b":
 			bookmarkpost(postid)
-			postid = 0
 			validaction = True
 		if action == "gth":
 			getthread(postthreadid)
 			validaction = True
-			# postid = 0 was here
 			print("-back to list")
 		if action == "x":
 			print("-back to main menu")
@@ -1331,4 +1335,8 @@ Please choose the number of items to display from the following menu. ([return] 
 	print("Thanks.")
 
 # STOP FIDDLING WITH STUFF, DO IT!
-main()
+quit = "n"
+while quit != "y":
+	main()
+	quit = input("-Are you sure (y/n)")
+print("-Goodbye.")

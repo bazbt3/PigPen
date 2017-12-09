@@ -8,13 +8,18 @@
 **Parallel project for the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
-### 2017-12-06: v0.3.16 (mute):
-* Added: 'Get channel' now has the option to display a list of subscriber ids.
-* Changed: -
+### 2017-12-09: v0.3.17 (Uncertain):
+* Added: 'Are you sure…?' when exiting.
+* Added: 1 or 2-part command+operand parsing added to 'Bookmark post', 'get thread', 'reply post' and 'repost post'.
+* Changed: 'Get channel messages' renamed from `gms` to `gcm`.
+* Changed: Small changes to channels part of menu.
 * Deprecated: -
 * Removed: -
-* Fixed: -
+* Fixed: 'Get channel' now informs the user if the most recent message in a channel was deleted (if message content text does not exist.)
 * Security: -
+
+### 2017-12-06: v0.3.16 (Intrusive?):
+* Added: 'Get channel' now has the option to display a list of subscriber ids.
 
 ### 2017-12-06: v0.3.15 (mute):
 * Added: Mute/block/delete submenu starting with delete post, with mute & unmute for both channels and users.
