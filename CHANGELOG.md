@@ -15,7 +15,7 @@
 * Changed: Small changes to channels part of menu.
 * Deprecated: -
 * Removed: -
-* Fixed: 'Get channel' now informs the user if the most recent message in a channel was deleted (if message content text does not exist.)
+* Fixed: 'Get channel' command now informs the user if the most recent message in a channel was deleted (if message content text does not exist.)
 * Security: -
 
 ### 2017-12-06: v0.3.16 (Intrusive?):
