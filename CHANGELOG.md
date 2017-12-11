@@ -8,15 +8,24 @@
 **Parallel project for the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
+### 2017-12-10: v0.3.18 (Pompous?):
+* Added: **Testing:** ~~Spam~~`sp`: Create a message in a channel mentioning all subscribers to that channel. Not *useful* as no mention alerts are created, it may even impact privacy concerns. Ultimate intention is to 'Broadcast' messages to subscribers, but that seems a bit ambitious.
+* Added: New `io` > `gf` 'Get file' retrieves an file's *data* similarly to but more abbreviated than `gmf`; not for users yet.
+* Changed: Can now get an abbreviated (`gs`) or a verbose (`gs v`) listing of subscribed channels *from the main menu*. Note: Default output is currently *abbreviated* but verbose might be more *useful*, displaying the most recent message.
+* Changed: `gc` user listing now returns usernames with the user ids.
+* Changed: Server responses now prefixed with the interaction type.
+* Changed: Tiny install documentation update.
+* Deprecated: zpost removed from menu; totally unused since its addition. (Code and command remain active.)
+* Removed: -
+* Fixed: -
+* Security: -
+
 ### 2017-12-09: v0.3.17 (Uncertain):
 * Added: 'Are you sure…?' when exiting.
 * Added: 1 or 2-part command+operand parsing added to 'Bookmark post', 'get thread', 'reply post' and 'repost post'.
 * Changed: 'Get channel messages' renamed from `gms` to `gcm`.
 * Changed: Small changes to channels part of menu.
-* Deprecated: -
-* Removed: -
 * Fixed: 'Get channel' command now informs the user if the most recent message in a channel was deleted (if message content text does not exist.)
-* Security: -
 
 ### 2017-12-06: v0.3.16 (Intrusive?):
 * Added: 'Get channel' now has the option to display a list of subscriber ids.
@@ -77,6 +86,7 @@
 
 ### 2017-11-18: v0.3.4 (a bit Saturday-ish):
 **News:** The documentation is moving to GitHub Pages so ~~might break~~is of course temporarily borked.
+
 * Removed: `import sys` - only used in my Python 2.7 catch-all exception handling.
 
 ### 2017-11-17: v0.3.3 (Spammy images!~~A bit spammy?~~):
@@ -96,13 +106,15 @@
 #### News:
 **The application is now Python 3.5-only.** The 2.7 app was created due to ignorance when it initially failed. Adding `import sys` fixed the fault in the noob catch-all-then-reset exception handlers. Note: the sys calls made simply aren't necessary in Python 3.5.
 #### Version numbering:
-Python 3.5 application starts at v0.3.0 simply to differentiate from Python 2. 
+Python 3.5 application starts at v0.3.0 simply to differentiate from Python 2.
+ 
 * Added: Moar spaghetti code.
 * Changed: Increased listings from server-default 20 posts to a hardcoded 30. Not friendly yet, being displayed from earliest to latest and with no persistence, hence no version increase.
 * Deprecated: Er… does all the Python 2.7 stuff count?
 
 ### 2017-11-15: v0.2.4 (Now @hutattedonmyarm):
-* Added: Chat channel names now appear in the Subscribed Channels listing, a major barrier passed thanks to @hutattedonmyarm's help! **Bug:** May break in the Get Channel routine.
+* Added: Chat channel names now appear in the Subscribed Channels listing, a major barrier passed thanks to @hutattedonmyarm's help.    
+**Bug:** May break in the Get Channel routine.
 * Fixed: Attributions: PNUTpy author: @33MHz, maintainer: @thrrgilag.
 
 ### 2017-11-13: v0.2.3 (pre-@hutattedonmyarm):
@@ -184,6 +196,7 @@ Added: Subscribed channel list now has a `[u]` unread status indicator and displ
 
 ### 2017-11-04: v0.1.22 (Sensible):
 **News:** Changed version numbering style from n.nn.n to n.n.n., e.g. 1.01.22 is now 1.1.22.
+
 * Added: Get last 20 bookmarks. *(No error handling if fewer than 20 exist.)*
 * Changed: Exiting now only requires lower case 'exit'.
 

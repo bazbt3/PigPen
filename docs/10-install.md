@@ -19,7 +19,7 @@ Incomplete, potentially misleading instructions follow.  This is very much a wor
 1. **Create a new `PigPen` directory** wherever you intend to run the app from.
 1. **Copy the `PigPen.py`, `secrettoken.txt` file from here** and save them there.
 1. **Create a new `images` directory** within the same directory as the app.
-1. You will need a pnut.io account, and to visit your developer account page.
+1. You will need a pnut.io account, and to visit your [single-user app developer account page.](https://pnut.io/dev)
 1. **Create an app at the page**, which will create 2 unique codes, then authorise it which will create a token.
 1. **Overwrite the contents of `secrettoken.txt` with the token**, ensuring to remove any trailing linefeeds before saving it.
 1. {p} **Install `StaSh`** following the instructions as it runs and from the link above.

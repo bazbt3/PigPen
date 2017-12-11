@@ -6,7 +6,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.17 for Python 3.5
+v0.3.18 for Python 3.5
 
 Site, changelog: https://github.com/bazbt3/PigPen
 
@@ -101,8 +101,8 @@ p.post r.reply rp.repost xp.x-post
  gu.getuser  gup.usrpost f.follow
  gb.bookmrks b.bookmark  gh.hashtag
 msg.message  gc.getchan  gcm.getmsgs
- gs.getsubs  sub.subchan uns.unsubch
-zp.zpost | del.mute/block | x.exit |""".format(str(userid), str(me)))
+ gs.getsubs- sub.subchan uns.unsubch
+sp.spamchn | del.mute/block | x.exit""".format(str(userid), str(me)))
 
 def commandentry():
 	"""
@@ -155,8 +155,8 @@ def commandentry():
 			getmentions()
 		elif choice == 'gp':
 			getpost(operand)
-		elif choice == 'gs': # no
-			getsubscribed("-v")
+		elif choice == 'gs':
+			getsubscribed(operand)
 		elif choice == "gt": # n/a
 			getunified()
 		elif choice == 'gth':
@@ -179,6 +179,8 @@ def commandentry():
 			repostpost(operand)
 		elif choice == 'set': # n/a
 			changesettings()
+		elif choice == "sp":
+			mentionsubscribers(operand)
 		elif choice == "sub":
 			subscribetochannel(operand)
 		elif choice == "uns":
@@ -223,7 +225,7 @@ def createpost(inputflag):
 			inputtext()
 		postlimit = False
 	postcontent = pnutpy.api.create_post(data={'text': posttext})
-	serverresponse(postcontent)
+	serverresponse("post", postcontent)
 
 def createmessage(inputflag):
 	"""
@@ -245,7 +247,7 @@ def createmessage(inputflag):
 				getsubscribed("")
 		inputtext()
 	postcontent = pnutpy.api.create_message(channelid, data={'text': posttext})
-	serverresponse(postcontent)
+	serverresponse("message", postcontent)
 
 def xpost():
 	"""
@@ -335,7 +337,7 @@ def replypost(postnum):
 			else:
 				postlimit = False
 		pnutpy.api.create_post(data={'reply_to': postnum, 'text': posttext})
-		serverresponse(postcontent)
+		serverresponse("post", postcontent)
 
 def repostpost(postnum):
 	"""
@@ -354,7 +356,7 @@ def repostpost(postnum):
 	if str(postnum) == "":
 		postnum = input("Repost postnum? ")
 	postcontent = pnutpy.api.repost_post(postnum)
-	serverresponse(postcontent)
+	serverresponse("repost", postcontent)
 
 def bookmarkpost(postnum):
 	"""
@@ -373,7 +375,7 @@ def bookmarkpost(postnum):
 	if str(postnum) == "":
 		postnum = input("Bookmark postnum? ")
 	postcontent = pnutpy.api.bookmark_post(postnum)
-	serverresponse(postcontent)
+	serverresponse("bookmark", postcontent)
 
 def followuser(usernum):
 	"""
@@ -385,7 +387,7 @@ def followuser(usernum):
 	if str(usernum) == "":
 		usernum = input("Follow usernum? ")
 	postcontent = pnutpy.api.follow_user(usernum)
-	serverresponse(postcontent)
+	serverresponse("followed", postcontent)
 
 def getpost(postnum):
 	"""
@@ -462,7 +464,7 @@ def subscribetochannel(channelnum):
 	if str(channelnum) == "":
 		channelnum = input("Subscribe to channelnum? ")
 	postcontent = pnutpy.api.subscribe_channel(channelnum)
-	serverresponse(postcontent)
+	serverresponse("subscribed", postcontent)
 
 def unsubscribechannel():
 	"""
@@ -478,7 +480,7 @@ def unsubscribechannel():
 	if deleteit == "y":
 		channelnum = input("*Unsubscribe from channel number? ")
 		postcontent = pnutpy.api.subscribe_channel(channelnum)
-		serverresponse(postcontent)
+		serverresponse("unsubscribed", postcontent)
 	else:
 		print("-not unsubscribed")
 
@@ -653,7 +655,7 @@ def getsubscribed(output):
 	
 	Arguments:
 		output:
-			The "-v" flag indicates verbose output; anything else passed to this function gives an abbreviated listing.
+			The "v" flag indicates verbose output; anything else passed to this function gives an abbreviated listing.
 	User input:
 		none
 	"""
@@ -683,7 +685,8 @@ def getsubscribed(output):
 			# Build and display listing:
 			print(channelunread + "#" + str(channelnumber) + ": " + channelname)
 			print(channeltype + " c:@" + channelcontent[0][number]["owner"]["username"])
-			if output == "-v":
+			# Check output type: standard or verbose:
+			if output == "v":
 				# Build last message in channel:
 				recentmessageid = str(channelcontent[0][number]['recent_message_id'])
 				print("last: " + recentmessageid + ":")
@@ -714,22 +717,58 @@ def getmessages(channelnumber):
 
 def getsubscribers(channelnumber):
 	"""
-	Get a list of subscribers to a channel. Called from getchannel.
+	Get a list of subscribers to a channel. Maximum 50. Called from getchannel.
 	
 	Arguments, user input:
 		Channel number.
 	"""
 	if str(channelnumber) == "":
-		channelnumber = input("-Messages in channel number? ")
+		channelnumber = input("-Subscribers in channel number? ")
 	postcontent = pnutpy.api.subscribed_users(channelnumber)
 	number = 50
 	print("---------------")
 	while number >= 0:
 		try:
-			print(postcontent[0][number]["id"])
+			userid = postcontent[0][number]["id"]
+			username = "@" + postcontent[0][number]["username"]
+			print (userid, username)
 		except:
 			pass
 		number -= 1
+
+def mentionsubscribers(channelnumber):
+	"""
+	Get a list of subscribers to a channel and create a message mentioning all. Maximum 50.
+	
+	Arguments, user input:
+		Channel number, message.
+	"""
+	global posttext
+	posttext = ""
+	if str(channelnumber) == "":
+		channelnumber = input("-Spam channel number? ")
+	postcontent = pnutpy.api.subscribed_users(channelnumber)
+	number = 50
+	recipients = "/"
+	while number >= 0:
+		try:
+			recipientname = postcontent[0][number]["username"]
+			if recipientname != me:
+				recipients += "@" + recipientname + " "
+		except:
+			pass
+		number -= 1
+#	postcontent = pnutpy.api.get_user(usernum)
+	print("-Enter the message:")
+	inputtext()
+	posttext += ("\n" + recipients)
+	print(posttext)
+	postpause = input("*Are you sure? (y/n)")
+	if postpause == "y":
+		postcontent = pnutpy.api.create_message(channelid, data={'text': posttext})
+		serverresponse("message", postcontent)
+	else:
+		print("*Message not sent")
 
 
 # --------- Files ------
@@ -745,12 +784,15 @@ def filesmenu():
 	"""
 	choice = input("""
 | files |
+gf = get a file
 gmf = get my files
 upload = upload an image
 avn = set normal avatar
 avt = set ThemeMonday avatar
 [return] = quit
 """)
+	if choice == "gf":
+		getfile()
 	if choice == "gmf":
 		getmyfiles()
 	elif choice == "upload":
@@ -780,6 +822,7 @@ def getmyfiles():
 	while number >= 0:
 		print("-" * 31)
 		print("id:", filescontent[0][number]["id"])
+		print("token:", filescontent[0][number]["file_token"])
 		print(filescontent[0][number]["created_at"])
 		print(filescontent[0][number]["type"])
 		print(filescontent[0][number]["kind"])
@@ -788,6 +831,21 @@ def getmyfiles():
 		print(filescontent[0][number]["name"])
 		print(filescontent[0][number]["source"]["name"])
 		number -= 1
+	print("-" * 31)
+	print("Listing is for analysis, not users.")
+
+def getfile():
+	"""
+	Get a single file by id.
+	
+	Arguments:
+		none
+	User input:
+		none.
+	"""
+	fileid = 1700
+	filecontent = pnutpy.api.get_file(fileid)
+	print(filecontent)
 	print("-" * 31)
 	print("Listing is for analysis, not users.")
 
@@ -825,7 +883,7 @@ def uploadanimage(file_name):
 		# Create the file:
 		pnut_file = pnutpy.api.create_file(files={'content':file}, data=file_data)
 		# Return server response:
-		serverresponse(pnut_file)
+		serverresponse("uploaded", pnut_file)
 
 def setnormalavatar():
 	"""
@@ -844,7 +902,7 @@ def setnormalavatar():
 	file_kind = 'image'
 	file_data = {'type': file_type, 'kind': file_kind, 'name': file_name}
 	pnut_file = pnutpy.api.update_avatar(files={'content':file}, data=file_data)
-	serverresponse(pnut_file)
+	serverresponse("avatar set", pnut_file)
 
 
 # --------- Mute/block/delete ------
@@ -892,7 +950,7 @@ def deletepost():
 	if deleteit == "y":
 		postid = input("*Delete post, number? ")
 		postcontent = pnutpy.api.delete_post(postid)
-		serverresponse(postcontent)
+		serverresponse("post deleted", postcontent)
 	else:
 		print("-nothing deleted")
 
@@ -907,7 +965,7 @@ def mutechannel():
 	"""
 	channelnum = input("*Mute channel number? ")
 	postcontent = pnutpy.api.mute_channel(channelnum)
-	serverresponse()
+	serverresponse("channel muted",postcontent)
 
 def unmutechannel():
 	"""
@@ -920,7 +978,7 @@ def unmutechannel():
 	"""
 	channelnum = input("*Unmute channel number? ")
 	postcontent = pnutpy.api.unmute_channel(channelnum)
-	serverresponse()
+	serverresponse("channel unmuted", postcontent)
 
 def muteuser():
 	"""
@@ -933,7 +991,7 @@ def muteuser():
 	"""
 	usernum = input("*Mute user number? ")
 	postcontent = pnutpy.api.mute_user(usernum)
-	serverresponse()
+	serverresponse("user muted", postcontent)
 
 def unmuteuser():
 	"""
@@ -946,7 +1004,7 @@ def unmuteuser():
 	"""
 	usernum = input("*Unmute user number? ")
 	postcontent = pnutpy.api.unmute_user(usernum)
-	serverresponse()
+	serverresponse("user unmuted", postcontent)
 
 
 # --------- Admin. misc. ------
@@ -973,11 +1031,6 @@ cc = change channel count? ({1})
 	# Set global retrieve count
 	rcount = retrievecount
 	if choice == "gc":
-		# Does retrievecount variable already exist?
-#		try:
-#			dummyvalue = retrievecount
-#		except:
-#			retrievecount = 15
 		print("-general count is currently", retrievecount)
 		rcount = input("*Please change, to (>0)? ")
 		if int(rcount) > 0:
@@ -986,11 +1039,6 @@ cc = change channel count? ({1})
 	# Set channels retrieve count
 	ccount = channelcount
 	if choice == "cc":
-		# Does channelcount variable already exist?
-#		try:
-#			dummyvalue = channelcount
-#		except:
-#			channelcount = 30
 		print("-channel count is currently", channelcount)
 		ccount = input("*Please change, to (>0)? ")
 		if int(ccount) > 0:
@@ -1001,7 +1049,7 @@ cc = change channel count? ({1})
 	config["USER"]["channelcount"] = str(channelcount)
 	with open ("ppconfig.ini", "w") as configfile:
 		config.write(configfile)
-	print("-saved\n")
+	print("-settings saved\n")
 
 def inputtext():
 	"""
@@ -1272,22 +1320,22 @@ def postfooter(postcontent):
 	postrefs += " thd:" + str(postcontent[0]["thread_id"])
 	print(postrefs)
 
-def serverresponse(postcontent):
+def serverresponse(interaction, postcontent):
 	"""
 	Displays status returned from the server after posts, messages, etc.
 	
 	Arguments:
 		postcontent:
-			The server's JSON response.
+			The server's response.
 	User input:
 		none
 	"""
 	status = ()
 	status = postcontent[1]["code"]
 	if status == 200:
-		print("-ok")
+		print("-" + interaction + " ok")
 	elif status == 201:
-		print("-created")
+		print("-" + interaction + " created")
 	else:
 		print(str(status) + "? hmmm... what's that now?")
 
