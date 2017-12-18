@@ -5,8 +5,17 @@
 * Change avatar (a precursor to other file operations in v0.3.)
 * Pushed goal of display of longer timelines back from v0.3 to v0.4.
 
-**Parallel project for the December pnut.io \#Hackathon:**    
+**Parallel project,** ***was intended for*** **the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
+
+### 2017-12-15: v0.3.19 (Road to Nowhere):
+* Added: -
+* Changed: Both 'createpost' and 'createmessage' now parse, as badly-described in previous commits. Perhaps confusingly, createpost can use post text whereas createmessage takes just the channel number. I'm leaving 'xpost' alone, it works (for me) better with user input for channel number and post.
+* Changed: Commands are now split into command and everything else following the command, not ignoring everything after the second space character as before.
+* Deprecated: -
+* Removed: 'zpost' removed from application; totally unused since its addition.
+* Fixed: -
+* Security: -
 
 ### 2017-12-10: v0.3.18 (Pompous?):
 * Added: **Testing:** ~~Spam~~`sp`: Create a message in a channel mentioning all subscribers to that channel. Not *useful* as no mention alerts are created, it may even impact privacy concerns. Ultimate intention is to 'Broadcast' messages to subscribers, but that seems a bit ambitious.

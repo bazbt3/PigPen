@@ -6,7 +6,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.18 for Python 3.5
+v0.3.19 for Python 3.5
 
 Site, changelog: https://github.com/bazbt3/PigPen
 
@@ -112,24 +112,18 @@ def commandentry():
 		none
 	User input:
 		Command to execute.
-	Discrepancies (I might have had a reason for this):
-		1. Mostly:
+		Mostly:
 			if a function call passes 0 or "":
 				ask for user input
-			else:
-				the routine uses the global variable passed from the routine calling it
-		2. createpost and createmessage are currently different:
-			if the function call passes True:
-				ask for user input
-			else:
-				the routine uses the global variable passed from the routine calling it
+			elif operand is passed:
+				use that instead.
 	"""
 	choice = 'Little Bobby Tables'
 	while choice != 'x':
 		choice = input("Command? ")
 		# Parse a 1 or 2-part command, extra text is ignored. Trailing comments: 'n/a'=not applicable:
 		try:
-			choice, operand = choice.split()
+			choice, operand = choice.split(" ", 1)
 		except:
 			operand = ""
 		# Add commands in alphabetic order to easily scan through:
@@ -151,7 +145,7 @@ def commandentry():
 			gethashtag(operand)
 		elif choice == "gi": # n/a
 			getinteractions()
-		elif choice == 'gm': # no
+		elif choice == 'gm': # n/a
 			getmentions()
 		elif choice == 'gp':
 			getpost(operand)
@@ -169,10 +163,10 @@ def commandentry():
 			menu()
 		elif choice == "io": # n/a
 			filesmenu()
-		elif choice == 'msg': # no
-			createmessage(True)
+		elif choice == 'msg':
+			createmessage(operand)
 		elif choice == 'p':
-			createpost(True)
+			createpost(operand)
 		elif choice == 'r':
 			replypost(operand)
 		elif choice == 'rp':
@@ -187,8 +181,6 @@ def commandentry():
 			unsubscribechannel() # no
 		elif choice == "xp": # no
 			xpost()
-		elif choice == "zp": # no
-			zpost()
 	# The app exits here once 'exit' is typed:
 	print(" ")
 	print("*You chose to exit.")
@@ -198,21 +190,27 @@ def commandentry():
 
 # DEFINE FUNCTIONS FOR USER INTERACTIONS:
 
-def createpost(inputflag):
+def createpost(cpposttext):
 	"""
 	Create a post.
 	
 	Arguments:
-		inputflag:
-			if True: ask for input,
-			if False: use global posttext
+		posttext:
+			if "":
+				ask for input
+			elif operand from calling function:
+				use that instead.
 	User input:
 		Post text.
 	"""
+	global posttext
 	postlimit = True
 	while postlimit:
-		if inputflag == True:
+		if cpposttext == "":
 			inputtext()
+		else:
+			posttext = cpposttext
+		print(len(posttext))
 		while len(posttext) > maxpostlen:
 			postoverlength = len(posttext) - maxpostlen
 			addans = ""
@@ -224,28 +222,30 @@ def createpost(inputflag):
 			print("*Ah. That was too long by " + str(postoverlength) + " character" + addans + ". To post, perhaps copy & edit the text above?)\n")
 			inputtext()
 		postlimit = False
+	print("-" * 31)
+	print(posttext)
 	postcontent = pnutpy.api.create_post(data={'text': posttext})
 	serverresponse("post", postcontent)
 
-def createmessage(inputflag):
+def createmessage(channelid):
 	"""
 	Create a message for a channel.
-	
-	Arguments:
-		inputflag:
-			if True: ask for input,
-			if False: use global posttext and channel
+
+		Arguments:
+		channelid:
+			if "":
+				ask for input
+			elif operand from calling function:
+				use that instead.
 	User input:
-		Channel number and/or message text.
+		Channel number and message text.
 	"""
-	global channelid, posttext
-	if inputflag == True:
-		channelid = ""
+	if channelid == "":
 		while channelid == "":
 			channelid = input("-Message to channel #? [return]=list\n")
 			if channelid == "":
 				getsubscribed("")
-		inputtext()
+	inputtext()
 	postcontent = pnutpy.api.create_message(channelid, data={'text': posttext})
 	serverresponse("message", postcontent)
 
@@ -259,7 +259,7 @@ def xpost():
 		Channel number and message.
 	"""
 	global channelid, posttext
-	createmessage(True)
+	createmessage("")
 	# Get channel name:
 	channelcontent = pnutpy.api.get_channel(channelid, include_raw=True)
 	getchannelname(channelid, channelcontent)
@@ -272,22 +272,7 @@ def xpost():
 		channelurl = "https://patter.chat/room/" + str(channelid)
 		channelurlmd = "[<=>](" + channelurl + ")"
 		posttext += channelurlmd
-		createpost(False)
-
-def zpost():
-	"""
-	Create a post then use the same text to send a message to a specific channel. Permits crossposting messages to private channels.
-	
-	Arguments:
-		none
-	User input:
-		Channel number and post.
-	"""
-	global channelid, posttext
-	createpost(True)
-	channelid = input("\nMessage for channelid? ")
-	posttext += "\n\n[x-post from global]"
-	createmessage(False)
+		createpost(posttext)
 
 def replypost(postnum):
 	"""
