@@ -6,7 +6,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.19 for Python 3.5
+v0.3.20 for Python 3.5
 
 Site, changelog: https://github.com/bazbt3/PigPen
 
@@ -165,8 +165,8 @@ def commandentry():
 			filesmenu()
 		elif choice == 'msg':
 			createmessage(operand)
-		elif choice == 'p':
-			createpost(operand)
+		elif choice == 'p': # n/a
+			createpost()
 		elif choice == 'r':
 			replypost(operand)
 		elif choice == 'rp':
@@ -190,27 +190,19 @@ def commandentry():
 
 # DEFINE FUNCTIONS FOR USER INTERACTIONS:
 
-def createpost(cpposttext):
+def createpost():
 	"""
 	Create a post.
 	
 	Arguments:
-		posttext:
-			if "":
-				ask for input
-			elif operand from calling function:
-				use that instead.
+		none
 	User input:
 		Post text.
 	"""
 	global posttext
 	postlimit = True
 	while postlimit:
-		if cpposttext == "":
-			inputtext()
-		else:
-			posttext = cpposttext
-		print(len(posttext))
+		inputtext()
 		while len(posttext) > maxpostlen:
 			postoverlength = len(posttext) - maxpostlen
 			addans = ""
