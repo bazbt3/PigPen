@@ -6,7 +6,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.20 for Python 3.5
+v0.3.21 for Python 3.5
 
 Site, changelog: https://github.com/bazbt3/PigPen
 
@@ -165,8 +165,8 @@ def commandentry():
 			filesmenu()
 		elif choice == 'msg':
 			createmessage(operand)
-		elif choice == 'p': # n/a
-			createpost()
+		elif choice == 'p':
+			createpost(operand)
 		elif choice == 'r':
 			replypost(operand)
 		elif choice == 'rp':
@@ -190,7 +190,7 @@ def commandentry():
 
 # DEFINE FUNCTIONS FOR USER INTERACTIONS:
 
-def createpost():
+def createpost(cpposttext):
 	"""
 	Create a post.
 	
@@ -202,7 +202,10 @@ def createpost():
 	global posttext
 	postlimit = True
 	while postlimit:
-		inputtext()
+		if cpposttext == "":
+			inputtext()
+		else:
+			posttext = cpposttext
 		while len(posttext) > maxpostlen:
 			postoverlength = len(posttext) - maxpostlen
 			addans = ""
@@ -219,7 +222,7 @@ def createpost():
 	postcontent = pnutpy.api.create_post(data={'text': posttext})
 	serverresponse("post", postcontent)
 
-def createmessage(channelid):
+def createmessage(cmchannelid):
 	"""
 	Create a message for a channel.
 
@@ -232,12 +235,14 @@ def createmessage(channelid):
 	User input:
 		Channel number and message text.
 	"""
-	if channelid == "":
-		while channelid == "":
-			channelid = input("-Message to channel #? [return]=list\n")
-			if channelid == "":
+	global channelid
+	if cmchannelid == "":
+		while cmchannelid == "":
+			cmchannelid = input("-Message to channel #? [return]=list\n")
+			if cmchannelid == "":
 				getsubscribed("")
 	inputtext()
+	channelid = cmchannelid
 	postcontent = pnutpy.api.create_message(channelid, data={'text': posttext})
 	serverresponse("message", postcontent)
 

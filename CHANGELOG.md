@@ -8,13 +8,16 @@
 **Parallel project,** ***was intended for*** **the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
-### 2017-12-19: v0.3.20 (Making Flippy Floppy):
+### 2017-12-21: v0.3.21 (Meh):
 * Added: -
 * Changed: -
-* Deprecated: Removed buggy 2-part parsing from createpost; it's just as quick to type '`p`', `[return]` and then the post text.
+* Deprecated: -
 * Removed: -
-* Fixed: -
+* Fixed: xpost now sends both the message *and* now the post.
 * Security: -
+
+### 2017-12-19: v0.3.20 (Making Flippy Floppy):
+* Deprecated: Removed buggy 2-part parsing from createpost; it's just as quick to type '`p`', `[return]` and then the post text.
 
 ### 2017-12-15: v0.3.19 (Road to Nowhere):
 * Changed: Both 'createpost' and 'createmessage' now parse, as badly-described in previous commits. Perhaps confusingly, createpost can use post text whereas createmessage takes just the channel number. I'm leaving 'xpost' alone, it works (for me) better with user input for channel number and post.
