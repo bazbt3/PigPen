@@ -6,7 +6,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.22 for Python 3.5
+v0.3.23 for Python 3.5
 
 Site, changelog: https://github.com/bazbt3/PigPen
 
@@ -757,7 +757,7 @@ def mentionsubscribers(channelnumber):
 
 def broadcast(channelnumber):
 	"""
-	Get a list of subscribers to a channel and create individual messages to each. Maximum 50.
+	Get a list of subscribers to a channel then create individual messages to each. To avoid being rate limited, messages are sent every 3.2 seconds, incidentally upto a maximum of 50.
 	
 	Arguments:
 		Channel number
@@ -778,7 +778,7 @@ def broadcast(channelnumber):
 	print("-" * 31)
 	postpause = input("*Are you sure? (y/n)")
 	if postpause == "y":
-		print("*Please wait while all subscribers are messaged. Each takes >0.4 seconds.")
+		print("*Please wait while all subscribers are messaged. Each takes >3.4 seconds so this might take a while…")
 		userlist = pnutpy.api.subscribed_users(channelnumber)
 		number = 50
 		while number >= 0:
@@ -789,10 +789,12 @@ def broadcast(channelnumber):
 					message_info = {'text':posttext, 'destinations':recipientid}
 					postcontent, meta = pnutpy.api.create_message('pm', data=message_info)
 					print("sent to @") + recipientname
-					time.sleep(0.4)
+					# wait 3.2 seconds between posts to attempt to stay below rate limiting:
+					time.sleep(3.2)
 			except:
 				pass
 			number -= 1
+		print("-Messages completed")
 	else:
 		print("*Message not sent")
 
