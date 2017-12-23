@@ -6,7 +6,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.21 for Python 3.5
+v0.3.22 for Python 3.5
 
 Site, changelog: https://github.com/bazbt3/PigPen
 
@@ -102,7 +102,7 @@ p.post r.reply rp.repost xp.x-post
  gb.bookmrks b.bookmark  gh.hashtag
 msg.message  gc.getchan  gcm.getmsgs
  gs.getsubs- sub.subchan uns.unsubch
-sp.spamchn | del.mute/block | x.exit""".format(str(userid), str(me)))
+bc.broadcs | del.mute/block | x.exit""".format(str(userid), str(me)))
 
 def commandentry():
 	"""
@@ -175,6 +175,8 @@ def commandentry():
 			changesettings()
 		elif choice == "sp":
 			mentionsubscribers(operand)
+		elif choice == "bc":
+			broadcast(operand)
 		elif choice == "sub":
 			subscribetochannel(operand)
 		elif choice == "uns":
@@ -722,7 +724,9 @@ def mentionsubscribers(channelnumber):
 	"""
 	Get a list of subscribers to a channel and create a message mentioning all. Maximum 50.
 	
-	Arguments, user input:
+	Arguments:
+		Channel number
+	User input:
 		Channel number, message.
 	"""
 	global posttext
@@ -740,15 +744,55 @@ def mentionsubscribers(channelnumber):
 		except:
 			pass
 		number -= 1
-#	postcontent = pnutpy.api.get_user(usernum)
 	print("-Enter the message:")
 	inputtext()
 	posttext += ("\n" + recipients)
 	print(posttext)
 	postpause = input("*Are you sure? (y/n)")
 	if postpause == "y":
-		postcontent = pnutpy.api.create_message(channelid, data={'text': posttext})
+		postcontent = pnutpy.api.create_message(channelnumber, data={'text': posttext})
 		serverresponse("message", postcontent)
+	else:
+		print("*Message not sent")
+
+def broadcast(channelnumber):
+	"""
+	Get a list of subscribers to a channel and create individual messages to each. Maximum 50.
+	
+	Arguments:
+		Channel number
+	User input:
+		Channel number, hashtag or channel name, message.
+	"""
+	global posttext
+	posttext = ""
+	if str(channelnumber) == "":
+		channelnumber = input("*Broadcast to subscribers to channel number? ")
+	channelortag = input("*Enter channel name or hashtag for the message header? ")
+	print("-Enter the message:")
+	inputtext()
+	posttext = "Broadcast message from " + channelortag + ":\n\n" + posttext
+	print("-" * 31)
+	print("-This message will be sent:")
+	print(posttext)
+	print("-" * 31)
+	postpause = input("*Are you sure? (y/n)")
+	if postpause == "y":
+		print("*Please wait while all subscribers are messaged. Each takes >0.4 seconds.")
+		userlist = pnutpy.api.subscribed_users(channelnumber)
+		number = 50
+		while number >= 0:
+			try:
+				recipientname = userlist[0][number]["username"]
+				recipientid = [userlist[0][number]["id"]]
+				if recipientname != me:
+					message_info = {'text':posttext, 'destinations':recipientid}
+					postcontent, meta = pnutpy.api.create_message('pm', data=message_info)
+					print("sent to @") + recipientname
+					time.sleep(0.4)
+			except:
+				pass
+			number -= 1
 	else:
 		print("*Message not sent")
 
@@ -771,7 +815,7 @@ gmf = get my files
 upload = upload an image
 avn = set normal avatar
 avt = set ThemeMonday avatar
-[return] = quit
+[return] = back
 """)
 	if choice == "gf":
 		getfile()
@@ -904,8 +948,8 @@ delp = delete a post
 muteu = mute a user
 unmuteu = unmute a user
 mutec = mute a channel
-unmutec = unmute a user
-[return] = quit
+unmutec = unmute a channel
+[return] = back
 """)
 	if choice == "delp":
 		deletepost()

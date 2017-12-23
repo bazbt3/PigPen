@@ -8,13 +8,19 @@
 **Parallel project,** ***was intended for*** **the December pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
-### 2017-12-21: v0.3.21 (Meh):
-* Added: -
+### 2017-12-22: v0.3.22 (Broadcast):
+* Added: Broadcast a message to every subscriber to a channel. Currently needs some manual input, i.e. the channel name or a hashtag or both.
+  * **Future plans:**
+  * Automatically add the channel name and ask for hashtag and header text.
+  * Automatically crosspost a post to the channel and thus public timelines.
 * Changed: -
 * Deprecated: -
 * Removed: -
-* Fixed: xpost now sends both the message *and* now the post.
+* Fixed: Tiny bug fixes, and terminology and layout tweaks.
 * Security: -
+
+### 2017-12-21: v0.3.21 (Meh):
+* Fixed: xpost now sends both the message *and* now the post.
 
 ### 2017-12-19: v0.3.20 (Making Flippy Floppy):
 * Deprecated: Removed buggy 2-part parsing from createpost; it's just as quick to type '`p`', `[return]` and then the post text.
