@@ -1,16 +1,12 @@
 """PigPen, a Python app for @33MHz's pnut.io social network.
-
      ___          ___
     / _ |__ ___  / _ | ___  ___
    / ////_// _ \/ //// // |/ _ |
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.23 for Python 3.5
-
-Site, changelog: https://github.com/bazbt3/PigPen
-
-BASIC coding style by: @bazbt3"""
+v0.3.25 for Python 3.5 | @bazbt3
+* Site, changelog: https://github.com/bazbt3/PigPen"""
 
 
 # SETUP:
@@ -26,7 +22,7 @@ from PIL import Image
 import requests
 from io import BytesIO
 
-# For future expansion and for testing:
+# For setting timings in potentially rate-limiting automated sequential posts, for future expansion and for testing:
 import time
 
 # Define probably way too many global variables:
@@ -159,8 +155,11 @@ def commandentry():
 			getuser(operand)
 		elif choice == 'gup':
 			getuserposts(operand)
-		elif choice == 'help': # n/a
-			menu()
+		elif choice == 'help':
+			if operand != "":
+				help(operand)
+			else:
+				menu()
 		elif choice == "io": # n/a
 			filesmenu()
 		elif choice == 'msg':
@@ -186,6 +185,76 @@ def commandentry():
 	# The app exits here once 'exit' is typed:
 	print(" ")
 	print("*You chose to exit.")
+
+def help(choice):
+	"""
+	Help for main menu commands, e.g. "help ver" for version number and logo, "help cb" for broadcast … etc.
+	
+	Note:
+		Using "help" with no operand at the main menu simply redisplays the menu.
+	Arguments:
+		Command uses the choice variable, passed from the commandentry function.
+	User input:
+		User inout is not intended within this function.
+	"""
+	if choice == 'b':
+		print(bookmarkpost.__doc__)
+	if choice == 'del':
+		print(muteblockdelmenu.__doc__)
+	elif choice == 'f':
+		print(followuser.__doc__)
+	elif choice == 'gb':
+		print(getbookmarks.__doc__)
+	elif choice == 'gc':
+		print(getchannel.__doc__)
+	elif choice == 'gcm':
+		print(getmessages.__doc__)
+	elif choice == "gg":
+		print(getglobal.__doc__)
+	elif choice == 'gh':
+		print(gethashtag.__doc__)
+	elif choice == "gi":
+		print(getinteractions.__doc__)
+	elif choice == 'gm':
+		print(getmentions.__doc__)
+	elif choice == 'gp':
+		print(getpost.__doc__)
+	elif choice == 'gs':
+		print(getsubscribed.__doc__)
+	elif choice == "gt":
+		print(getunified.__doc__)
+	elif choice == 'gth':
+		print(getthread.__doc__)
+	elif choice == 'gu':
+		print(getuser.__doc__)
+	elif choice == 'gup':
+		print(getuserposts.__doc__)
+	elif choice == 'help':
+		print(help.__doc__)
+	elif choice == "io":
+		print(filesmenu.__doc__)
+	elif choice == 'msg':
+		print(createmessage.__doc__)
+	elif choice == 'p':
+		print(createpost.__doc__)
+	elif choice == 'r':
+		print(replypost.__doc__)
+	elif choice == 'rp':
+		print(repostpost.__doc__)
+	elif choice == 'set':
+		print(changesettings.__doc__)
+	elif choice == "sp":
+		print(mentionsubscribers.__doc__)
+	elif choice == "bc":
+		print(broadcast.__doc__)
+	elif choice == "sub":
+		print(subscribetochannel.__doc__)
+	elif choice == "uns":
+		print(unsubscribechannel.__doc__)
+	elif choice == "ver":
+		print(__doc__)
+	elif choice == "xp":
+		print(xpost.__doc__)
 
 
 # --------- Single ------
@@ -219,8 +288,6 @@ def createpost(cpposttext):
 			print("*Ah. That was too long by " + str(postoverlength) + " character" + addans + ". To post, perhaps copy & edit the text above?)\n")
 			inputtext()
 		postlimit = False
-	print("-" * 31)
-	print(posttext)
 	postcontent = pnutpy.api.create_post(data={'text': posttext})
 	serverresponse("post", postcontent)
 
@@ -307,13 +374,14 @@ def replypost(postnum):
 					alsoname = postcontent[0]["content"]["entities"]["mentions"][number]["text"]
 					# Strip self:
 					if alsoname != me:
-						alsomentions += " @" + alsoname
+						alsomentions += "@" + alsoname + " "
 				except Exception:
 					pass
 				number -= 1
 			posttext = "@" + postcontent[0]["user"]["username"] + " " + posttext
 			if alsomentions:
 				posttext += "\n/" + alsomentions
+				alsomentions = alsomentions.rstrip()
 			# Ensure post is not over-long:
 			if len(posttext) > maxpostlen:
 				print("")
@@ -507,7 +575,7 @@ def getchannel(channelnumber):
 
 def getunified():
 	"""
-	Get the application user's own 'Unified' post stream.
+	Get posts from the application user's own 'Unified' timeline.
 	
 	Arguments:
 		none
@@ -519,7 +587,7 @@ def getunified():
 
 def getglobal():
 	"""
-	Get the Global post stream.
+	Get posts from the Global timeline.
 	
 	Arguments:
 		none
