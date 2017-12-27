@@ -5,7 +5,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.25 for Python 3.5 | @bazbt3
+v0.3.26 for Python 3.5 | @bazbt3
 * Site, changelog: https://github.com/bazbt3/PigPen"""
 
 
@@ -43,7 +43,7 @@ posttext = ""
 maxpostlen = 256
 # Define *default* user-variable counts:
 retrievecount = 20
-channelcount = 30
+channelcount = 40
 
 # Setup continues after the function definitions.
 
@@ -195,7 +195,7 @@ def help(choice):
 	Arguments:
 		Command uses the choice variable, passed from the commandentry function.
 	User input:
-		User inout is not intended within this function.
+		User input is not intended within this function.
 	"""
 	if choice == 'b':
 		print(bookmarkpost.__doc__)
@@ -269,6 +269,14 @@ def createpost(cpposttext):
 		none
 	User input:
 		Post text.
+	Special (in inputtext function):
+		if textinput.startswith:
+			"/me":
+				create text reminiscent of an iOS Mutter IRC app "/me" post.
+			"/qs":
+				create text with a #QuoteSunday header.
+			"/tm":
+				create text with a #ThemeMonday header.
 	"""
 	global posttext
 	postlimit = True
@@ -303,6 +311,14 @@ def createmessage(cmchannelid):
 				use that instead.
 	User input:
 		Channel number and message text.
+	Special (in inputtext function):
+		if textinput.startswith:
+			"/me":
+				create text reminiscent of an iOS Mutter IRC app "/me" post.
+			"/qs":
+				create text with a #QuoteSunday header.
+			"/tm":
+				create text with a #ThemeMonday header.
 	"""
 	global channelid
 	if cmchannelid == "":
@@ -437,7 +453,7 @@ def followuser(usernum):
 		User number.
 	"""
 	if str(usernum) == "":
-		usernum = input("Follow usernum? ")
+		usernum = input("Follow user id? ")
 	postcontent = pnutpy.api.follow_user(usernum)
 	serverresponse("followed", postcontent)
 
@@ -477,7 +493,7 @@ def getuser(usernum):
 	
 	# Get a user's data:
 	if str(usernum) == "":
-		usernum = input("Get data, usernum? ")
+		usernum = input("Get data, user id? ")
 	postcontent = pnutpy.api.get_user(usernum)
 	print("")
 	print("@" + postcontent[0]["username"] + " - " + postcontent[0]["type"])
@@ -606,7 +622,7 @@ def getmentions():
 	User input:
 		User number.
 	"""
-	userid = input("User mentions, userid? [return]=me: ")
+	userid = input("User mentions, user id? [return]=me: ")
 	if userid == '':
 		userid = "me"
 	postcontent = pnutpy.api.users_mentioned_posts(userid, count=retrievecount, include_raw=True)
@@ -622,7 +638,7 @@ def getuserposts(userid):
 		User number.
 	"""
 	if str(userid) == "":
-		userid = input("User posts, userid? [return]=me: ")
+		userid = input("User posts, user id? [return]=me: ")
 		if userid == "":
 			userid = "me"
 	postcontent = pnutpy.api.users_posts(userid, count=retrievecount, include_raw=True)
@@ -637,7 +653,7 @@ def getinteractions():
 	User input:
 		User number.
 	"""
-	userid = input("Interacts, userid? [return]=me: ")
+	userid = input("Interactions, user id? [return]=me: ")
 	if userid == '':
 		userid = "me"
 	postcontent = pnutpy.api.interactions_with_user(userid, count=retrievecount)
@@ -788,41 +804,6 @@ def getsubscribers(channelnumber):
 			pass
 		number -= 1
 
-def mentionsubscribers(channelnumber):
-	"""
-	Get a list of subscribers to a channel and create a message mentioning all. Maximum 50.
-	
-	Arguments:
-		Channel number
-	User input:
-		Channel number, message.
-	"""
-	global posttext
-	posttext = ""
-	if str(channelnumber) == "":
-		channelnumber = input("-Spam channel number? ")
-	postcontent = pnutpy.api.subscribed_users(channelnumber)
-	number = 50
-	recipients = "/"
-	while number >= 0:
-		try:
-			recipientname = postcontent[0][number]["username"]
-			if recipientname != me:
-				recipients += "@" + recipientname + " "
-		except:
-			pass
-		number -= 1
-	print("-Enter the message:")
-	inputtext()
-	posttext += ("\n" + recipients)
-	print(posttext)
-	postpause = input("*Are you sure? (y/n)")
-	if postpause == "y":
-		postcontent = pnutpy.api.create_message(channelnumber, data={'text': posttext})
-		serverresponse("message", postcontent)
-	else:
-		print("*Message not sent")
-
 def broadcast(channelnumber):
 	"""
 	Get a list of subscribers to a channel then create individual messages to each. To avoid being rate limited, messages are sent every 3.2 seconds, incidentally upto a maximum of 50.
@@ -836,7 +817,7 @@ def broadcast(channelnumber):
 	posttext = ""
 	if str(channelnumber) == "":
 		channelnumber = input("*Broadcast to subscribers to channel number? ")
-	channelortag = input("*Enter channel name or hashtag for the message header? ")
+	channelortag = input("*Enter channel name or hashtag for the message header (will have [Broadcast message from…] added automatically): ")
 	print("-Enter the message:")
 	inputtext()
 	posttext = "Broadcast message from " + channelortag + ":\n\n" + posttext
@@ -846,7 +827,7 @@ def broadcast(channelnumber):
 	print("-" * 31)
 	postpause = input("*Are you sure? (y/n)")
 	if postpause == "y":
-		print("*Please wait while all subscribers are messaged. Each takes >3.4 seconds so this might take a while…")
+		print("*Please wait while all subscribers are messaged. Each takes >3.2 seconds so this might take a while…")
 		userlist = pnutpy.api.subscribed_users(channelnumber)
 		number = 50
 		while number >= 0:
@@ -856,7 +837,7 @@ def broadcast(channelnumber):
 				if recipientname != me:
 					message_info = {'text':posttext, 'destinations':recipientid}
 					postcontent, meta = pnutpy.api.create_message('pm', data=message_info)
-					print("sent to @") + recipientname
+					print("sent to @" + recipientname)
 					# wait 3.2 seconds between posts to attempt to stay below rate limiting:
 					time.sleep(3.2)
 			except:
@@ -1085,7 +1066,7 @@ def muteuser():
 	User input:
 		Channel number.
 	"""
-	usernum = input("*Mute user number? ")
+	usernum = input("*Mute user id? ")
 	postcontent = pnutpy.api.mute_user(usernum)
 	serverresponse("user muted", postcontent)
 
@@ -1098,7 +1079,7 @@ def unmuteuser():
 	User input:
 		Channel number.
 	"""
-	usernum = input("*Unmute user number? ")
+	usernum = input("*Unmute user id? ")
 	postcontent = pnutpy.api.unmute_user(usernum)
 	serverresponse("user unmuted", postcontent)
 
@@ -1156,11 +1137,16 @@ def inputtext():
 	User input:
 		Text.
 	Special:
-		if textinput.startswith "/me":
-			create a post reminiscent of an iOS Mutter IRC app "/me" post.
+		if textinput.startswith:
+			"/me":
+				create text reminiscent of an iOS Mutter IRC app "/me" post.
+			"/qs":
+				create text with a #QuoteSunday header.
+			"/tm":
+				create text with a #ThemeMonday header.
 	"""
 	global posttext
-	posttext = ''
+	posttext = ""
 	textinput = ""
 	while not textinput:
 		textinput = input("Write here (\\n=newline): ")
@@ -1170,6 +1156,10 @@ def inputtext():
 	# IRC-like /me:
 	if textinput.startswith("/me"):
 		textinput = "+" + me + textinput[3:]
+	if textinput.startswith("/qs"):
+		textinput = "#QuoteSunday\n\n" + textinput[4:]
+	if textinput.startswith("/tm"):
+		textinput = "#ThemeMonday\n\n" + textinput[4:]
 	# Back to sensible
 	splittext = textinput.split(r'\n')
 	for sentence in splittext:

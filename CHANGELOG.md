@@ -8,24 +8,27 @@
 **Parallel project,** ***was intended for*** **a future pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
+### 2017-12-27: v0.3.26 (Slashes):
+* Added: In addition to "/me" at the beginning of a post or message producing IRC-like text, "/qs" and "/tm" now add "\#QuoteSunday" and "\#ThemeMonday" headers, respectively.
+* Changed: 'broadcast' prompt increased in size, reduced in ease of reading.
+* Deprecated: -
+* Removed: 'mentionsubscribers' removed; though useful in developing 'broadcast' it was ultimately unnecessary.
+* Fixed: 'broadcast' bug removed: progress printout would have failed due to misplaced brace.
+* Security: -
+
 ### 2017-12-25: v0.3.25 (Help!):
 * Added: Rudimentary help called from the application's docstrings via an enhanced `help [command]`, though *only for main menu commands at this stage*.
-* Changed: -
-* Deprecated: -
-* Removed: -
-* Fixed: -
-* Security: 🎄
 
 ### 2017-12-24: v0.3.24 (Slippery people):
 * Fixed: Replies with additional mentions now adhere to pnut.io standards: one slash, no space, i.e. `/@user1 @user2…`
-* Fixed: createpost accidentally echoed post text.
+* Fixed: 'createpost' accidentally echoed post text.
 
 ### 2017-12-23: v0.3.23 (Broadcast):
-* Deprecated: `sp` 'spam channel' (with mentions) removed from main menu in favour of `bc` broadcast messages to channel subscribers.
+* Deprecated: `sp` 'spam channel' (mentionsubscribers) removed from main menu in favour of `bc` 'broadcast' messages to channel subscribers.
 * Fixed: Broadcast now sends a message every 3.2 seconds. (Developer previously failed at the maths required to ensure PigPen wasn't rate-limited. Doh!)
 
 ### 2017-12-22: v0.3.22 (Broadcast):
-* Added: Broadcast a message to every subscriber to a channel. Currently needs some manual input, i.e. the channel name or a hashtag or both.
+* Added: 'Broadcast' a message to every subscriber to a channel. Currently needs some manual input, i.e. the channel name or a hashtag or both.
   * **Future plans:**
   * Automatically add the channel name and ask for hashtag and header text.
   * Automatically crosspost a post to the channel and thus public timelines.
