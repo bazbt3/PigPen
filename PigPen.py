@@ -5,7 +5,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.26 for Python 3.5 | @bazbt3
+v0.3.27 for Python 3.5 | @bazbt3
 * Site, changelog: https://github.com/bazbt3/PigPen"""
 
 
@@ -22,10 +22,10 @@ from PIL import Image
 import requests
 from io import BytesIO
 
-# For setting timings in potentially rate-limiting automated sequential posts, for future expansion and for testing:
+# For setting timings in potentially rate-limiting automated sequential posts, and for and testing timings:
 import time
 
-# Define probably way too many global variables:
+# Define way too many global variables:
 global action, channelcount, channelid, channelnumber, channeltype, isdeleted, maxpostlen, me, number, postcontent, postid, posttext, postthreadid, retrievecount
 action = ""
 channelid = 0
@@ -39,7 +39,7 @@ postid = 0
 postthreadid = 0
 posttext = ""
 
-# Define fixed count:
+# Define fixed maximum post length:
 maxpostlen = 256
 # Define *default* user-variable counts:
 retrievecount = 20
@@ -450,7 +450,7 @@ def followuser(usernum):
 	Follow a user.
 	
 	Arguments, user input:
-		User number.
+		User name or number.
 	"""
 	if str(usernum) == "":
 		usernum = input("Follow user id? ")
@@ -488,7 +488,7 @@ def getuser(usernum):
 	Get a user's details: username & name, account type, locale, bio, interactions.
 	
 	Arguments, user input:
-		User number.
+		User name or number.
 	"""
 	
 	# Get a user's data:
@@ -496,7 +496,7 @@ def getuser(usernum):
 		usernum = input("Get data, user id? ")
 	postcontent = pnutpy.api.get_user(usernum)
 	print("")
-	print("@" + postcontent[0]["username"] + " - " + postcontent[0]["type"])
+	print("u:" + str(postcontent[0]["id"]) + " @" + postcontent[0]["username"] + " - " + postcontent[0]["type"])
 	if postcontent[0]["type"] == 'human':
 		try:
 			username = postcontent[0]["name"]
@@ -579,7 +579,7 @@ def getchannel(channelnumber):
 	except:
 		print("*Most recent message deleted (or had no content.)")
 	print("---------------")
-	subbies = input("*Get a list of the channel user numbers (y/n)? ")
+	subbies = input("*Get a list of this channel's users (y/n)? ")
 	if subbies == "y":
 		getsubscribers(channelnumber)
 	print("---------------")
@@ -620,7 +620,7 @@ def getmentions():
 	Arguments:
 		none
 	User input:
-		User number.
+		User name or number.
 	"""
 	userid = input("User mentions, user id? [return]=me: ")
 	if userid == '':
@@ -635,7 +635,7 @@ def getuserposts(userid):
 	Arguments:
 		none
 	User input:
-		User number.
+		User name or number.
 	"""
 	if str(userid) == "":
 		userid = input("User posts, user id? [return]=me: ")
@@ -820,7 +820,7 @@ def broadcast(channelnumber):
 	channelortag = input("*Enter channel name or hashtag for the message header (will have [Broadcast message from…] added automatically): ")
 	print("-Enter the message:")
 	inputtext()
-	posttext = "Broadcast message from " + channelortag + ":\n\n" + posttext
+	posttext = "Broadcast notification message from " + channelortag + ". Replies are discouraged. ;)\n\n" + posttext
 	print("-" * 31)
 	print("-This message will be sent:")
 	print(posttext)
@@ -843,7 +843,7 @@ def broadcast(channelnumber):
 			except:
 				pass
 			number -= 1
-		print("-Messages completed")
+		print("-Messages completed.")
 	else:
 		print("*Message not sent")
 
@@ -1064,7 +1064,7 @@ def muteuser():
 	Arguments:
 		none
 	User input:
-		Channel number.
+		User name or number.
 	"""
 	usernum = input("*Mute user id? ")
 	postcontent = pnutpy.api.mute_user(usernum)
@@ -1077,7 +1077,7 @@ def unmuteuser():
 	Arguments:
 		none
 	User input:
-		Channel number.
+		User name or number.
 	"""
 	usernum = input("*Unmute user id? ")
 	postcontent = pnutpy.api.unmute_user(usernum)
@@ -1130,7 +1130,7 @@ cc = change channel count? ({1})
 
 def inputtext():
 	"""
-	Takes user input, passes it back to the calling function.
+	Takes user input for a post or message, passes it back to the calling function.
 	
 	Arguments:
 		none
@@ -1213,7 +1213,7 @@ def displaypost(postcontent):
 					postrefs += " rep:" + str(postcontent[0][number]["reply_to"])
 				postrefs += " thd:" + postthreadid
 				print(postrefs)
-				inlinepostinteraction(postid, postthreadid)
+				inlinepostinteraction(number, postid, postthreadid)
 				if action == "x":
 					number = 0
 		except:
@@ -1221,7 +1221,7 @@ def displaypost(postcontent):
 		number -= 1
 	print("")
 
-def inlinepostinteraction(postid, postthreadid):
+def inlinepostinteraction(ipinumber, postid, postthreadid):
 	"""
 	Displays an inline post interaction menu and accepts commands from it.
 	
@@ -1233,10 +1233,11 @@ def inlinepostinteraction(postid, postthreadid):
 	User input:
 		Command to execute.
 	"""
-	global action
+	global action, number
+	ipinumber = number
 	validaction = False
 	separatormenu = " ------------------------------- "
-	menuseparator = "  Inline interactions menu:\n  [return].next r.reply rp.repost\n  b.bookmark gth.get thread\n  x.exit"
+	menuseparator = "  Inline interactions menu:\n  [return].next r.reply rp.repost\n  b.bookmark gth.get thread\n  u.back x.exit"
 	divider = separatormenu
 	while not validaction:
 		action = input(divider)
@@ -1257,6 +1258,9 @@ def inlinepostinteraction(postid, postthreadid):
 			getthread(postthreadid)
 			validaction = True
 			print("-back to list")
+		if action == "u":
+			ipinumber += 1
+			number = ipinumber
 		if action == "x":
 			print("-back to main menu")
 			validaction = True

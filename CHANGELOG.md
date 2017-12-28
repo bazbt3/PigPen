@@ -8,13 +8,20 @@
 **Parallel project,** ***was intended for*** **a future pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
+### 2017-12-28: v0.3.27 (Backwards):
+* Added: Typing '`u`' in post listings goes back a single post, and can be repeated within the limited range available in v0.3 of the app. It's a bit clunky but it works.
+* Changed: -
+* Deprecated: -
+* Removed: -
+* Fixed: Help text: errors corrected and tidied up.
+* Fixed: Other tiny improvements.
+* Security: -
+
 ### 2017-12-27: v0.3.26 (Slashes):
 * Added: In addition to "/me" at the beginning of a post or message producing IRC-like text, "/qs" and "/tm" now add "\#QuoteSunday" and "\#ThemeMonday" headers, respectively.
 * Changed: 'broadcast' prompt increased in size, reduced in ease of reading.
-* Deprecated: -
 * Removed: 'mentionsubscribers' removed; though useful in developing 'broadcast' it was ultimately unnecessary.
 * Fixed: 'broadcast' bug removed: progress printout would have failed due to misplaced brace.
-* Security: -
 
 ### 2017-12-25: v0.3.25 (Help!):
 * Added: Rudimentary help called from the application's docstrings via an enhanced `help [command]`, though *only for main menu commands at this stage*.
