@@ -5,7 +5,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.27 for Python 3.5 | @bazbt3
+v0.3.28 for Python 3.5 | @bazbt3
 * Site, changelog: https://github.com/bazbt3/PigPen"""
 
 
@@ -16,11 +16,14 @@ import pnutpy
 
 # Used to load default and user configuration data:
 import configparser
-	
+
 # Used to display images:
 from PIL import Image
 import requests
 from io import BytesIO
+
+# Guess file type:
+import mimetypes
 
 # For setting timings in potentially rate-limiting automated sequential posts, and for and testing timings:
 import time
@@ -350,10 +353,9 @@ def xpost():
 		print("*The app does not allow crossposting of messages sent to private channels. The post will not be created.\nSorry.")
 	else:
 		# Add an x-post footer then create the post without user input:
-		posttext += "\n\n" + channelname + " "
 		channelurl = "https://patter.chat/room/" + str(channelid)
-		channelurlmd = "[<=>](" + channelurl + ")"
-		posttext += channelurlmd
+		channelurlmd = "[" + channelname + " <=>](" + channelurl + ")"
+		posttext += "\n\n" + channelurlmd
 		createpost(posttext)
 
 def replypost(postnum):
@@ -466,7 +468,7 @@ def getpost(postnum):
 	"""
 	if str(postnum) == "":
 		postnum = input("Get postnum? ")
-	postcontent = pnutpy.api.get_post(postnum, include_raw= True)
+	postcontent = pnutpy.api.get_post(postnum, include_raw=True)
 	print("--------------")
 	if not "is_deleted" in postcontent[0]:
 		userstatus(postcontent)
@@ -648,14 +650,9 @@ def getinteractions():
 	"""
 	Get the application user's interactions.
 	
-	Arguments:
+	Arguments and user input:
 		none
-	User input:
-		User number.
 	"""
-	userid = input("Interactions, user id? [return]=me: ")
-	if userid == '':
-		userid = "me"
 	postcontent = pnutpy.api.interactions_with_user(userid, count=retrievecount)
 	global number
 	number = retrievecount
@@ -723,7 +720,7 @@ def getsubscribed(output):
 	
 	Arguments:
 		output:
-			The "v" flag indicates verbose output; anything else passed to this function gives an abbreviated listing.
+			Adding the "v" flag creates verbose output; anything else passed to this function gives an abbreviated listing.
 	User input:
 		none
 	"""
@@ -736,6 +733,8 @@ def getsubscribed(output):
 			channelnumber = channelcontent[0][number]["id"]
 			# Differentiate netween Chat and PM channels:
 			channeltype = str(channelcontent[0][number]["type"])[13:]
+			if channeltype == "pm":
+				channeltype = "PM"
 			# Get chat channel name:
 			# Thanks @hutattedonmyarm!
 			channelname = ""
@@ -765,6 +764,12 @@ def getsubscribed(output):
 		except:
 			pass
 		number -= 1
+	# Check for unread PMs:
+	numunreadchannels = pnutpy.api.num_unread_pm_channels(include_raw=True)
+	addans = ""
+	if numunreadchannels != 1:
+		addans = "s"
+	print("*" + str(numunreadchannels[0]) + " unread PM channel" + addans)
 
 def getmessages(channelnumber):
 	"""
@@ -799,7 +804,7 @@ def getsubscribers(channelnumber):
 		try:
 			userid = postcontent[0][number]["id"]
 			username = "@" + postcontent[0][number]["username"]
-			print (userid, username)
+			print(userid, username)
 		except:
 			pass
 		number -= 1
@@ -817,10 +822,10 @@ def broadcast(channelnumber):
 	posttext = ""
 	if str(channelnumber) == "":
 		channelnumber = input("*Broadcast to subscribers to channel number? ")
-	channelortag = input("*Enter channel name or hashtag for the message header (will have [Broadcast message from…] added automatically): ")
+	channelortag = input("*Enter *only* channel name or hashtag for the message header: ")
 	print("-Enter the message:")
 	inputtext()
-	posttext = "Broadcast notification message from " + channelortag + ". Replies are discouraged. ;)\n\n" + posttext
+	posttext = "Broadcast notification message from " + channelortag + ". Please reply publicly in chatroom or Global. ;)\n\n" + posttext
 	print("-" * 31)
 	print("-This message will be sent:")
 	print(posttext)
@@ -835,7 +840,7 @@ def broadcast(channelnumber):
 				recipientname = userlist[0][number]["username"]
 				recipientid = [userlist[0][number]["id"]]
 				if recipientname != me:
-					message_info = {'text':posttext, 'destinations':recipientid}
+					message_info = {'text': posttext, 'destinations': recipientid}
 					postcontent, meta = pnutpy.api.create_message('pm', data=message_info)
 					print("sent to @" + recipientname)
 					# wait 3.2 seconds between posts to attempt to stay below rate limiting:
@@ -843,7 +848,7 @@ def broadcast(channelnumber):
 			except:
 				pass
 			number -= 1
-		print("-Messages completed.")
+		print("-Messages completed")
 	else:
 		print("*Message not sent")
 
@@ -891,7 +896,7 @@ def getmyfiles():
 	# Test with a big count to :
 	count = 25
 	number = count - 1
-	filescontent = pnutpy.api.get_my_files(count = count)
+	filescontent = pnutpy.api.get_my_files(count=count)
 	# Display the most recent data:
 	print(filescontent[0][0])
 	print("-" * 31)
@@ -942,7 +947,7 @@ def uploadanimage(file_name):
 		mime_type = 'text/plain'
 		sha256 = <sha256 hash> #API will reject if it doesn't match with the actual sha256 hash
 	"""
-	# If empty filename, ask for a filename: 
+	# If empty filename, ask for a filename:
 	if file_name == "":
 		file_name = input("If the file is present in the images/ folder with the application, enter its full filename, or [return]=quit: ")
 	# If a filename is passed to this function or if the user enters a filename then attempt to upload it:
@@ -958,28 +963,53 @@ def uploadanimage(file_name):
 		# Build the file data:
 		file_data = {'type': file_type, 'kind': file_kind, 'name': file_name, 'is_public': True}
 		# Create the file:
-		pnut_file = pnutpy.api.create_file(files={'content':file}, data=file_data)
+		pnut_file = pnutpy.api.create_file(files={'content': file}, data=file_data)
 		# Return server response:
 		serverresponse("uploaded", pnut_file)
 
 def setnormalavatar():
 	"""
-	DOES NOT WORK YET. Set the user's normal avatar image. Can either be used for its initial upload or after a #ThemeMonday event change.
+	Set the user's normal avatar image. Can either be used for its initial upload or after a #ThemeMonday event change.
 	
-	Uses the same basic code as uploadanimage hence the lack of duplicated comments.
+	Uses code gratefully received from @thrrgilag.
 	Arguments:
 		none
 	User input:
-		none
+		None, however currently the user MUST check file type and edit the `filename` in this function appropriately.
 	"""
-	# The folder and filename of the 'normal' avatar image:
-	file_name = "avatar.jpg"
-	file = open(file_name, 'rb')
-	file_type = 'io.pnut.core.image'
-	file_kind = 'image'
-	file_data = {'type': file_type, 'kind': file_kind, 'name': file_name}
-	pnut_file = pnutpy.api.update_avatar(files={'content':file}, data=file_data)
-	serverresponse("avatar set", pnut_file)
+	# The filename of the avatar image:
+	filename = "avatar.jpg"
+	filetype = filename[-3:]
+	if filetype == 'jpg':
+		contype = 'image/jpeg'
+	if filetype == 'png':
+		contype = 'image/png'
+	with open(filename, 'rb') as fileobj:
+		avatar = {'avatar': (filename, fileobj, contype)}
+		response, meta = pnutpy.api.update_avatar('me', files=avatar)
+	print("-Uploaded a", filetype, "for your normal avatar.")
+
+def settmavatar():
+	"""
+	Set the user's #ThemeMonday avatar image.
+	
+	Uses code gratefully received from @thrrgilag, duplicates code from setnormalavatar but for a.
+	Arguments:
+		none
+	User input:
+		None, however currently the user MUST check file type and edit the `filename` in this function appropriately.
+	"""
+	# The folder and filename of the avatar image:
+	filename = "avatartm.png"
+	filetype = filename[-3:]
+	if filetype == 'jpg':
+		contype = 'image/jpeg'
+	if filetype == 'png':
+		contype = 'image/png'
+	with open(filename, 'rb') as fileobj:
+		avatar = {'avatar': (filename, fileobj, contype)}
+		response, meta = pnutpy.api.update_avatar('me', files=avatar)
+	print("-Uploaded a", filetype, "for your #ThemeMonday avatar.")
 
 
 # --------- Mute/block/delete ------
@@ -1042,7 +1072,7 @@ def mutechannel():
 	"""
 	channelnum = input("*Mute channel number? ")
 	postcontent = pnutpy.api.mute_channel(channelnum)
-	serverresponse("channel muted",postcontent)
+	serverresponse("channel muted", postcontent)
 
 def unmutechannel():
 	"""
@@ -1124,7 +1154,7 @@ cc = change channel count? ({1})
 	# Every time settings menu is used, save to "ppconfig.ini" file:
 	config["USER"]["retrievecount"] = str(retrievecount)
 	config["USER"]["channelcount"] = str(channelcount)
-	with open ("ppconfig.ini", "w") as configfile:
+	with open("ppconfig.ini", "w") as configfile:
 		config.write(configfile)
 	print("-settings saved\n")
 

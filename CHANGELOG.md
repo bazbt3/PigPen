@@ -8,14 +8,18 @@
 **Parallel project,** ***was intended for*** **a future pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
-### 2017-12-28: v0.3.27 (Backwards):
-* Added: Typing '`u`' in post listings goes back a single post, and can be repeated within the limited range available in v0.3 of the app. It's a bit clunky but it works.
-* Changed: -
+### 2018-01-05: v0.3.28 (#ThemeMonday avatars):
+* Added: Avatar changing, for #ThemeMonday and back again. I could not have done this without @thrrgilag's help!
+* Changed: Small updates to 'broadcast' prompt & message, and channel URL displayed in an 'xpost'.
 * Deprecated: -
 * Removed: -
+* Fixed: Removed user selection input from 'getinteractions'.
+* Security: -
+
+### 2017-12-28: v0.3.27 (Backwards):
+* Added: Typing '`u`' in post listings goes back a single post, and can be repeated within the limited range available in v0.3 of the app. It's a bit clunky but it works.
 * Fixed: Help text: errors corrected and tidied up.
 * Fixed: Other tiny improvements.
-* Security: -
 
 ### 2017-12-27: v0.3.26 (Slashes):
 * Added: In addition to "/me" at the beginning of a post or message producing IRC-like text, "/qs" and "/tm" now add "\#QuoteSunday" and "\#ThemeMonday" headers, respectively.
