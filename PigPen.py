@@ -5,7 +5,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.28 for Python 3.5 | @bazbt3
+v0.3.29 for Python 3.5 | @bazbt3
 * Site, changelog: https://github.com/bazbt3/PigPen"""
 
 
@@ -144,8 +144,8 @@ def commandentry():
 			gethashtag(operand)
 		elif choice == "gi": # n/a
 			getinteractions()
-		elif choice == 'gm': # n/a
-			getmentions()
+		elif choice == 'gm':
+			getmentions(operand)
 		elif choice == 'gp':
 			getpost(operand)
 		elif choice == 'gs':
@@ -615,18 +615,19 @@ def getglobal():
 	postcontent = pnutpy.api.posts_streams_global(count = retrievecount, include_raw=True)
 	displaypost(postcontent)
 
-def getmentions():
+def getmentions(userid):
 	"""
 	Get an account's mentions.
 	
 	Arguments:
-		none
+		userid
 	User input:
 		User name or number.
 	"""
-	userid = input("User mentions, user id? [return]=me: ")
-	if userid == '':
+	if str(userid) == "":
 		userid = "me"
+#	else:
+#		userid = input("User mentions, user id?: ")
 	postcontent = pnutpy.api.users_mentioned_posts(userid, count=retrievecount, include_raw=True)
 	displaypost(postcontent)
 
@@ -825,9 +826,9 @@ def broadcast(channelnumber):
 	channelortag = input("*Enter *only* channel name or hashtag for the message header: ")
 	print("-Enter the message:")
 	inputtext()
-	posttext = "Broadcast notification message from " + channelortag + ". Please reply publicly in chatroom or Global. ;)\n\n" + posttext
-	print("-" * 31)
+	posttext = "Broadcast notification from " + channelortag + ":\n\n" + posttext + "\n\n(Please reply publicly.) ;)"
 	print("-This message will be sent:")
+	print("-" * 31)
 	print(posttext)
 	print("-" * 31)
 	postpause = input("*Are you sure? (y/n)")
@@ -978,7 +979,7 @@ def setnormalavatar():
 		None, however currently the user MUST check file type and edit the `filename` in this function appropriately.
 	"""
 	# The filename of the avatar image:
-	filename = "avatar.jpg"
+	filename = "avatar.png"
 	filetype = filename[-3:]
 	if filetype == 'jpg':
 		contype = 'image/jpeg'
@@ -993,7 +994,7 @@ def settmavatar():
 	"""
 	Set the user's #ThemeMonday avatar image.
 	
-	Uses code gratefully received from @thrrgilag, duplicates code from setnormalavatar but for a.
+	Uses code gratefully received from @thrrgilag, duplicates code from setnormalavatar but for #ThemeMonday.
 	Arguments:
 		none
 	User input:

@@ -8,13 +8,20 @@
 **Parallel project,** ***was intended for*** **a future pnut.io \#Hackathon:**    
 `ppmentions.py` created, from a suggestion by @schmidt_fu for a list of mutual mentions. No external documentation; the intention is to roll the code into the main app.
 
+### 2018-01-07: v0.3.29 (unintentionally blank):
+* Added: -
+* Changed: Layout of 'broadcast' message improved.
+* Changed: 'getmentions' without an operand now gets the application user's mentions, whereas *with* one a specific user's are listed.
+* Changed: Normal avatar uploads now use the .png filetype; ThemeMonday's could use that or .jpg. The test for both types is retained for contenttype as the file name is currently hard coded. 
+* Deprecated: -
+* Removed: -
+* Fixed: -
+* Security: -
+
 ### 2018-01-05: v0.3.28 (#ThemeMonday avatars):
 * Added: Avatar changing, for #ThemeMonday and back again. I could not have done this without @thrrgilag's help!
 * Changed: Small updates to 'broadcast' prompt & message, and channel URL displayed in an 'xpost'.
-* Deprecated: -
-* Removed: -
-* Fixed: Removed user selection input from 'getinteractions'.
-* Security: -
+* Fixed: Removed user selection input from 'getinteractions'
 
 ### 2017-12-28: v0.3.27 (Backwards):
 * Added: Typing '`u`' in post listings goes back a single post, and can be repeated within the limited range available in v0.3 of the app. It's a bit clunky but it works.
