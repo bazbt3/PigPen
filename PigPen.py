@@ -5,7 +5,7 @@
   / __// // //// __// ___ / // /
  /_/  /_/ |_ //_/   |___//_//_/
          /__/
-v0.3.29 for Python 3.5 | @bazbt3
+v0.3.29noinlineimages for Python 3.5 | @bazbt3
 * Site, changelog: https://github.com/bazbt3/PigPen"""
 
 
@@ -17,10 +17,11 @@ import pnutpy
 # Used to load default and user configuration data:
 import configparser
 
+# TEMPORARY REMOVAL (host)
 # Used to display images:
-from PIL import Image
-import requests
-from io import BytesIO
+#from PIL import Image
+#import requests
+#from io import BytesIO
 
 # Guess file type:
 import mimetypes
@@ -474,10 +475,12 @@ def getpost(postnum):
 		userstatus(postcontent)
 		timestarrpstatus(postcontent)
 		print(postcontent[0]["content"]["text"])
+
+		# TEMPORARY IMAGE BLOCK
 		# Check for oembed file:
 		try:
 			raw = postcontent[0]['raw'][0]
-			checkoembed(postcontent, raw)
+		#	checkoembed(postcontent, raw)
 		except:
 			pass
 		postfooter(postcontent)
@@ -768,7 +771,7 @@ def getsubscribed(output):
 	# Check for unread PMs:
 	numunreadchannels = pnutpy.api.num_unread_pm_channels(include_raw=True)
 	addans = ""
-	if numunreadchannels != 1:
+	if numunreadchannels[0] != 1:
 		addans = "s"
 	print("*" + str(numunreadchannels[0]) + " unread PM channel" + addans)
 
@@ -1232,10 +1235,11 @@ def displaypost(postcontent):
 				print(poststatus + "]")
 				# Display post text:
 				print(postcontent[0][number]["content"]["text"])
+				# TEMPORARY IMAGE BLOCK
 				# Check for oembed file:
 				try:
 					raw = postcontent[0][number]['raw'][0]
-					checkoembed(postcontent[0][number], raw)
+					# checkoembed(postcontent[0][number], raw)
 				except:
 					pass
 				# Build hierarchy links:
@@ -1327,7 +1331,7 @@ def displaymessage(postcontent):
 				# Check for oembed file:
 				try:
 					raw = postcontent[0][number]['raw'][0]
-					checkoembed(postcontent[0][number], raw)
+					#checkoembed(postcontent[0][number], raw)
 				except:
 					pass
 				print("---------------------------------")
