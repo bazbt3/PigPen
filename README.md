@@ -1,5 +1,6 @@
+<img src="pigpen_logo.png" height="96" alt="PigPen pnut.io social network app"> <br>
 # What is 'PigPen'?
-A Python application to allow interactions with the [pnut.io](https://pnut.io) social network.
+A Python 3.5 application to allow interactions with the [pnut.io](https://pnut.io) social network.
 
 This document covers v0.3.7 onwards.
 
