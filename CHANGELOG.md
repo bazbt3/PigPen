@@ -2,7 +2,6 @@
 (Most recent on top.)
 
 ### TODO:
-* Change avatar (a precursor to other file operations in v0.3.)
 * Pushed goal of display of longer timelines back from v0.3 to v0.4.
 
 **Parallel project,** ***was intended for*** **a future pnut.io \#Hackathon:**    
